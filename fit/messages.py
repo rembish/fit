@@ -1,3 +1,4 @@
+from inspect import isclass
 from fit.types import UInt32Z, UInt16, UInt32, UInt8, SInt32, SInt16, SInt8, \
     String, Byte, UInt8Z, UInt16Z, DateTime, Manufacturer, File, \
     LocalDateTime, Activity, Event, EventType, MessageIndex, \
@@ -8,14 +9,14 @@ from fit.types import UInt32Z, UInt16, UInt32, UInt8, SInt32, SInt16, SInt8, \
 
 
 class Message(object):
-    _type = -1
+    msg_type = -1
 
     def __repr__(self):
-        return '<%s[%d]>' % (self.__class__.__name__, self._type)
+        return '<%s[%d]>' % (self.__class__.__name__, self.msg_type)
 
 
 class FileIdMessage(Message):
-    _type = 0
+    msg_type = 0
 
     serial_number = UInt32Z(3)
     time_created = DateTime(4)
@@ -25,8 +26,15 @@ class FileIdMessage(Message):
     type = File(0)
 
 
+class FileCreatorMessage(Message):
+    msg_type = 49
+
+    software_version = UInt16(0)
+    hardware_version = UInt8(1)
+
+
 class ActivityMessage(Message):
-    _type = 34
+    msg_type = 34
 
     timestamp = DateTime(253)
     total_timer_time = UInt32(0)
@@ -39,7 +47,7 @@ class ActivityMessage(Message):
 
 
 class SessionMessage(Message):
-    _type = 18
+    msg_type = 18
 
     timestamp = DateTime(253)
     start_time = DateTime(2)
@@ -125,7 +133,7 @@ class SessionMessage(Message):
 
 
 class LapMessage(Message):
-    _type = 19
+    msg_type = 19
 
     timestamp = DateTime(253)
     start_time = DateTime(2)
@@ -207,7 +215,7 @@ class LapMessage(Message):
 
 
 class LengthMessage(Message):
-    _type = 101
+    msg_type = 101
 
     timestamp = DateTime(253)
     start_time = DateTime(2)
@@ -230,7 +238,7 @@ class LengthMessage(Message):
 
 
 class RecordMessage(Message):
-    _type = 20
+    msg_type = 20
 
     timestamp = DateTime(253)
     position_lat = SInt32(0)
@@ -280,7 +288,7 @@ class RecordMessage(Message):
 
 
 class EventMessage(Message):
-    _type = 21
+    msg_type = 21
 
     timestamp = DateTime(253)
     data = UInt32(3)
@@ -297,7 +305,7 @@ class EventMessage(Message):
 
 
 class DeviceInfoMessage(Message):
-    _type = 23
+    msg_type = 23
 
     timestamp = DateTime(253)
     serial_number = UInt32Z(3)
@@ -319,6 +327,12 @@ class DeviceInfoMessage(Message):
 
 
 class Hrv(Message):
-    _type = 78
+    msg_type = 78
 
     time = UInt16(0)
+
+
+KNOWN = {
+    cls.msg_type: cls for cls in locals()
+    if isclass(cls) and issubclass(cls, Message)
+}

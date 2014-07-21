@@ -54,7 +54,7 @@ class Fields(list):
         return sum(map(lambda x: x.size, self))
 
 
-filename = "/home/rembish/2014-07-14-21-29-25.fit"
+filename = "2014-07-12-12-48-15.fit"
 filesize = stat(filename).st_size
 print 'Filesize: %d' % filesize
 
