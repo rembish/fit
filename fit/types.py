@@ -474,3 +474,9 @@ class SourceType(Enum):
         4: "WiFi",
         5: "Local",
     }
+
+
+KNOWN = [
+    Enum, SInt8, UInt8, SInt16, UInt16, SInt32, UInt32, String, Float32,
+    Float64, UInt8Z, UInt16Z, UInt32Z, Byte
+]

@@ -1,51 +1,70 @@
 from contextlib import closing
+from io import BytesIO, FileIO
+from os import fstat
 from struct import unpack
 
 from fit.helper import Header
-from fit.messages import FileIdMessage
+from fit.record import Record, DefinitionRecord
 
 
-class FitFile(object):
-    def __init__(self):
-        pass
+def open(filename, mode='rb'):
+    if mode != 'rb':
+        raise Exception()  # FIXME
 
-    @classmethod
-    def open(cls, filename):
-        with closing(open(filename, 'rb')) as fp:
-            return cls.openfp(fp)
-
-    @classmethod
-    def openfp(cls, fp):
-        # 1. read header size
-
-        fp.seek(0)
-        header_size = ord(fp.read(1))
-
+    with closing(FileIO(filename, mode)) as fd:
+        header_size = ord(fd.read(1))
         if header_size < 12:
             raise Exception()  # FIXME
 
-        header = Header(fp.read(header_size))
+        fd.seek(0)
+        header = Header(fd.read(header_size))
         if not header.valid():
             raise Exception()  # FIXME
 
-        # 2. searching for file_id record to define current file type
+        body = BytesIO(fd.read(header.data_size))
 
-        record_header = ord(fp.read(1))
-        record_type = record_header & (1 << 7)
-        # First record should be normal data message
-        if record_type:
+        crc_size = 2
+        crc = unpack("<H", fd.read(crc_size))[0]
+
+        filesize = fstat(fd.fileno()).st_size
+        if filesize != header_size + header.data_size + crc_size:
             raise Exception()  # FIXME
 
-        reserved, architecture = unpack("<BB", fp.read(2))
-        architecture = ">" if architecture else "<"
-        global_message_number, number_of_fields = \
-            unpack("%sHB" % architecture, fp.read(3))
+        return FitFile(body, header=header, crc=crc)
 
-        # First record should be FileId
-        if global_message_number != FileIdMessage.get_type():
-            raise Exception()  # FIXME
 
-        field_size = 3
-        fields_data = fp.read(field_size * number_of_fields)
-        for i, offset in enumerate(range(0, len(fields_data), field_size)):
-            chunk = fields_data[offset:offset + field_size]
+class FitFile(object):
+    def __init__(self, stream, header=None, crc=None):
+        self.header = header
+        self.crc = crc
+        self.records = {}
+        self.data = []
+
+        self.process(stream)
+
+    def process(self, stream):
+        while True:
+            record = Record.open(stream.read(1))
+            if not record:
+                break
+
+            if not record.compressed:
+                if isinstance(record, DefinitionRecord):
+                    record.build(stream)
+                    self.records[record.id] = record.as_message()
+
+                else:
+                    record.read(stream.read(self.records[record.id].size))
+                    self.data.append(record)
+
+            else:
+                pass  # TODO
+
+
+
+
+
+
+if __name__ == '__main__':
+    ff = open("../2014-07-12-12-48-15.fit")
+    print len(ff.body.getvalue())
