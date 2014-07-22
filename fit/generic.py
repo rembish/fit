@@ -21,16 +21,48 @@ def open(filename, mode='rb'):
         if not header.valid():
             raise Exception()  # FIXME
 
-        body = BytesIO(fd.read(header.data_size))
-
         crc_size = 2
-        crc = unpack("<H", fd.read(crc_size))[0]
-
         filesize = fstat(fd.fileno()).st_size
         if filesize != header_size + header.data_size + crc_size:
             raise Exception()  # FIXME
 
+        body = BytesIO(fd.read(header.data_size))
+        crc = unpack("<H", fd.read(crc_size))[0]
         return FitFile(body, header=header, crc=crc)
+
+
+class Fit(object):
+    def __init__(self, filename, mode='r'):
+        self.header = Header()
+        self.crc = Crc()
+
+        self.definitions = {}
+        self.records = []
+
+        if mode not in 'arw':
+            raise Exception()
+
+        self.fd = FileIO(filename, mode='%sb' % mode)
+        if self.mode in 'ra':
+            self.read()
+
+    def __getitem__(self, x):
+        return self.records[x]
+
+    def read(self):
+        pass
+
+    @property
+    def mode(self):
+        return self.fd.mode[0]
+
+    @property
+    def name(self):
+        return self.fd.name
+
+    @property
+    def closed(self):
+        return self.fd.closed
 
 
 class FitFile(object):
@@ -48,14 +80,13 @@ class FitFile(object):
             if not record:
                 break
 
-            if not record.compressed:
-                if isinstance(record, DefinitionRecord):
-                    record.build(stream)
-                    self.records[record.id] = record.as_message()
+            if isinstance(record, DefinitionRecord):
+                record.build(stream)
+                self.records[record.id] = record.message
 
-                else:
-                    record.read(stream.read(self.records[record.id].size))
-                    self.data.append(record)
+            if not record.compressed:
+                record.read(stream.read(self.records[record.id].size))
+                self.data.append(record)
 
             else:
                 pass  # TODO
