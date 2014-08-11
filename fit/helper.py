@@ -20,6 +20,14 @@ class Header(object):
     def __nonzero__(self):
         return self.size is not None
 
+    def __rerp__(self):
+        return '<%s protocol=%d profile=%d crc=%r>' % (
+            self.__class__.__name__,
+            self.protocol_version,
+            self.profile_version,
+            self.crc
+        )
+
     @property
     def total_size(self):
         return self.size + self.data_size + self.crc.size

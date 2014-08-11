@@ -1,9 +1,8 @@
 from os import fstat
-from io import BytesIO
 
 from fit.crc import Crc
 from fit.exceptions import HeaderFormatError, BodyFormatError, CrcFormatError
-from fit.generic import Data
+from fit.body import Body
 from fit.helper import Header
 
 
@@ -12,10 +11,16 @@ class Reader(object):
         self.fd = fd
 
         self._header = Header()
-        self._body = Data()
+        self._body = Body()
         self._crc = Crc()
 
         self.file_size = fstat(self.fd.fileno()).st_size
+
+    def __repr__(self):
+        return '<%s header=%r body=%r crc=%r>' % (
+            self.__class__.__name__,
+            self.header, self.body, self.crc
+        )
 
     @property
     def header(self):
@@ -67,7 +72,7 @@ class Reader(object):
                 raise BodyFormatError("Invalid CRC %x, should be %x" % (
                     crc.compute_crc(body), crc.value))
 
-            self._body.read(BytesIO(body))
+            self._body.read(body)
         return self._body
 
     @property
