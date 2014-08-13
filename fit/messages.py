@@ -8,6 +8,10 @@ from fit.types import UInt32Z, UInt16, UInt32, UInt8, SInt32, SInt16, SInt8, \
     AntNetwork, SourceType
 
 
+def make_generic(fields):
+    pass
+
+
 class Message(object):
     msg_type = -1
 

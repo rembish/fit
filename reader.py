@@ -4,6 +4,27 @@ from struct import unpack
 
 from fit.constants import MESSAGE_NUMBERS
 
+
+class MessageMeta(type):
+    def __new__(cls, name, bases, attrs):
+        print name, bases, attrs
+        model_cls = super(MessageMeta, cls).__new__(cls, name, bases, attrs)
+        return model_cls
+
+class Field(object):
+    pass
+
+class Message(object):
+    __metaclass__ = MessageMeta
+
+    a = Field()
+    b = Field()
+
+instance = Message()
+
+exit()
+
+
 def get_byte(fp):
     return ord(fp.read(1))
 

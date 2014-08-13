@@ -1,7 +1,7 @@
 class Type(object):
-    _type = -1
-    _name = "?"
-    _size = 0
+    type = -1
+    name = "?"
+    size = 0
 
     _invalid = None
     _endian = False
@@ -12,131 +12,131 @@ class Type(object):
 
     def __repr__(self):
         return '<%s[%s]: %d%s>' % (
-            self.__class__.__name__, self._type, self.number,
+            self.__class__.__name__, self.type, self.number,
             ("x%d" % self.count) if self.count > 1 else ""
         )
 
 
 class Enum(Type):
-    _type = 0
-    _name = "enum"
-    _size = 1
+    type = 0
+    name = "enum"
+    size = 1
 
     _invalid = 0xFF
 
 
 class SInt8(Type):
-    _type = 1
-    _name = "sint8"
-    _size = 1
+    type = 1
+    name = "sint8"
+    size = 1
 
     _invalid = 0x7f
 
 
 class UInt8(Type):
-    _type = 2
-    _name = "uint8"
-    _size = 1
+    type = 2
+    name = "uint8"
+    size = 1
 
     _invalid = 0xff
 
 
 class SInt16(Type):
-    _type = 3
-    _name = "sint16"
-    _size = 2
+    type = 3
+    name = "sint16"
+    size = 2
 
     _invalid = 0x7fff
     _endian = True
 
 
 class UInt16(Type):
-    _type = 4
-    _name = "uint32"
-    _size = 2
+    type = 4
+    name = "uint32"
+    size = 2
 
     _invalid = 0xffff
     _endian = True
 
 
 class SInt32(Type):
-    _type = 5
-    _name = "sint32"
-    _size = 4
+    type = 5
+    name = "sint32"
+    size = 4
 
     _invalid = 0x7fffffff
     _endian = True
 
 
 class UInt32(Type):
-    _type = 6
-    _name = "uint32"
-    _size = 4
+    type = 6
+    name = "uint32"
+    size = 4
 
     _invalid = 0xffffffff
     _endian = True
 
 
 class String(Type):
-    _type = 7
-    _name = "string"
-    _size = 1
+    type = 7
+    name = "string"
+    size = 1
 
     _invalid = 0x00
 
 
 class Float32(Type):
-    _type = 8
-    _name = "float32"
-    _size = 4
+    type = 8
+    name = "float32"
+    size = 4
 
     _invalid = 0xffffffff
     _endian = True
 
 
 class Float64(Type):
-    _type = 9
-    _name = "float64"
-    _size = 8
+    type = 9
+    name = "float64"
+    size = 8
 
     _invalid = 0xffffffffffffffff
     _endian = True
 
 
 class UInt8Z(Type):
-    _type = 10
-    _name = "uint8z"
-    _size = 1
+    type = 10
+    name = "uint8z"
+    size = 1
 
     _invalid = 0x00
 
 
 class UInt16Z(Type):
-    _type = 11
-    _name = "uint16z"
-    _size = 2
+    type = 11
+    name = "uint16z"
+    size = 2
 
     _invalid = 0x0000
     _endian = True
 
 
 class UInt32Z(Type):
-    _type = 12
-    _name = "uint32z"
-    _size = 4
+    type = 12
+    name = "uint32z"
+    size = 4
 
     _invalid = 0x00000000
     _endian = True
 
 
 class Byte(Type):
-    _type = 13
-    _name = "byte"
-    _size = 1
+    type = 13
+    name = "byte"
+    size = 1
 
     def __init__(self, number, count=1):
         super(Byte, self).__init__(number, count=count)
-        self._invalid = (1 << (count * self._size * 8)) - 1
+        self._invalid = (1 << (count * self.size * 8)) - 1
 
 
 # Extended types

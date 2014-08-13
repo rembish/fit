@@ -3,8 +3,5 @@ class Record(object):
         self.header = header
 
     @classmethod
-    def read(cls, header, buffer):
-        raise NotImplementedError()
-
-    def map(self, owner):
+    def read(cls, owner, header, buffer):
         raise NotImplementedError()

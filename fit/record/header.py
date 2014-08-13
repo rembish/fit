@@ -20,7 +20,7 @@ class RecordHeader(object):
             return CompressedTimestampHeader.read(byte)
         return NormalHeader.read(byte)
 
-    def construct(self, buffer):
+    def process_message(self, owner, buffer):
         raise NotImplementedError()
 
 
@@ -36,13 +36,13 @@ class NormalHeader(RecordHeader):
 
 
 class DefinitionHeader(NormalHeader):
-    def construct(self, buffer):
-        return Definition.read(self, buffer)
+    def process_message(self, owner, buffer):
+        return Definition.read(owner, header=self, buffer=buffer)
 
 
 class DataHeader(NormalHeader):
-    def construct(self, buffer):
-        return Data.read(self, buffer)
+    def process_message(self, owner, buffer):
+        return Data.read(owner, header=self, buffer=buffer)
 
 
 class CompressedTimestampHeader(RecordHeader):

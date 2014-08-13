@@ -3,7 +3,7 @@ from os import fstat
 from fit.crc import Crc
 from fit.exceptions import HeaderFormatError, BodyFormatError, CrcFormatError
 from fit.body import Body
-from fit.helper import Header
+from fit.header import Header
 
 
 class Reader(object):
