@@ -78,7 +78,7 @@ class Definition(Record):
 
     def write(self, index):
         from fit.record.header import DefinitionHeader
-        chunk = pack("<BBHB", 0, self.BIG, self.number, len(self.fields))
+        chunk = pack("<BBHB", 0, self.LITTLE, self.number, len(self.fields))
         return DefinitionHeader(index).write() + chunk + self.fields.write()
 
     def build_message(self, buffer):

@@ -31,10 +31,7 @@ class Body(list):
                 index += 1
                 written.append(number)
 
-                if number not in self.definitions:  # FIXME
-                    self.definitions[number] = item._definition
-
-                chunks.append(self.definitions[number].write(current))
+                chunks.append(item._definition.write(current))
             chunks.append(item.write(current))
 
         return "".join(chunks)
