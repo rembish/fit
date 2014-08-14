@@ -1,6 +1,7 @@
 from struct import Struct
 
-from fit.crc import Crc
+from fit.crc import Crc, compute_crc
+from fit.exceptions import BodyFormatError
 
 
 class Header(object):
@@ -45,7 +46,14 @@ class Header(object):
         if len(chunk) == 14:
             self.crc.read(chunk[12:])
 
+            if not self.crc.check(chunk[:12]):
+                raise BodyFormatError("Invalid CRC %x, should be %x" % (
+                    compute_crc(chunk[:12]), self.crc.value))
+
     def write(self):
-        return self._format.pack(self.size, self.protocol_version,
-                                 self.profile_version, self.data_size,
-                                 self.data_type) + self.crc.write()
+        self.size = 14
+        chunk = self._format.pack(self.size, self.protocol_version,
+                                  self.profile_version, self.data_size,
+                                  self.data_type)
+        self.crc.value = compute_crc(chunk)
+        return chunk + self.crc.write()

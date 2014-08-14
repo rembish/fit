@@ -43,7 +43,7 @@ class Crc(object):
         self.value = self._format.unpack(chunk)[0]
 
     def write(self):
-        return self._format.pack(self.value) if self.value else ""
+        return self._format.pack(self.value or 0)
 
     def check(self, chunk):
         return compute_crc(chunk) == self.value

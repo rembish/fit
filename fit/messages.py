@@ -4,7 +4,7 @@ from fit.types import UInt32Z, UInt16, UInt32, UInt8, SInt32, SInt16, SInt8, \
     LeftRightBalance100, LeftRightBalance, Sport, SubSport, SessionTrigger, \
     SwimStroke, DisplayMeasure, Intensity, LapTrigger, LengthType, \
     ActivityType, StrokeType, DeviceIndex, BatteryStatus, BodyLocation, \
-    AntNetwork, SourceType, Type
+    AntNetwork, SourceType, Type, Semicircles, Altitude
 
 
 class Meta(dict):
@@ -62,6 +62,17 @@ class Message(object):
         self._data = {}
         self._definition = definition
 
+    def __repr__(self):
+        return '<%s[%d] %s>' % (
+            self.__class__.__name__, self.msg_type,
+            ' '.join("%s=%s" % (
+                self._meta.names[field.number],
+                self._meta.model[field.number].readable(getattr(
+                    self, self._meta.names[field.number]))
+            ) for field in self._definition.fields
+            if getattr(self, self._meta.names[field.number]) is not None)
+        )
+
     def read(self, buffer):
         unknown = 0
         for field in self._definition.fields:
@@ -83,15 +94,6 @@ class Message(object):
             value = getattr(self, self._meta.names[field.number])
             buffer += field.write(value)
         return buffer
-
-    def __repr__(self):
-        return '<%s[%d] %s>' % (
-            self.__class__.__name__, self.msg_type,
-            ' '.join("%s=%s" % (
-                self._meta.names[field.number],
-                getattr(self, self._meta.names[field.number])
-            ) for field in self._definition.fields)
-        )
 
 
 class GenericMessage(Message):
@@ -136,16 +138,16 @@ class SessionMessage(Message):
 
     timestamp = DateTime(253)
     start_time = DateTime(2)
-    start_position_lat = SInt32(3)
-    start_position_long = SInt32(4)
+    start_position_lat = Semicircles(3)
+    start_position_long = Semicircles(4)
     total_elapsed_time = UInt32(7)
     total_timer_time = UInt32(8)
     total_distance = UInt32(9)
     total_cycles = UInt32(10)
-    nec_lat = SInt32(29)
-    nec_long = SInt32(30)
-    swc_lat = SInt32(31)
-    swc_long = SInt32(32)
+    nec_lat = Semicircles(29)
+    nec_long = Semicircles(30)
+    swc_lat = Semicircles(31)
+    swc_long = Semicircles(32)
     avg_stroke_count = UInt32(41)
     total_work = UInt32(48)
     total_moving_time = UInt32(59)
@@ -172,8 +174,8 @@ class SessionMessage(Message):
     avg_stroke_distance = UInt16(42)
     pool_length = UInt16(44)
     num_active_lengths = UInt16(47)
-    avg_altitude = UInt16(49)
-    max_altitude = UInt16(50)
+    avg_altitude = Altitude(49)
+    max_altitude = Altitude(50)
     avg_grade = SInt16(52)
     avg_pos_grade = SInt16(53)
     avg_neg_grade = SInt16(54)
@@ -184,7 +186,7 @@ class SessionMessage(Message):
     max_pos_vertical_speed = SInt16(62)
     max_neg_vertical_speed = SInt16(63)
     best_lap_index = UInt16(70)
-    min_altitude = UInt16(71)
+    min_altitude = Altitude(71)
     player_score = UInt16(82)
     opponent_score = UInt16(83)
     stroke_count = UInt16(85)
@@ -222,10 +224,10 @@ class LapMessage(Message):
 
     timestamp = DateTime(253)
     start_time = DateTime(2)
-    start_position_lat = SInt32(3)
-    start_position_long = SInt32(4)
-    end_position_lat = SInt32(5)
-    end_position_long = SInt32(6)
+    start_position_lat = Semicircles(3)
+    start_position_long = Semicircles(4)
+    end_position_lat = Semicircles(5)
+    end_position_long = Semicircles(6)
     total_elapsed_time = UInt32(7)
     total_timer_time = UInt32(8)
     total_distance = UInt32(9)
@@ -251,8 +253,8 @@ class LapMessage(Message):
     first_length_index = UInt16(35)
     avg_stroke_distance = UInt16(37)
     num_active_lengths = UInt16(40)
-    avg_altitude = UInt16(42)
-    max_altitude = UInt16(43)
+    avg_altitude = Altitude(42)
+    max_altitude = Altitude(43)
     avg_grade = SInt16(45)
     avg_pos_grade = SInt16(46)
     avg_neg_grade = SInt16(47)
@@ -263,7 +265,7 @@ class LapMessage(Message):
     max_pos_vertical_speed = SInt16(55)
     max_neg_vertical_speed = SInt16(56)
     repetition_num = UInt16(61)
-    min_altitude = UInt16(62)
+    min_altitude = Altitude(62)
     wkt_step_index = MessageIndex(71)
     opponent_score = UInt16(74)
     stroke_count = UInt16(75)
@@ -326,13 +328,13 @@ class RecordMessage(Message):
     msg_type = 20
 
     timestamp = DateTime(253)
-    position_lat = SInt32(0)
-    position_long = SInt32(1)
+    position_lat = Semicircles(0)
+    position_long = Semicircles(1)
     distance = UInt32(5)
     time_from_course = UInt32(11)
     total_cycles = UInt32(19)
     accumulated_power = UInt32(29)
-    altitude = UInt16(2)
+    altitude = Altitude(2)
     speed = UInt16(6)
     power = UInt16(7)
     grade = SInt16(9)

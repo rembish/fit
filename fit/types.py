@@ -1,3 +1,4 @@
+from datetime import datetime
 from struct import unpack, pack
 
 
@@ -35,6 +36,11 @@ class Type(object):
             value = self._invalid
         return pack("<%s" % self.format, value)
 
+    def readable(self, value):
+        if hasattr(self, "known"):
+            return self.known.get(value, value)
+        return value
+
 
 class Enum(Type):
     type = 0
@@ -42,6 +48,11 @@ class Enum(Type):
     format = "B"
 
     _invalid = 0xFF
+
+    def readable(self, value):
+        if hasattr(self, "variants"):
+            return self.variants[value]
+        return super(Enum, self).readable(value)
 
 
 class SInt8(Type):
@@ -157,7 +168,11 @@ class Byte(Type):
 # Extended types
 
 class DateTime(UInt32):
-    pass
+    def readable(self, value):
+        if value is None:
+            return None
+        start_ts = 631062000  # 00:00 Dec 31 1989
+        return datetime.fromtimestamp(start_ts + value)
 
 
 class LocalDateTime(UInt32):
@@ -489,6 +504,16 @@ class SourceType(Enum):
         4: "WiFi",
         5: "Local",
     }
+
+
+class Semicircles(SInt32):
+    def readable(self, value):
+        return value * (180. / 2 ** 31)
+
+
+class Altitude(UInt16):
+    def readable(self, value):
+        return (value / 5.) - 500
 
 
 KNOWN = [

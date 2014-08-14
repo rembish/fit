@@ -14,7 +14,7 @@ class Writer(object):
     def write(self):
         chunk = self.body.write()
         self.header.data_size = len(chunk)
-        self.header.crc.value = compute_crc(chunk)
+        self.crc.value = compute_crc(chunk)
 
         self.fd.seek(0)
         self.fd.write(self.header.write())

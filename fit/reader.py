@@ -1,6 +1,6 @@
 from os import fstat
 
-from fit.crc import Crc
+from fit.crc import Crc, compute_crc
 from fit.exceptions import HeaderFormatError, BodyFormatError, CrcFormatError
 from fit.body import Body
 from fit.header import Header
@@ -41,9 +41,6 @@ class Reader(object):
                     header_size, len(header) + 1))
 
         header = "%c%s" % (header_size, header)
-        if header_size == 14:
-            header += self.fd.read(2)
-
         self._header.read(header)
 
         if not self._header.valid:
@@ -67,10 +64,9 @@ class Reader(object):
                     "Can't read %d bytes, read %d bytes instead" % (
                         self.header.data_size, len(body)))
 
-            crc = self.header.crc or self.crc
-            if not crc.check(body):
+            if not self.crc.check(body):
                 raise BodyFormatError("Invalid CRC %x, should be %x" % (
-                    crc.compute_crc(body), crc.value))
+                    compute_crc(body), self.crc.value))
 
             self._body.read(body)
         return self._body
@@ -80,8 +76,8 @@ class Reader(object):
         if not self._crc:
             self.fd.seek(self.header.size + self.header.data_size)
 
-            chunk = self.fd.read(self.header.crc.size)
-            if len(chunk) != self.header.crc.size:
+            chunk = self.fd.read(self._crc.size)
+            if len(chunk) != self._crc.size:
                 raise CrcFormatError(
                     "Can't read %d bytes, read %d bytes instead" % (
                         self.header.data_size, len(chunk)))
