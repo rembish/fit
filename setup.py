@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # Based on http://www.thisisant.com/resources/fit/
 from setuptools import setup, find_packages
 

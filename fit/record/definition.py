@@ -1,42 +1,45 @@
-from struct import unpack
+from struct import unpack, pack
 
-from fit.messages import KNOWN as KNOWN_MESSAGES, make_generic
+from fit.messages import KNOWN as KNOWN_MESSAGES, GenericMessage
 from fit.record import Record
 from fit.types import KNOWN as KNOWN_TYPES
 
 
-class Field(object):
-    size = 3
-
-    def __init__(self):
-        self.definition = None
-        self.type = -1
-
-    @classmethod
-    def read(cls, chunk):
-        instance = cls()
-        instance.definition = ord(chunk[0])
-
-        base_type = ord(chunk[2]) & 0b00011111
-        instance.type = KNOWN_TYPES[base_type]
-
-        assert ord(chunk[1]) == instance.type.size
-        assert base_type == instance.type.type
-
-        return instance
-
-
 class Fields(list):
+    field_size = 3
+
     def __init__(self):
         super(Fields, self).__init__()
+
+    def __repr__(self):
+        return '<%s[%s]>' % (
+            self.__class__.__name__,
+            ", ".join(repr(item) for item in self)
+        )
 
     @property
     def size(self):
         return sum(map(lambda x: x.type.size, self))
 
-    def read(self, chunk):
-        for offset in range(0, len(chunk), Field.size):
-            self.append(Field.read(chunk[offset:offset + Field.size]))
+    def read(self, data):
+        for offset in range(0, len(data), self.field_size):
+            chunk = data[offset:offset + self.field_size]
+
+            base_type = ord(chunk[2]) & 0b00011111
+            number = ord(chunk[0])
+            size = ord(chunk[1])
+
+            field = KNOWN_TYPES[base_type](number, length=size)
+            self.append(field)
+
+    def write(self):
+        chunks = []
+        for field in self:
+            endian = int(field.size > 1)
+            base_type = (endian << 7) | field.type
+            chunks.append(pack(
+                "<BBB", field.number, field._length or field.size, base_type))
+        return "".join(chunks)
 
 
 class Definition(Record):
@@ -49,6 +52,13 @@ class Definition(Record):
         self.number = None
         self.fields = Fields()
 
+    def __repr__(self):
+        return '<%s[%d] with %r>' % (
+            self.__class__.__name__,
+            self.number,
+            self.fields
+        )
+
     @property
     def architecture(self):
         return {self.LITTLE: "<", self.BIG: ">"}.get(self.byte_order, "=")
@@ -60,13 +70,22 @@ class Definition(Record):
         instance.number, fields_count = unpack(
             "%sHB" % instance.architecture, buffer.read(3))
 
-        chunk = buffer.read(fields_count * Field.size)
+        chunk = buffer.read(fields_count * Fields.field_size)
         instance.fields.read(chunk)
 
         owner.definitions[instance.header.type] = instance
         return instance
 
+    def write(self, index):
+        from fit.record.header import DefinitionHeader
+        chunk = pack("<BBHB", 0, self.BIG, self.number, len(self.fields))
+        return DefinitionHeader(index).write() + chunk + self.fields.write()
+
     def build_message(self, buffer):
-        message = KNOWN_MESSAGES.get(self.number, make_generic(self.fields))
-        record = message.read(buffer)
-        return record
+        message_cls = KNOWN_MESSAGES.get(self.number, GenericMessage)
+        message = message_cls(self)
+        if isinstance(message, GenericMessage):
+            message.msg_type = self.number
+
+        message.read(buffer)
+        return message

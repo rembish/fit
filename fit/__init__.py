@@ -1,6 +1,6 @@
-from contextlib import closing
 from io import FileIO
 
+from fit.file import FitFile
 from fit.reader import Reader
 
 
@@ -9,6 +9,10 @@ def open(filename, mode='r'):
         raise ValueError(
             "mode string must be one of 'r', 'w' or 'a', not '%s'" % mode)
 
-    with closing(FileIO(filename, mode='%sb' % mode)) as fd:
-        if mode == 'r':
-            return Reader(fd)
+    fd = FileIO(filename, mode='%sb' % mode)
+
+    records = None
+    if mode in 'ar':
+        records = Reader(fd).body
+
+    return FitFile(fd, records=records)

@@ -1,14 +1,17 @@
+from struct import unpack, pack
+
+
 class Type(object):
     type = -1
-    name = "?"
     size = 0
+    format = "x"
 
     _invalid = None
-    _endian = False
 
-    def __init__(self, number, count=1):
+    def __init__(self, number, count=1, length=None):
         self.number = number
         self.count = count
+        self._length = length
 
     def __repr__(self):
         return '<%s[%s]: %d%s>' % (
@@ -16,53 +19,67 @@ class Type(object):
             ("x%d" % self.count) if self.count > 1 else ""
         )
 
+    def read(self, buffer, architecture="="):
+        data = unpack("%(arch)s%(format)s" % {
+            "arch": architecture,
+            "format": self.format
+        }, buffer.read(self._length or self.size))[0]
+
+        if data == self._invalid:
+            data = None
+
+        return data
+
+    def write(self, value):
+        if value is None:
+            value = self._invalid
+        return pack("<%s" % self.format, value)
+
 
 class Enum(Type):
     type = 0
-    name = "enum"
     size = 1
+    format = "B"
 
     _invalid = 0xFF
 
 
 class SInt8(Type):
     type = 1
-    name = "sint8"
     size = 1
+    format = "b"
 
     _invalid = 0x7f
 
 
 class UInt8(Type):
     type = 2
-    name = "uint8"
     size = 1
+    format = "B"
 
     _invalid = 0xff
 
 
 class SInt16(Type):
     type = 3
-    name = "sint16"
     size = 2
+    format = "h"
 
     _invalid = 0x7fff
-    _endian = True
 
 
 class UInt16(Type):
     type = 4
-    name = "uint32"
     size = 2
+    format = "H"
 
     _invalid = 0xffff
-    _endian = True
 
 
 class SInt32(Type):
     type = 5
-    name = "sint32"
     size = 4
+    format = "i"
 
     _invalid = 0x7fffffff
     _endian = True
@@ -70,72 +87,70 @@ class SInt32(Type):
 
 class UInt32(Type):
     type = 6
-    name = "uint32"
     size = 4
+    format = "I"
 
     _invalid = 0xffffffff
-    _endian = True
 
 
 class String(Type):
     type = 7
-    name = "string"
     size = 1
 
     _invalid = 0x00
 
+    def __init__(self, number, count=1, length=None):
+        super(String, self).__init__(number, count, length)
+        self.format = "%ds" % (self._length or 1)
+
 
 class Float32(Type):
     type = 8
-    name = "float32"
     size = 4
+    format = "f"
 
     _invalid = 0xffffffff
-    _endian = True
 
 
 class Float64(Type):
     type = 9
-    name = "float64"
     size = 8
+    format = "d"
 
     _invalid = 0xffffffffffffffff
-    _endian = True
 
 
 class UInt8Z(Type):
     type = 10
-    name = "uint8z"
     size = 1
+    format = "B"
 
     _invalid = 0x00
 
 
 class UInt16Z(Type):
     type = 11
-    name = "uint16z"
     size = 2
+    format = "H"
 
     _invalid = 0x0000
-    _endian = True
 
 
 class UInt32Z(Type):
     type = 12
-    name = "uint32z"
     size = 4
+    format = "I"
 
     _invalid = 0x00000000
-    _endian = True
 
 
 class Byte(Type):
     type = 13
-    name = "byte"
     size = 1
 
     def __init__(self, number, count=1):
         super(Byte, self).__init__(number, count=count)
+        self.format = "%dc" % self.count
         self._invalid = (1 << (count * self.size * 8)) - 1
 
 

@@ -14,8 +14,8 @@ class Header(object):
 
         self.crc = Crc()
 
-        self.protocol_version = None
-        self.profile_version = None
+        self.protocol_version = 16
+        self.profile_version = 1005
 
     def __nonzero__(self):
         return self.size is not None

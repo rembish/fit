@@ -1,22 +1,103 @@
-from inspect import isclass
 from fit.types import UInt32Z, UInt16, UInt32, UInt8, SInt32, SInt16, SInt8, \
     String, Byte, UInt8Z, UInt16Z, DateTime, Manufacturer, File, \
     LocalDateTime, Activity, Event, EventType, MessageIndex, \
     LeftRightBalance100, LeftRightBalance, Sport, SubSport, SessionTrigger, \
     SwimStroke, DisplayMeasure, Intensity, LapTrigger, LengthType, \
     ActivityType, StrokeType, DeviceIndex, BatteryStatus, BodyLocation, \
-    AntNetwork, SourceType
+    AntNetwork, SourceType, Type
 
 
-def make_generic(fields):
-    pass
+class Meta(dict):
+    def __getattr__(self, key):
+        return self[key]
+
+    def __setattr__(self, key, value):
+        self[key] = value
+
+
+class FieldProxy(object):
+    def __init__(self, number, key):
+        self.number = number
+        self.key = key
+
+    def __get__(self, instance, owner):
+        return instance._data.get(self.key, None)
+
+    def __set__(self, instance, value):
+        instance._data[self.key] = value
+
+    def __delete__(self, instance):
+        instance._data[self.key] = None
+
+
+class MessageMeta(type):
+    def __new__(cls, name, bases, attrs):
+        meta = Meta()
+        meta.model = {}
+        meta.names = {}
+
+        for key, value in attrs.items():
+            if isinstance(value, Type):
+                meta.model[value.number] = value
+                meta.names[value.number] = key
+
+        for key in meta.names.values():
+            attrs.pop(key)
+
+        attrs['_meta'] = meta
+        instance = super(MessageMeta, cls).__new__(cls, name, bases, attrs)
+
+        for number, key in meta.names.items():
+            setattr(instance, key, FieldProxy(number, key))
+
+        return instance
 
 
 class Message(object):
+    __metaclass__ = MessageMeta
+
     msg_type = -1
 
+    def __init__(self, definition):
+        self._data = {}
+        self._definition = definition
+
+    def read(self, buffer):
+        unknown = 0
+        for field in self._definition.fields:
+            if field.number not in self._meta.names:
+                self._meta.names[field.number] = "unknown_%d" % unknown
+                self._meta.model[field.number] = field
+                unknown += 1
+
+            setattr(
+                self, self._meta.names[field.number],
+                field.read(
+                    buffer, architecture=self._definition.architecture))
+
+    def write(self, index):
+        from fit.record.header import DataHeader
+
+        buffer = DataHeader(index).write()
+        for field in self._definition.fields:
+            value = getattr(self, self._meta.names[field.number])
+            buffer += field.write(value)
+        return buffer
+
     def __repr__(self):
-        return '<%s[%d]>' % (self.__class__.__name__, self.msg_type)
+        return '<%s[%d] %s>' % (
+            self.__class__.__name__, self.msg_type,
+            ' '.join("%s=%s" % (
+                self._meta.names[field.number],
+                getattr(self, self._meta.names[field.number])
+            ) for field in self._definition.fields)
+        )
+
+
+class GenericMessage(Message):
+    def __init__(self, definition):
+        super(GenericMessage, self).__init__(definition)
+        self.msg_type = None
 
 
 class FileIdMessage(Message):
@@ -337,6 +418,14 @@ class Hrv(Message):
 
 
 KNOWN = {
-    cls.msg_type: cls for cls in locals()
-    if isclass(cls) and issubclass(cls, Message)
+    0: FileIdMessage,
+    49: FileCreatorMessage,
+    34: ActivityMessage,
+    18: SessionMessage,
+    19: LapMessage,
+    101: LengthMessage,
+    20: RecordMessage,
+    21: EventMessage,
+    23: DeviceInfoMessage,
+    78: Hrv,
 }
