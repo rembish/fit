@@ -1,20 +1,24 @@
 from io import BytesIO
 
+from fit.record.definition import Definition
 from fit.record.header import RecordHeader
 
 
 class Body(list):
     def __init__(self):
         super(Body, self).__init__()
-        self.definitions = {}
 
     def read(self, chunk):
         size = len(chunk)
         buffer = BytesIO(chunk)
+        definitions = {}
 
         while buffer.tell() != size:
             header = RecordHeader.read(ord(buffer.read(1)))
-            header.process_message(self, buffer)
+            message = header.process_message(definitions, buffer)
+
+            if not isinstance(message, Definition):
+                self.append(message)
 
     def write(self):
         index = 0

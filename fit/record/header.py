@@ -1,6 +1,5 @@
 from struct import pack
 
-from fit.record.data import Data
 from fit.record.definition import Definition
 
 
@@ -42,22 +41,23 @@ class NormalHeader(RecordHeader):
         return DataHeader(local_message_type)
 
     def write(self):
-        byte = 0 | (self.msg_type << 6) | self.type  # FIXME
+        byte = 0 | (self.msg_type << 6) | self.type
         return pack("<B", byte)
 
 
 class DefinitionHeader(NormalHeader):
     msg_type = 1
 
-    def process_message(self, owner, buffer):
-        return Definition.read(owner, header=self, buffer=buffer)
+    def process_message(self, definitions, buffer):
+        return Definition.read(definitions, header=self, buffer=buffer)
 
 
 class DataHeader(NormalHeader):
     msg_type = 0
 
-    def process_message(self, owner, buffer):
-        return Data.read(owner, header=self, buffer=buffer)
+    def process_message(self, definitions, buffer):
+        definition = definitions[self.type]
+        return definition.build_message(buffer)
 
 
 class CompressedTimestampHeader(RecordHeader):
@@ -76,6 +76,3 @@ class CompressedTimestampHeader(RecordHeader):
         local_message_type = byte & 0b01100000  # 5-6 bits
         time_offset = byte & 0b00011111  # 0-4 bits
         return cls(local_message_type, time_offset)
-
-    def write(self):
-        raise NotImplementedError()  # TODO

@@ -1,7 +1,6 @@
 from struct import unpack, pack
 
 from fit.messages import KNOWN as KNOWN_MESSAGES, GenericMessage
-from fit.record import Record
 from fit.types import KNOWN as KNOWN_TYPES
 
 
@@ -42,12 +41,12 @@ class Fields(list):
         return "".join(chunks)
 
 
-class Definition(Record):
+class Definition(object):
     LITTLE = 0
     BIG = 1
 
     def __init__(self, header):
-        super(Definition, self).__init__(header)
+        self.header = header
         self.byte_order = self.BIG
         self.number = None
         self.fields = Fields()
@@ -64,7 +63,7 @@ class Definition(Record):
         return {self.LITTLE: "<", self.BIG: ">"}.get(self.byte_order, "=")
 
     @classmethod
-    def read(cls, owner, header, buffer):
+    def read(cls, definitions, header, buffer):
         instance = cls(header)
         reserved, instance.byte_order = unpack("<BB", buffer.read(2))
         instance.number, fields_count = unpack(
@@ -73,7 +72,7 @@ class Definition(Record):
         chunk = buffer.read(fields_count * Fields.field_size)
         instance.fields.read(chunk)
 
-        owner.definitions[instance.header.type] = instance
+        definitions[instance.header.type] = instance
         return instance
 
     def write(self, index):

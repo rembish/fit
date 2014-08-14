@@ -20,4 +20,3 @@ class Writer(object):
         self.fd.write(self.header.write())
         self.fd.write(chunk)
         self.fd.write(self.crc.write())
-
