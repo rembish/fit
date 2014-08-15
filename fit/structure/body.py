@@ -1,5 +1,6 @@
 from copy import copy
 from io import BytesIO
+from fit.message.common import FileId
 
 from fit.record.definition import Definition, Fields
 from fit.record.header import RecordHeader
@@ -61,3 +62,11 @@ class Body(list):
             new.append(current)
 
         return new
+
+    @property
+    def file_id(self):
+        if not self:
+            return
+
+        assert isinstance(self[0], FileId)
+        return self[0]

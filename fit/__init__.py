@@ -16,18 +16,23 @@ class FitFile(object):
             raise ValueError(
                 "mode string must be one of 'r', 'w' or 'a', not '%s'" % mode)
 
-        fd = open(filename, mode='%sb' % mode)
+        fd = open(filename, mode='%sb' % 'w' if mode == 'w' else 'r')
 
         records = None
         if mode in 'ar':
             records = Reader(fd).body
 
+        if mode == 'a':
+            fd.close()
+            fd = open(filename, mode='ab')
+
         return cls(fd, records=records)
 
     def __repr__(self):
-        return "<%s '%s', mode '%s'>" % (
+        return "<%s[%s] '%s', mode '%s'>" % (
             self.__class__.__name__,
-            self.name, self.mode
+            self.file_id.type or '-',
+            self.name, self.mode[0]
         )
 
     def __del__(self):
@@ -87,14 +92,12 @@ class FitFile(object):
     def minimize(self):
         self.records = self.records.compressed
 
-    # FIT special methods
+    # List special methods
+
     def __getitem__(self, i):
         return self.records[i]
 
     def __setitem__(self, i, value):
-        if not isinstance(value, Message):
-            raise ValueError(value)
-
         self.records[i] = value
 
     def __delitem__(self, i):
@@ -103,3 +106,27 @@ class FitFile(object):
     def __iter__(self):
         for item in self.records:
             yield item
+
+    def __len__(self):
+        return len(self.records)
+
+    def append(self, value):
+        self.records.append(value)
+
+    def extend(self, values):
+        self.records.extend(values)
+
+    def remove(self, i):
+        self.records.remove(i)
+
+    def pop(self, i=None):
+        return self.records.pop(i)
+
+    def index(self, i):
+        return self.records.index(i)
+
+    # FIT special methods
+
+    @property
+    def file_id(self):
+        return self.records.file_id
