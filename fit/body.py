@@ -1,12 +1,13 @@
+from copy import copy
 from io import BytesIO
 
-from fit.record.definition import Definition
+from fit.record.definition import Definition, Fields
 from fit.record.header import RecordHeader
 
 
 class Body(list):
-    def __init__(self):
-        super(Body, self).__init__()
+    def __init__(self, iterable=None):
+        super(Body, self).__init__(iterable or [])
 
     def read(self, chunk):
         size = len(chunk)
@@ -39,3 +40,20 @@ class Body(list):
             chunks.append(item.write(current))
 
         return "".join(chunks)
+
+    @property
+    def compressed(self):
+        smallest = {}
+        for item in self:
+            number = item._definition.number
+            compressed_definition = set(item.compressed_definition.fields)
+            current = smallest.get(number, set())
+            smallest[number] = current | compressed_definition
+
+        new = Body()
+        for item in self:
+            number = item._definition.number
+            item._definition.fields = Fields(smallest[number])
+            new.append(copy(item))
+
+        return new

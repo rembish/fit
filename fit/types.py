@@ -14,6 +14,9 @@ class Type(object):
         self.count = count
         self._length = length
 
+    def __eq__(self, other):
+        return self.number == other.number
+
     def __repr__(self):
         return '<%s[%s]: %d%s>' % (
             self.__class__.__name__, self.type, self.number,

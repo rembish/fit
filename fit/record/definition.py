@@ -7,8 +7,8 @@ from fit.types import KNOWN as KNOWN_TYPES
 class Fields(list):
     field_size = 3
 
-    def __init__(self):
-        super(Fields, self).__init__()
+    def __init__(self, iterable=None):
+        super(Fields, self).__init__(iterable or [])
 
     def __repr__(self):
         return '<%s[%s]>' % (

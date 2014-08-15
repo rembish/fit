@@ -17,6 +17,8 @@ class Writer(object):
         self.crc.value = compute_crc(chunk)
 
         self.fd.seek(0)
+        self.fd.truncate()
+
         self.fd.write(self.header.write())
         self.fd.write(chunk)
         self.fd.write(self.crc.write())

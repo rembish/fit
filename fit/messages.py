@@ -1,3 +1,5 @@
+from copy import copy
+
 from fit.types import UInt32Z, UInt16, UInt32, UInt8, SInt16, SInt8, \
     String, Byte, UInt8Z, UInt16Z, DateTime, Manufacturer, File, \
     LocalDateTime, Activity, Event, EventType, MessageIndex, \
@@ -70,8 +72,22 @@ class Message(object):
                 self._meta.model[field.number].readable(getattr(
                     self, self._meta.names[field.number]))
             ) for field in self._definition.fields
-                if getattr(self, self._meta.names[field.number]) is not None)
+                if getattr(self, self._meta.names[field.number]) is not None
+            )
         )
+
+    @property
+    def compressed_definition(self):
+        from fit.record.definition import Fields
+
+        new = copy(self._definition)
+        new.fields = Fields()
+        for field in self._definition.fields:
+            value = getattr(self, self._meta.names[field.number])
+            if value is not None:
+                new.fields.append(field)
+
+        return new
 
     def read(self, buffer):
         unknown = 0

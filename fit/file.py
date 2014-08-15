@@ -8,7 +8,15 @@ class FitFile(object):
         self._fd = fd
 
         self.records = records or Body()
-        self._changed = False
+
+    def __repr__(self):
+        return "<%s '%s', mode '%s'>" % (
+            self.__class__.__name__,
+            self.name, self.mode
+        )
+
+    def __del__(self):
+        return self.close()
 
     # File I/O methods
 
@@ -57,8 +65,14 @@ class FitFile(object):
         writer.write()
 
     def close(self):
+        if self.closed:
+            return
+
         self.flush()
         self._fd.close()
+
+    def minimize(self):
+        self.records = self.records.compressed
 
     # FIT special methods
     def __getitem__(self, i):
