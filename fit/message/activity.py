@@ -2,27 +2,28 @@ from fit.message import Message
 from fit.type.general import UInt32Z, UInt16, UInt32, UInt8, SInt16, SInt8, \
     String, Byte, UInt8Z, UInt16Z
 from fit.type.extended import DateTime, Manufacturer, \
-    LocalDateTime, Activity, Event, EventType, MessageIndex, \
+    LocalDateTime, EventType, MessageIndex, \
     LeftRightBalance100, LeftRightBalance, Sport, SubSport, SessionTrigger, \
     SwimStroke, DisplayMeasure, Intensity, LapTrigger, LengthType, \
     ActivityType, StrokeType, DeviceIndex, BatteryStatus, BodyLocation, \
     AntNetwork, SourceType, Semicircles, Altitude
+from fit.type.extended import Activity as ActivityField, Event as EventField
 
 
-class ActivityMessage(Message):
+class Activity(Message):
     msg_type = 34
 
     timestamp = DateTime(253)
     total_timer_time = UInt32(0)
     local_timestamp = LocalDateTime(5)
     num_sessions = UInt16(1)
-    type = Activity(2)
-    event = Event(3)
+    type = ActivityField(2)
+    event = EventField(3)
     event_type = EventType(4)
     event_group = UInt8(6)
 
 
-class SessionMessage(Message):
+class Session(Message):
     msg_type = 18
 
     timestamp = DateTime(253)
@@ -85,7 +86,7 @@ class SessionMessage(Message):
     avg_vertical_oscillation = UInt16(89)
     avg_stance_time_percent = UInt16(90)
     avg_stance_time = UInt16(91)
-    event = Event(0)
+    event = EventField(0)
     event_type = EventType(1)
     sport = Sport(5)
     sub_sport = SubSport(6)
@@ -108,7 +109,7 @@ class SessionMessage(Message):
     total_fractional_cycles = UInt8(94)
 
 
-class LapMessage(Message):
+class Lap(Message):
     msg_type = 19
 
     timestamp = DateTime(253)
@@ -169,7 +170,7 @@ class LapMessage(Message):
     avg_saturated_hemoglobin_percent = UInt16(87)
     min_saturated_hemoglobin_percent = UInt16(88)
     max_saturated_hemoglobin_percent = UInt16(89)
-    event = Event(0)
+    event = EventField(0)
     event_type = EventType(1)
     avg_heart_rate = UInt8(15)
     max_heart_rate = UInt8(16)
@@ -190,7 +191,7 @@ class LapMessage(Message):
     total_fractional_cycles = UInt8(82)
 
 
-class LengthMessage(Message):
+class Length(Message):
     msg_type = 101
 
     timestamp = DateTime(253)
@@ -205,7 +206,7 @@ class LengthMessage(Message):
     opponent_score = UInt16(19)
     stroke_count = UInt16(20)
     zone_count = UInt16(21)
-    event = Event(0)
+    event = EventField(0)
     event_type = EventType(1)
     swim_stroke = SwimStroke(7)
     avg_swimming_cadence = UInt8(9)
@@ -213,7 +214,7 @@ class LengthMessage(Message):
     length_type = LengthType(12)
 
 
-class RecordMessage(Message):
+class Record(Message):
     msg_type = 20
 
     timestamp = DateTime(253)
@@ -263,7 +264,7 @@ class RecordMessage(Message):
     device_index = DeviceIndex(62)
 
 
-class EventMessage(Message):
+class Event(Message):
     msg_type = 21
 
     timestamp = DateTime(253)
@@ -271,7 +272,7 @@ class EventMessage(Message):
     data16 = UInt16(2)
     score = UInt16(7)
     opponent_score = UInt16(8)
-    event = Event(0)
+    event = EventField(0)
     event_type = EventType(1)
     event_group = UInt8(4)
     front_gear_num = UInt8Z(9)
@@ -280,7 +281,7 @@ class EventMessage(Message):
     rear_gear = UInt8Z(12)
 
 
-class DeviceInfoMessage(Message):
+class DeviceInfo(Message):
     msg_type = 23
 
     timestamp = DateTime(253)

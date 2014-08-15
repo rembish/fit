@@ -3,7 +3,7 @@ from fit.type.general import UInt32Z, UInt16, UInt8
 from fit.type.extended import DateTime, Manufacturer, File
 
 
-class FileIdMessage(Message):
+class FileId(Message):
     msg_type = 0
 
     serial_number = UInt32Z(3)
@@ -14,7 +14,7 @@ class FileIdMessage(Message):
     type = File(0)
 
 
-class FileCreatorMessage(Message):
+class FileCreator(Message):
     msg_type = 49
 
     software_version = UInt16(0)
