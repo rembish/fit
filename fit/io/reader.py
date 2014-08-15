@@ -1,9 +1,9 @@
 from os import fstat
 
-from fit.crc import Crc, compute_crc
+from fit.structure.body import Body
+from fit.structure.crc import Crc, compute_crc
+from fit.structure.header import Header
 from fit.exceptions import HeaderFormatError, BodyFormatError, CrcFormatError
-from fit.body import Body
-from fit.header import Header
 
 
 class Reader(object):

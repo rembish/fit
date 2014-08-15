@@ -1,7 +1,7 @@
 from struct import Struct
 
-from fit.crc import Crc, compute_crc
 from fit.exceptions import BodyFormatError
+from fit.structure.crc import Crc, compute_crc
 
 
 class Header(object):

@@ -1,6 +1,6 @@
-from fit.body import Body
-from fit.crc import Crc, compute_crc
-from fit.header import Header
+from fit.structure.body import Body
+from fit.structure.crc import Crc, compute_crc
+from fit.structure.header import Header
 
 
 class Writer(object):
