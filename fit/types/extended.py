@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from fit.type.general import UInt32, UInt16, UInt8, Enum, SInt32
+from fit.types.general import UInt32, UInt16, UInt8, Enum, SInt32
 
 
 class DateTime(UInt32):

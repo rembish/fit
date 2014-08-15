@@ -1,7 +1,7 @@
 from struct import unpack, pack
 
 from fit.message import KNOWN as KNOWN_MESSAGES, GenericMessage
-from fit.type import KNOWN as KNOWN_TYPES
+from fit.types import KNOWN as KNOWN_TYPES
 
 
 class Fields(list):

@@ -1,4 +1,4 @@
-from fit.type import Type
+from fit.types import Type
 
 
 class Enum(Type):

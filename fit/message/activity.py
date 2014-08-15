@@ -1,13 +1,13 @@
 from fit.message import Message
-from fit.type.general import UInt32Z, UInt16, UInt32, UInt8, SInt16, SInt8, \
+from fit.types.general import UInt32Z, UInt16, UInt32, UInt8, SInt16, SInt8, \
     String, Byte, UInt8Z, UInt16Z
-from fit.type.extended import DateTime, Manufacturer, \
+from fit.types.extended import DateTime, Manufacturer, \
     LocalDateTime, EventType, MessageIndex, \
     LeftRightBalance100, LeftRightBalance, Sport, SubSport, SessionTrigger, \
     SwimStroke, DisplayMeasure, Intensity, LapTrigger, LengthType, \
     ActivityType, StrokeType, DeviceIndex, BatteryStatus, BodyLocation, \
     AntNetwork, SourceType, Semicircles, Altitude
-from fit.type.extended import Activity as ActivityField, Event as EventField
+from fit.types.extended import Activity as ActivityField, Event as EventField
 
 
 class Activity(Message):

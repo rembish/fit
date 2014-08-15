@@ -1,14 +1,16 @@
 from fit.io.reader import Reader
 from fit.io.writer import Writer
 from fit.message import Message
+from fit.mixin import KNOWN as KNOWN_MIXINS
 from fit.structure.body import Body
 
 
 class FitFile(object):
-    def __init__(self, fd, records=None):
+    def __init__(self, fd, body=None):
         self._fd = fd
 
-        self.records = records or Body()
+        self.body = body or Body()
+        self._apply_mixin()
 
     @classmethod
     def open(cls, filename, mode='r'):
@@ -18,20 +20,19 @@ class FitFile(object):
 
         fd = open(filename, mode='%sb' % 'w' if mode == 'w' else 'r')
 
-        records = None
+        body = None
         if mode in 'ar':
-            records = Reader(fd).body
+            body = Reader(fd).body
 
         if mode == 'a':
             fd.close()
             fd = open(filename, mode='ab')
 
-        return cls(fd, records=records)
+        return cls(fd, body=body)
 
     def __repr__(self):
-        return "<%s[%s] '%s', mode '%s'>" % (
+        return "<%s '%s', mode '%s'>" % (
             self.__class__.__name__,
-            self.file_id.type or '-',
             self.name, self.mode[0]
         )
 
@@ -80,7 +81,7 @@ class FitFile(object):
         if not self.writable():
             return
 
-        Writer(self._fd, body=self.records).write()
+        Writer(self._fd, body=self.body).write()
 
     def close(self):
         if self.closed:
@@ -90,43 +91,59 @@ class FitFile(object):
         self._fd.close()
 
     def minimize(self):
-        self.records = self.records.compressed
+        self.body = self.body.compressed
 
     # List special methods
 
     def __getitem__(self, i):
-        return self.records[i]
+        return self.body[i]
 
     def __setitem__(self, i, value):
-        self.records[i] = value
+        self.body[i] = value
+        self._apply_mixin()
 
     def __delitem__(self, i):
-        del self.records[i]
+        del self.body[i]
+        self._apply_mixin()
 
     def __iter__(self):
-        for item in self.records:
+        for item in self.body:
             yield item
 
     def __len__(self):
-        return len(self.records)
+        return len(self.body)
 
     def append(self, value):
-        self.records.append(value)
+        self.body.append(value)
+        self._apply_mixin()
 
     def extend(self, values):
-        self.records.extend(values)
+        self.body.extend(values)
+        self._apply_mixin()
 
     def remove(self, i):
-        self.records.remove(i)
+        self.body.remove(i)
+        self._apply_mixin()
 
     def pop(self, i=None):
-        return self.records.pop(i)
+        value = self.body.pop(i)
+        self._apply_mixin()
+        return value
 
     def index(self, i):
-        return self.records.index(i)
+        return self.body.index(i)
 
     # FIT special methods
 
-    @property
-    def file_id(self):
-        return self.records.file_id
+    def _apply_mixin(self):
+        mixin_cls = None
+        if self.body.file_id:
+            mixin_cls = KNOWN_MIXINS.get(self.body.file_id.type)
+        if mixin_cls:
+            self.__class__ = type(
+                mixin_cls.__name__, (FitFile, mixin_cls), {})
+
+    def copy(self, other):
+        assert isinstance(other, FitFile)
+        self.body = other.body
+        self._apply_mixin()

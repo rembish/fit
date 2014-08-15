@@ -3,7 +3,7 @@ from importlib import import_module
 from inspect import getmembers, isclass
 from pkgutil import iter_modules
 
-from fit.type import Type
+from fit.types import Type
 
 
 class Meta(dict):

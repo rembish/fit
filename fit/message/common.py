@@ -1,6 +1,6 @@
 from fit.message import Message
-from fit.type.general import UInt32Z, UInt16, UInt8
-from fit.type.extended import DateTime, Manufacturer, File
+from fit.types.general import UInt32Z, UInt16, UInt8
+from fit.types.extended import DateTime, Manufacturer, File
 
 
 class FileId(Message):
