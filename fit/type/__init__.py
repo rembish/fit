@@ -20,8 +20,8 @@ class Type(object):
         return self.number == other.number
 
     def __repr__(self):
-        return '<%s[%s]: %d%s>' % (
-            self.__class__.__name__, self.type, self.number,
+        return '<%s[%d]%s>' % (
+            self.__class__.__name__, self.number,
             ("x%d" % self.count) if self.count > 1 else ""
         )
 

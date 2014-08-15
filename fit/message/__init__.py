@@ -62,8 +62,10 @@ class Message(object):
         self.definition = definition
 
     def __repr__(self):
-        return '<%s[%d] %s>' % (
-            self.__class__.__name__, self.msg_type,
+        return '<%s.%s[%d] %s>' % (
+            self.__module__.split(".")[-1],
+            self.__class__.__name__,
+            self.msg_type,
             ' '.join("%s=%s" % (
                 self._meta.names[field.number],
                 self._meta.model[field.number].readable(getattr(

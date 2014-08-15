@@ -21,7 +21,7 @@ class Header(object):
     def __nonzero__(self):
         return self.size is not None
 
-    def __rerp__(self):
+    def __repr__(self):
         return '<%s protocol=%d profile=%d crc=%r>' % (
             self.__class__.__name__,
             self.protocol_version,

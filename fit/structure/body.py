@@ -9,6 +9,9 @@ class Body(list):
     def __init__(self, iterable=None):
         super(Body, self).__init__(iterable or [])
 
+    def __repr__(self):
+        return "<%s[%d]>" % (self.__class__.__name__, len(self))
+
     def read(self, chunk):
         size = len(chunk)
         buffer = BytesIO(chunk)

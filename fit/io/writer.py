@@ -11,10 +11,23 @@ class Writer(object):
         self.body = body or Body()
         self.crc = Crc()
 
-    def write(self):
+    def __repr__(self):
+        if not self.header or self.crc:
+            self._prepare()
+
+        return '<%s header=%r body=%r crc=%r>' % (
+            self.__class__.__name__,
+            self.header, self.body, self.crc
+        )
+
+    def _prepare(self):
         chunk = self.body.write()
         self.header.data_size = len(chunk)
         self.crc.value = compute_crc(chunk)
+        return chunk
+
+    def write(self):
+        chunk = self._prepare()
 
         self.fd.seek(0)
         self.fd.truncate()

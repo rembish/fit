@@ -11,9 +11,9 @@ class Fields(list):
         super(Fields, self).__init__(iterable or [])
 
     def __repr__(self):
-        return '<%s[%s]>' % (
+        return '<%s%s>' % (
             self.__class__.__name__,
-            ", ".join(repr(item) for item in self)
+            super(Fields, self).__repr__()
         )
 
     @property
