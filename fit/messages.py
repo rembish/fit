@@ -62,7 +62,7 @@ class Message(object):
 
     def __init__(self, definition):
         self._data = {}
-        self._definition = definition
+        self.definition = definition
 
     def __repr__(self):
         return '<%s[%d] %s>' % (
@@ -71,18 +71,17 @@ class Message(object):
                 self._meta.names[field.number],
                 self._meta.model[field.number].readable(getattr(
                     self, self._meta.names[field.number]))
-            ) for field in self._definition.fields
-                if getattr(self, self._meta.names[field.number]) is not None
-            )
+            ) for field in self.definition.fields
+                if getattr(self, self._meta.names[field.number]) is not None)
         )
 
     @property
     def compressed_definition(self):
         from fit.record.definition import Fields
 
-        new = copy(self._definition)
+        new = copy(self.definition)
         new.fields = Fields()
-        for field in self._definition.fields:
+        for field in self.definition.fields:
             value = getattr(self, self._meta.names[field.number])
             if value is not None:
                 new.fields.append(field)
@@ -91,7 +90,7 @@ class Message(object):
 
     def read(self, buffer):
         unknown = 0
-        for field in self._definition.fields:
+        for field in self.definition.fields:
             if field.number not in self._meta.names:
                 self._meta.names[field.number] = "unknown_%d" % unknown
                 self._meta.model[field.number] = field
@@ -100,13 +99,13 @@ class Message(object):
             setattr(
                 self, self._meta.names[field.number],
                 field.read(
-                    buffer, architecture=self._definition.architecture))
+                    buffer, architecture=self.definition.architecture))
 
     def write(self, index):
         from fit.record.header import DataHeader
 
         buffer = DataHeader(index).write()
-        for field in self._definition.fields:
+        for field in self.definition.fields:
             value = getattr(self, self._meta.names[field.number])
             buffer += field.write(value)
         return buffer

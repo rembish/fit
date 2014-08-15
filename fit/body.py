@@ -27,7 +27,7 @@ class Body(list):
         chunks = []
 
         for item in self:
-            number = item._definition.number
+            number = item.definition.number
 
             try:
                 current = written.index(number)
@@ -36,7 +36,7 @@ class Body(list):
                 index += 1
                 written.append(number)
 
-                chunks.append(item._definition.write(current))
+                chunks.append(item.definition.write(current))
             chunks.append(item.write(current))
 
         return "".join(chunks)
@@ -45,15 +45,16 @@ class Body(list):
     def compressed(self):
         smallest = {}
         for item in self:
-            number = item._definition.number
+            number = item.definition.number
             compressed_definition = set(item.compressed_definition.fields)
             current = smallest.get(number, set())
             smallest[number] = current | compressed_definition
 
         new = Body()
         for item in self:
-            number = item._definition.number
-            item._definition.fields = Fields(smallest[number])
-            new.append(copy(item))
+            number = item.definition.number
+            current = copy(item)
+            current.definition.fields = Fields(smallest[number])
+            new.append(current)
 
         return new
