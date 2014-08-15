@@ -4,11 +4,11 @@ from fit.header import Header
 
 
 class Writer(object):
-    def __init__(self, fd):
+    def __init__(self, fd, body=None):
         self.fd = fd
 
         self.header = Header()
-        self.body = Body()
+        self.body = body or Body()
         self.crc = Crc()
 
     def write(self):

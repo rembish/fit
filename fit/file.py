@@ -1,5 +1,5 @@
 from fit.body import Body
-from fit.messages import Message
+from fit.message import Message
 from fit.writer import Writer
 
 
@@ -60,9 +60,7 @@ class FitFile(object):
         if not self.writable():
             return
 
-        writer = Writer(self._fd)
-        writer.body = self.records
-        writer.write()
+        Writer(self._fd, body=self.records).write()
 
     def close(self):
         if self.closed:

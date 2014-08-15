@@ -1,0 +1,124 @@
+from fit.type import Type
+
+
+class Enum(Type):
+    type = 0
+    size = 1
+    format = "B"
+
+    _invalid = 0xFF
+
+    def readable(self, value):
+        if hasattr(self, "variants"):
+            return self.variants[value]
+        return super(Enum, self).readable(value)
+
+
+class SInt8(Type):
+    type = 1
+    size = 1
+    format = "b"
+
+    _invalid = 0x7f
+
+
+class UInt8(Type):
+    type = 2
+    size = 1
+    format = "B"
+
+    _invalid = 0xff
+
+
+class SInt16(Type):
+    type = 3
+    size = 2
+    format = "h"
+
+    _invalid = 0x7fff
+
+
+class UInt16(Type):
+    type = 4
+    size = 2
+    format = "H"
+
+    _invalid = 0xffff
+
+
+class SInt32(Type):
+    type = 5
+    size = 4
+    format = "i"
+
+    _invalid = 0x7fffffff
+    _endian = True
+
+
+class UInt32(Type):
+    type = 6
+    size = 4
+    format = "I"
+
+    _invalid = 0xffffffff
+
+
+class String(Type):
+    type = 7
+    size = 1
+
+    _invalid = 0x00
+
+    def __init__(self, number, count=1, length=None):
+        super(String, self).__init__(number, count, length)
+        self.format = "%ds" % (self._length or 1)
+
+
+class Float32(Type):
+    type = 8
+    size = 4
+    format = "f"
+
+    _invalid = 0xffffffff
+
+
+class Float64(Type):
+    type = 9
+    size = 8
+    format = "d"
+
+    _invalid = 0xffffffffffffffff
+
+
+class UInt8Z(Type):
+    type = 10
+    size = 1
+    format = "B"
+
+    _invalid = 0x00
+
+
+class UInt16Z(Type):
+    type = 11
+    size = 2
+    format = "H"
+
+    _invalid = 0x0000
+
+
+class UInt32Z(Type):
+    type = 12
+    size = 4
+    format = "I"
+
+    _invalid = 0x00000000
+
+
+class Byte(Type):
+    type = 13
+    size = 1
+
+    def __init__(self, number, count=1):
+        super(Byte, self).__init__(number, count=count)
+        self.format = "%dc" % self.count
+        self._invalid = (1 << (count * self.size * 8)) - 1
