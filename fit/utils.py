@@ -10,7 +10,8 @@ def get_known(name, base_cls, key):
     for _, module_name, _ in iter_modules(main.__path__, "%s." % name):
         module = import_module(module_name)
         for _, obj in getmembers(module, isclass):
-            if issubclass(obj, base_cls):
+            if issubclass(obj, base_cls) \
+                    and getattr(obj, key, None) is not None:
                 known[getattr(obj, key)] = obj
 
     return known

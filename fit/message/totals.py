@@ -1,5 +1,5 @@
 from fit.message import Message
 
 
-class Total(Message):
+class Totals(Message):
     msg_type = 33
