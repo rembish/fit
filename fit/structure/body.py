@@ -13,6 +13,14 @@ class Body(list):
     def __repr__(self):
         return "<%s[%d]>" % (self.__class__.__name__, len(self))
 
+    @property
+    def file_id(self):
+        if not self:
+            return
+
+        assert isinstance(self[0], FileId)
+        return self[0]
+
     def read(self, chunk):
         size = len(chunk)
         buffer = BytesIO(chunk)
@@ -26,6 +34,12 @@ class Body(list):
                 self.append(message)
 
     def write(self):
+        smallest = {}
+        for item in self:
+            number = item.definition.number
+            current = smallest.get(number, set())
+            smallest[number] = current | set(item.definition.fields)
+
         index = 0
         written = []
         chunks = []
@@ -40,33 +54,10 @@ class Body(list):
                 index += 1
                 written.append(number)
 
-                chunks.append(item.definition.write(current))
-            chunks.append(item.write(current))
+                definition = copy(item.definition)
+                definition.fields = Fields(smallest[number])
+
+                chunks.append(definition.write(current))
+            chunks.append(item.write(current, smallest[number]))
 
         return "".join(chunks)
-
-    @property
-    def compressed(self):
-        smallest = {}
-        for item in self:
-            number = item.definition.number
-            compressed_definition = set(item.compressed_definition.fields)
-            current = smallest.get(number, set())
-            smallest[number] = current | compressed_definition
-
-        new = Body()
-        for item in self:
-            number = item.definition.number
-            current = copy(item)
-            current.definition.fields = Fields(smallest[number])
-            new.append(current)
-
-        return new
-
-    @property
-    def file_id(self):
-        if not self:
-            return
-
-        assert isinstance(self[0], FileId)
-        return self[0]

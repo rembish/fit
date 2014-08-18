@@ -14,8 +14,8 @@ class Enum(Type):
         return self.variants.get(data, data)
 
     def _save(self, value):
-        for key, value in self.variants.items():
-            if value == value:
+        for key, other in self.variants.items():
+            if value == other:
                 return key
         return value
 

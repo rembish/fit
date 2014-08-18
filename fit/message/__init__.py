@@ -3,6 +3,7 @@ from importlib import import_module
 from inspect import getmembers, isclass
 from pkgutil import iter_modules
 
+from fit.record.fields import Fields
 from fit.types import Type
 
 
@@ -59,7 +60,9 @@ class Message(object):
 
     def __init__(self, definition):
         self._data = {}
-        self.definition = definition
+        self._definition = definition
+
+        self._unknowns = {}
 
     def __repr__(self):
         return '<%s.%s[%d] %s>' % (
@@ -67,45 +70,52 @@ class Message(object):
             self.__class__.__name__,
             self.msg_type,
             ' '.join("%s=%s" % (
-                self._meta.names[field.number],
-                getattr(self, self._meta.names[field.number])
-            ) for field in self.definition.fields
-                if getattr(self, self._meta.names[field.number]) is not None)
+                self._get_name(field.number),
+                getattr(self, self._get_name(field.number))
+            ) for field in self.definition.fields)
         )
 
+    def _get_name(self, number):
+        if number not in self._meta.names:
+            return "unknown_%d" % number
+        return self._meta.names[number]
+
+    def _get_type(self, number):
+        if number not in self._meta.model:
+            return self._unknowns[number]
+        return self._meta.model[number]
+
     @property
-    def compressed_definition(self):
-        from fit.record.definition import Fields
+    def definition(self):
+        fields = Fields(
+            field for number, field in self._meta.model.items()
+            if getattr(self, self._get_name(number)) is not None
+        )
+        for number, field in self._unknowns.items():
+            if getattr(self, self._get_name(number)) is not None:
+                fields.append(field)
 
-        new = copy(self.definition)
-        new.fields = Fields()
-        for field in self.definition.fields:
-            value = getattr(self, self._meta.names[field.number])
-            if value is not None:
-                new.fields.append(field)
+        self._definition.fields = fields
+        return self._definition
 
-        return new
-
-    def read(self, buffer):
-        unknown = 0
-        for field in self.definition.fields:
+    def read(self, buffer, model):
+        for field in model:
             if field.number not in self._meta.names:
-                self._meta.names[field.number] = "unknown_%d" % unknown
-                self._meta.model[field.number] = field
-                unknown += 1
+                self._unknowns[field.number] = field
 
             setattr(
-                self, self._meta.names[field.number],
-                self._meta.model[field.number].read(
-                    buffer, architecture=self.definition.architecture))
+                self, self._get_name(field.number),
+                self._get_type(field.number).read(
+                    buffer, architecture=self._definition.architecture))
 
-    def write(self, index):
+    def write(self, index, model=None):
         from fit.record.header import DataHeader
 
+        model = model or self.definition
         buffer = DataHeader(index).write()
-        for field in self.definition.fields:
-            value = getattr(self, self._meta.names[field.number])
-            buffer += self._meta.model[field.number].write(value)
+        for field in model:
+            value = getattr(self, self._get_name(field.number))
+            buffer += field.write(value)
         return buffer
 
 
