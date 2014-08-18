@@ -5,7 +5,7 @@ from fit.mixin import FileMixin
 
 
 class SportSettingsFile(FileMixin):
-    file_type = 3
+    type = 3
     record_types = frozenset((
         FileId, ZonesTarget, Sport,
         HrZone, PowerZone, MetZone,

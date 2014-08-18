@@ -3,7 +3,7 @@ from inspect import getmembers, isclass
 from pkgutil import iter_modules
 
 
-def get_known(name, base_cls, key):
+def get_known(name, base_cls, key="type"):
     main = import_module(name)
     known = {}
 

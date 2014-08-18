@@ -6,7 +6,7 @@ from fit.mixin.device import DeviceFile
 
 
 class SettingsFile(FileMixin):
-    file_type = 2
+    type = 2
     record_types = frozenset((
         FileId, UserProfile, HrmProfile, SdmProfile, BikeProfile, DeviceFile
     ))

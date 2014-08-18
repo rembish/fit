@@ -6,5 +6,5 @@ from fit.mixin import FileMixin
 
 
 class BloodPressureFile(FileMixin):
-    file_type = 14
+    type = 14
     record_types = frozenset((FileId, UserProfile, BloodPressure, DeviceInfo))

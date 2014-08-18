@@ -4,5 +4,5 @@ from fit.mixin import FileMixin
 
 
 class TotalsFile(FileMixin):
-    file_type = 10
+    type = 10
     record_types = frozenset((FileId, Totals))

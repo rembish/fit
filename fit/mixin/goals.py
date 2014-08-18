@@ -4,5 +4,5 @@ from fit.mixin import FileMixin
 
 
 class GoalsFile(FileMixin):
-    file_type = 11
+    type = 11
     record_types = frozenset((FileId, Goal))

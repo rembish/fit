@@ -58,4 +58,4 @@ class KnownMixin(object):
         return value
 
 
-KNOWN = get_known(__name__, Type, key="type")
+KNOWN = get_known(__name__, Type)

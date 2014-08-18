@@ -5,5 +5,5 @@ from fit.mixin import FileMixin
 
 
 class ActivitySummaryFile(FileMixin):
-    file_type = 6
+    type = 6
     record_types = frozenset((FileId, Course, CoursePoint, Lap, Record))

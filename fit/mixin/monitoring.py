@@ -9,12 +9,12 @@ class MonitoringFile(FileMixin):
 
 
 class MonitoringAFile(MonitoringFile):
-    file_type = 15
+    type = 15
 
 
 class MonitoringBFile(MonitoringFile):
-    file_type = 32
+    type = 32
 
 
 class DailyMonitoringFile(MonitoringFile):
-    file_type = 28
+    type = 28

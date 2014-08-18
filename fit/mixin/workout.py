@@ -4,5 +4,5 @@ from fit.mixin import FileMixin
 
 
 class WorkoutFile(FileMixin):
-    file_type = 5
+    type = 5
     record_types = frozenset((FileId, Workout, WorkoutStep))

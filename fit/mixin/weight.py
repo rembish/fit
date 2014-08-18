@@ -6,5 +6,5 @@ from fit.mixin import FileMixin
 
 
 class WeightFile(FileMixin):
-    file_type = 9
+    type = 9
     record_types = frozenset((FileId, UserProfile, WeightScale, DeviceInfo))
