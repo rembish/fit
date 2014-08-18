@@ -1,3 +1,5 @@
+from copy import copy
+
 from fit.io.reader import Reader
 from fit.io.writer import Writer
 from fit.message import Message
@@ -144,7 +146,10 @@ class FitFile(FileMixin):
         self.__class__ = type(
             mixin_cls.__name__, (FitFile, mixin_cls), {})
 
-    def copy(self, other):
+    def copy(self, other=None):
+        if not other:
+            return copy(self.body)
+
         assert isinstance(other, FitFile)
-        self.body = other.body
+        self.body = other.copy()
         self._apply_mixin()

@@ -1,10 +1,6 @@
-from copy import copy
-from importlib import import_module
-from inspect import getmembers, isclass
-from pkgutil import iter_modules
-
 from fit.record.fields import Fields
 from fit.types import Type
+from fit.utils import get_known
 
 
 class Meta(dict):
@@ -125,18 +121,4 @@ class GenericMessage(Message):
         self.msg_type = None
 
 
-def get_known():
-    main = import_module(__name__)
-    known = {}
-
-    for _, module_name, _ in iter_modules(main.__path__, "%s." % __name__):
-        module = import_module(module_name)
-        for _, obj in getmembers(module, isclass):
-            if issubclass(obj, Message):
-                known[obj.msg_type] = obj
-
-    return known
-
-
-KNOWN = get_known()
-del get_known
+KNOWN = get_known(__name__, Message, key="msg_type")
