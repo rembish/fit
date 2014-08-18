@@ -1,11 +1,11 @@
 from fit.io.reader import Reader
 from fit.io.writer import Writer
 from fit.message import Message
-from fit.mixin import KNOWN as KNOWN_MIXINS
+from fit.mixin import KNOWN as KNOWN_MIXINS, FileMixin
 from fit.structure.body import Body
 
 
-class FitFile(object):
+class FitFile(FileMixin):
     def __init__(self, fd, body=None):
         self._fd = fd
 
@@ -118,8 +118,8 @@ class FitFile(object):
         self._apply_mixin()
 
     def extend(self, values):
-        self.body.extend(values)
-        self._apply_mixin()
+        for value in values:
+            self.append(value)
 
     def remove(self, i):
         self.body.remove(i)
@@ -139,9 +139,10 @@ class FitFile(object):
         mixin_cls = None
         if self.body.file_id:
             mixin_cls = KNOWN_MIXINS.get(self.body.file_id.type)
-        if mixin_cls:
-            self.__class__ = type(
-                mixin_cls.__name__, (FitFile, mixin_cls), {})
+        if not mixin_cls:
+            mixin_cls = FileMixin
+        self.__class__ = type(
+            mixin_cls.__name__, (FitFile, mixin_cls), {})
 
     def copy(self, other):
         assert isinstance(other, FitFile)
