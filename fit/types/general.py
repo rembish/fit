@@ -6,12 +6,18 @@ class Enum(Type):
     size = 1
     format = "B"
 
+    variants = {}
+
     _invalid = 0xFF
 
-    def readable(self, value):
-        if hasattr(self, "variants"):
-            return self.variants[value]
-        return super(Enum, self).readable(value)
+    def _load(self, data):
+        return self.variants.get(data, data)
+
+    def _save(self, value):
+        for key, value in self.variants.items():
+            if value == value:
+                return key
+        return value
 
 
 class SInt8(Type):

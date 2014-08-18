@@ -68,8 +68,7 @@ class Message(object):
             self.msg_type,
             ' '.join("%s=%s" % (
                 self._meta.names[field.number],
-                self._meta.model[field.number].readable(getattr(
-                    self, self._meta.names[field.number]))
+                getattr(self, self._meta.names[field.number])
             ) for field in self.definition.fields
                 if getattr(self, self._meta.names[field.number]) is not None)
         )
@@ -97,7 +96,7 @@ class Message(object):
 
             setattr(
                 self, self._meta.names[field.number],
-                field.read(
+                self._meta.model[field.number].read(
                     buffer, architecture=self.definition.architecture))
 
     def write(self, index):
@@ -106,7 +105,7 @@ class Message(object):
         buffer = DataHeader(index).write()
         for field in self.definition.fields:
             value = getattr(self, self._meta.names[field.number])
-            buffer += field.write(value)
+            buffer += self._meta.model[field.number].write(value)
         return buffer
 
 

@@ -1,28 +1,32 @@
 from datetime import datetime
+from time import mktime
+from fit.types import KnownMixin
 
 from fit.types.general import UInt32, UInt16, UInt8, Enum, SInt32
 
 
-class DateTime(UInt32):
-    def readable(self, value):
-        if value is None:
-            return None
-        start_ts = 631062000  # 00:00 Dec 31 1989
-        return datetime.fromtimestamp(start_ts + value)
-
-
 class LocalDateTime(UInt32):
+    start_ts = 631062000  # 00:00 Dec 31 1989
+
+    def _load(self, data):
+        return datetime.fromtimestamp(self.start_ts + data)
+
+    def _save(self, value):
+        return int(mktime(value.timetuple()) - self.start_ts)
+
+
+class DateTime(LocalDateTime):
     pass
 
 
-class Manufacturer(UInt16):
+class Manufacturer(KnownMixin, UInt16):
     known = {
         1: "Garmin",
         # to be done
     }
 
 
-class MessageIndex(UInt16):
+class MessageIndex(KnownMixin, UInt16):
     known = {
         0x8000: "Selected",
         0x7000: "Reserved",
@@ -30,27 +34,27 @@ class MessageIndex(UInt16):
     }
 
 
-class LeftRightBalance(UInt8):
+class LeftRightBalance(KnownMixin, UInt8):
     known = {
         0x7f: "Mask",
         0x80: "Right"
     }
 
 
-class LeftRightBalance100(UInt16):
+class LeftRightBalance100(KnownMixin, UInt16):
     known = {
         0x3fff: "Mask",
         0x8000: "Right"
     }
 
 
-class DeviceIndex(UInt8):
+class DeviceIndex(KnownMixin, UInt8):
     known = {
         0: "Creator",
     }
 
 
-class BatteryStatus(UInt8):
+class BatteryStatus(KnownMixin, UInt8):
     known = {
         1: "New",
         2: "Good",
@@ -343,10 +347,16 @@ class SourceType(Enum):
 
 
 class Semicircles(SInt32):
-    def readable(self, value):
-        return value * (180. / 2 ** 31)
+    def _load(self, data):
+        return data * (180. / 2 ** 31)
+
+    def _save(self, value):
+        return int(value * (2 ** 31 / 180.))
 
 
 class Altitude(UInt16):
-    def readable(self, value):
-        return (value / 5.) - 500
+    def _load(self, data):
+        return (data / 5.) - 500.
+
+    def _save(self, value):
+        return int((value + 500.) * 5.)

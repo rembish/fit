@@ -23,7 +23,7 @@ class Type(object):
             self.__class__.__name__, self.number
         )
 
-    def read(self, buffer, architecture="="):
+    def read(self, buffer, architecture="<"):
         data = unpack("%(arch)s%(format)s" % {
             "arch": architecture,
             "format": self.format
@@ -32,16 +32,30 @@ class Type(object):
         if data == self._invalid:
             data = None
 
-        return data
+        return self._load(data) if data is not None else None
 
     def write(self, value):
-        if value is None:
-            value = self._invalid
-        return pack("<%s" % self.format, value)
+        return pack(
+            "<%s" % self.format,
+            self._save(value) if value is not None else self._invalid)
 
-    def readable(self, value):
-        if hasattr(self, "known"):
-            return self.known.get(value, value)
+    def _load(self, data):
+        return data
+
+    def _save(self, value):
+        return value
+
+
+class KnownMixin(object):
+    known = {}
+
+    def _load(self, data):
+        return self.known.get(data, data)
+
+    def _save(self, value):
+        for key, value in self.known.items():
+            if value == value:
+                return key
         return value
 
 

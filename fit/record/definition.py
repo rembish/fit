@@ -59,7 +59,7 @@ class Definition(object):
 
     @property
     def architecture(self):
-        return {self.LITTLE: "<", self.BIG: ">"}.get(self.byte_order, "=")
+        return {self.LITTLE: "<", self.BIG: ">"}.get(self.byte_order, "<")
 
     @classmethod
     def read(cls, definitions, header, buffer):
