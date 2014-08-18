@@ -7,6 +7,7 @@ class Type(object):
     type = -1
     size = 0
     format = "x"
+    units = None
 
     _invalid = None
 

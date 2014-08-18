@@ -344,19 +344,3 @@ class SourceType(Enum):
         4: "WiFi",
         5: "Local",
     }
-
-
-class Semicircles(SInt32):
-    def _load(self, data):
-        return data * (180. / 2 ** 31)
-
-    def _save(self, value):
-        return int(value * (2 ** 31 / 180.))
-
-
-class Altitude(UInt16):
-    def _load(self, data):
-        return (data / 5.) - 500.
-
-    def _save(self, value):
-        return int((value + 500.) * 5.)

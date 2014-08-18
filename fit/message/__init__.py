@@ -61,14 +61,18 @@ class Message(object):
         self._unknowns = {}
 
     def __repr__(self):
+        data = {}
+        for field in self.definition.fields:
+            name = self._get_name(field.number)
+            field = self._get_type(field.number)
+            value = str(getattr(self, name)) + (field.units or "")
+            data[name] = value
+
         return '<%s.%s[%d] %s>' % (
             self.__module__.split(".")[-1],
             self.__class__.__name__,
             self.msg_type,
-            ' '.join("%s=%s" % (
-                self._get_name(field.number),
-                getattr(self, self._get_name(field.number))
-            ) for field in self.definition.fields)
+            ' '.join("%s=%s" % (key, value) for key, value in data.items())
         )
 
     def _get_name(self, number):
