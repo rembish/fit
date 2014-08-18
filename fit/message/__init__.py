@@ -27,7 +27,7 @@ class FieldProxy(object):
 
 
 class MessageMeta(type):
-    def __new__(cls, name, bases, attrs):
+    def __new__(mcs, name, bases, attrs):
         meta = Meta()
         meta.model = {}
         meta.names = {}
@@ -41,7 +41,7 @@ class MessageMeta(type):
             attrs.pop(key)
 
         attrs['_meta'] = meta
-        instance = super(MessageMeta, cls).__new__(cls, name, bases, attrs)
+        instance = super(MessageMeta, mcs).__new__(mcs, name, bases, attrs)
 
         for number, key in meta.names.items():
             setattr(instance, key, FieldProxy(number, key))
