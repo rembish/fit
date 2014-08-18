@@ -11,25 +11,23 @@ class Type(object):
 
     _invalid = None
 
-    def __init__(self, number, count=1, length=None):
+    def __init__(self, number, size=None):
         self.number = number
-        self.count = count
-        self._length = length
+        self.size = size or self.__class__.size
 
     def __eq__(self, other):
         return self.number == other.number
 
     def __repr__(self):
-        return '<%s[%d]%s>' % (
-            self.__class__.__name__, self.number,
-            ("x%d" % self.count) if self.count > 1 else ""
+        return '<%s[%d]>' % (
+            self.__class__.__name__, self.number
         )
 
     def read(self, buffer, architecture="="):
         data = unpack("%(arch)s%(format)s" % {
             "arch": architecture,
             "format": self.format
-        }, buffer.read(self._length or self.size))[0]
+        }, buffer.read(self.size))[0]
 
         if data == self._invalid:
             data = None

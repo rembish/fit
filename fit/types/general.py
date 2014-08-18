@@ -52,7 +52,6 @@ class SInt32(Type):
     format = "i"
 
     _invalid = 0x7fffffff
-    _endian = True
 
 
 class UInt32(Type):
@@ -69,9 +68,9 @@ class String(Type):
 
     _invalid = 0x00
 
-    def __init__(self, number, count=1, length=None):
-        super(String, self).__init__(number, count, length)
-        self.format = "%ds" % (self._length or 1)
+    def __init__(self, number, size=None):
+        super(String, self).__init__(number, size=size)
+        self.format = "%ds" % self.size
 
 
 class Float32(Type):
@@ -118,7 +117,14 @@ class Byte(Type):
     type = 13
     size = 1
 
-    def __init__(self, number, count=1):
-        super(Byte, self).__init__(number, count=count)
+    def __init__(self, number, size=None, count=1):
+        super(Byte, self).__init__(number, size=size)
+        self.count = count
         self.format = "%dc" % self.count
         self._invalid = (1 << (count * self.size * 8)) - 1
+
+    def __repr__(self):
+        return "<%s[%d]x%d>" % (
+            self.__class__.__name__,
+            self.number, self.count
+        )

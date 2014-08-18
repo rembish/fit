@@ -28,7 +28,7 @@ class Fields(list):
             number = ord(chunk[0])
             size = ord(chunk[1])
 
-            field = KNOWN_TYPES[base_type](number, length=size)
+            field = KNOWN_TYPES[base_type](number, size=size)
             self.append(field)
 
     def write(self):
@@ -36,8 +36,7 @@ class Fields(list):
         for field in self:
             endian = int(field.size > 1)
             base_type = (endian << 7) | field.type
-            chunks.append(pack(
-                "<BBB", field.number, field._length or field.size, base_type))
+            chunks.append(pack("<BBB", field.number, field.size, base_type))
         return "".join(chunks)
 
 
