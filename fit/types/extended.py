@@ -1,6 +1,6 @@
 from datetime import datetime
 from time import mktime
-from fit.types import KnownMixin
+from fit.types.mixins import KnownMixin
 
 from fit.types.general import UInt32, UInt16, UInt8, Enum, SInt32
 

@@ -6,12 +6,11 @@ from fit.types.additional import Altitude, Degrees, TimerTime, Distance, \
     FractionalCycles, Hemoglobin, HemoglobinPercents, Accuracy, StancePercents
 from fit.types.general import UInt32Z, UInt16, UInt32, UInt8, SInt16, SInt8, \
     String, Byte, UInt8Z, UInt16Z
-from fit.types.extended import DateTime, Manufacturer, \
-    LocalDateTime, EventType, MessageIndex, \
-    LeftRightBalance100, LeftRightBalance, Sport, SubSport, SessionTrigger, \
-    SwimStroke, DisplayMeasure, Intensity, LapTrigger, LengthType, \
-    ActivityType, StrokeType, DeviceIndex, BatteryStatus, BodyLocation, \
-    AntNetwork, SourceType
+from fit.types.extended import DateTime, Manufacturer, LocalDateTime, \
+    EventType, MessageIndex, LeftRightBalance100, LeftRightBalance, Sport, \
+    SubSport, SessionTrigger, SwimStroke, DisplayMeasure, Intensity, \
+    LapTrigger, LengthType, ActivityType, StrokeType, DeviceIndex, \
+    BatteryStatus, BodyLocation, AntNetwork, SourceType
 from fit.types.extended import Activity as ActivityField, Event as EventField
 
 

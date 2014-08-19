@@ -5,7 +5,6 @@ class Enum(Type):
     type = 0
     size = 1
     format = "B"
-
     variants = {}
 
     _invalid = 0xFF

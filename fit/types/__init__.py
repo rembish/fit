@@ -46,17 +46,4 @@ class Type(object):
         return value
 
 
-class KnownMixin(object):
-    known = {}
-
-    def _load(self, data):
-        return self.known.get(data, data)
-
-    def _save(self, value):
-        for key, value in self.known.items():
-            if value == value:
-                return key
-        return value
-
-
 KNOWN = get_known(__name__, Type)
