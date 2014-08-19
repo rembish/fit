@@ -2,7 +2,7 @@
 from datetime import datetime
 from time import mktime
 
-from fit.types.general import UInt32, UInt16, UInt8, Enum, UInt32Z
+from fit.types.general import UInt32, UInt16, UInt8, Enum, UInt32Z, UInt8Z
 from fit.types.mixins import KnownMixin
 
 
@@ -74,6 +74,54 @@ class BatteryStatus(KnownMixin, UInt8):
     }
 
 
+class MesgNum(KnownMixin, UInt16):
+    known = {
+        0: "File ID",
+        1: "Capabilities",
+        2: "Device Settings",
+        3: "User Profile",
+        4: "HRM Profile",
+        5: "SDM Profile",
+        6: "Bike Profile",
+        7: "Zones Target",
+        8: "HR Zone",
+        9: "Power Zone",
+        10: "Met Zone",
+        12: "Sport",
+        15: "Goal",
+        18: "Session",
+        19: "Lap",
+        20: "Record",
+        21: "Event",
+        23: "Device Info",
+        26: "Workout",
+        27: "Workout Step",
+        28: "Schedule",
+        30: "Weight Scale",
+        31: "Course",
+        32: "Course Point",
+        33: "Totals",
+        34: "Activity",
+        35: "Software",
+        37: "File Capabilities",
+        38: "Mesg Capabilities",
+        39: "Field Capabilities",
+        49: "File Creator",
+        51: "Blood Pressure",
+        53: "Speed Zone",
+        55: "Monitoring",
+        78: "HRV",
+        101: "Length",
+        103: "Monitoring Info",
+        105: "Pad",
+        106: "Slave Device",
+        132: "Cadence Zone",
+        145: "Memo Glob",
+        0xff00: "Mfg Range Min",  # 0xFF00 - 0xFFFE reserved for manufacturer
+        0xfffe: "Mfg Range Max",  # specific messages
+    }
+
+
 class CourseCapabilities(KnownMixin, UInt32Z):
     known = {
         0x00000001: "Processed",
@@ -86,6 +134,64 @@ class CourseCapabilities(KnownMixin, UInt32Z):
         0x00000080: "Cadence",
         0x00000100: "Training",
         0x00000200: "Navigation",
+    }
+
+
+class WorkoutCapabilities(KnownMixin, UInt32Z):
+    known = {
+        0x00000001: "Interval",
+        0x00000002: "Custom",
+        0x00000004: "Fitness Equipment",
+        0x00000008: "Firstbeat",
+        0x00000010: "New Leaf",
+        0x00000020: "TCX",  # for backwards compatibility. Watch should add
+                            # missing id fields then clear flag
+        0x00000080: "Speed",  # Speed source required for workout step
+        0x00000100: "Heart Rate",  # Heart rate source required for workout step
+        0x00000200: "Distance",  # Distance source required for workout step
+        0x00000400: "Cadence",  # Cadence source required for workout step
+        0x00000800: "Power",  # Power source required for workout step
+        0x00001000: "Grade",  # Grade source required for workout step
+        0x00002000: "Resistance",  # Resistance source required for workout step
+        0x00004000: "Protected",
+    }
+
+
+class ConnectivityCapabilities(KnownMixin, UInt32Z):
+    known = {
+        0x00000001: "Bluetooth",
+        0x00000002: "Bluetooth LE",
+        0x00000004: "ANT",
+        0x00000008: "Activity Upload",
+        0x00000010: "Course Download",
+        0x00000020: "Workout Download",
+        0x00000040: "Live Track",
+        0x00000080: "Weather Conditions",
+        0x00000100: "Weather Alerts",
+        0x00000200: "GPS Ephemeris Download",
+        0x00000400: "Explicit Archive",
+        0x00000800: "Setup Incomplete",
+    }
+
+
+class SportBits0(KnownMixin, UInt8Z):
+    known = {
+        0x01: "Generic",
+        0x02: "Running",
+        0x04: "Cycling",
+        0x08: "Transition",  # Multisport transition
+        0x10: "Fitness Equipment",
+        0x20: "Swimming",
+        0x40: "Basketball",
+        0x80: "Soccer",
+    }
+
+
+class FileFlags(KnownMixin, UInt8Z):
+    known = {
+        0x02: "Read",
+        0x04: "Write",
+        0x08: "Erase",
     }
 
 
@@ -414,4 +520,12 @@ class CoursePoint(Enum):
         21: "Slight Right",
         22: "Sharp Right",
         23: "U Turn"
+    }
+
+
+class MesgCount(Enum):
+    variants = {
+        0: "Num per File",
+        1: "Max per File",
+        2: "Max per File Type",
     }

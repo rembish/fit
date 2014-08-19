@@ -130,3 +130,11 @@ class Accuracy(UInt8):
 
 class Pressure(UInt16):
     units = "mmHg"
+
+
+class Version(UInt16):
+    def _load(self, data):
+        return str(data / 100.)
+
+    def _save(self, value):
+        return int(value * 100)
