@@ -8,8 +8,8 @@ from fit.structure.body import Body
 
 
 class FitFile(FileMixin):
-    def __init__(self, fd, body=None):
-        self._fd = fd
+    def __init__(self, ffd, body=None):
+        self._fd = ffd
 
         self.body = body or Body()
         self._apply_mixin()
@@ -20,17 +20,17 @@ class FitFile(FileMixin):
             raise ValueError(
                 "mode string must be one of 'r', 'w' or 'a', not '%s'" % mode)
 
-        fd = open(filename, mode='%sb' % 'w' if mode == 'w' else 'r')
+        ffd = open(filename, mode='%sb' % 'w' if mode == 'w' else 'r')
 
         body = None
         if mode in 'ar':
-            body = Reader(fd).body
+            body = Reader(ffd).body
 
         if mode == 'a':
-            fd.close()
-            fd = open(filename, mode='ab')
+            ffd.close()
+            ffd = open(filename, mode='ab')
 
-        return cls(fd, body=body)
+        return cls(ffd, body=body)
 
     def __repr__(self):
         return "<%s '%s', mode '%s'>" % (

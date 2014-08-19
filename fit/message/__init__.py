@@ -116,7 +116,7 @@ class Message(object):
             if name == other:
                 return number
 
-        if match("unknown_\d+", name):
+        if match(r"unknown_\d+", name):
             number = int(name.split("_")[-1])
             if number in self._unknowns:
                 return number
@@ -136,7 +136,7 @@ class Message(object):
         self._definition.fields = fields
         return self._definition
 
-    def read(self, buffer, model):
+    def read(self, read_buffer, model):
         for field in model:
             if field.number not in self._meta.names:
                 self._unknowns[field.number] = field
@@ -144,17 +144,17 @@ class Message(object):
             setattr(
                 self, self._get_name(field.number),
                 self._get_type(field.number).read(
-                    buffer, architecture=self._definition.architecture))
+                    read_buffer, architecture=self._definition.architecture))
 
     def write(self, index, model=None):
         from fit.record.header import DataHeader
 
         model = model or self.definition.fields
-        buffer = DataHeader(index).write()
+        write_buffer = DataHeader(index).write()
         for field in model:
             value = getattr(self, self._get_name(field.number))
-            buffer += field.write(value)
-        return buffer
+            write_buffer += field.write(value)
+        return write_buffer
 
 
 class GenericMessage(Message):

@@ -26,13 +26,13 @@ class Definition(object):
         return {self.LITTLE: "<", self.BIG: ">"}.get(self.byte_order, "<")
 
     @classmethod
-    def read(cls, definitions, header, buffer):
+    def read(cls, definitions, header, read_buffer):
         instance = cls(header)
-        reserved, instance.byte_order = unpack("<BB", buffer.read(2))
+        _, instance.byte_order = unpack("<BB", read_buffer.read(2))
         instance.number, fields_count = unpack(
-            "%sHB" % instance.architecture, buffer.read(3))
+            "%sHB" % instance.architecture, read_buffer.read(3))
 
-        chunk = buffer.read(fields_count * Fields.field_size)
+        chunk = read_buffer.read(fields_count * Fields.field_size)
         instance.fields.read(chunk)
 
         definitions[instance.header.type] = instance
@@ -43,11 +43,11 @@ class Definition(object):
         chunk = pack("<BBHB", 0, self.LITTLE, self.number, len(self.fields))
         return DefinitionHeader(index).write() + chunk + self.fields.write()
 
-    def build_message(self, buffer):
+    def build_message(self, read_buffer):
         message_cls = KNOWN_MESSAGES.get(self.number, GenericMessage)
         message = message_cls(self)
         if isinstance(message, GenericMessage):
             message.msg_type = self.number
 
-        message.read(buffer, self.fields)
+        message.read(read_buffer, self.fields)
         return message

@@ -4,8 +4,8 @@ from fit.structure.header import Header
 
 
 class Writer(object):
-    def __init__(self, fd, body=None):
-        self.fd = fd
+    def __init__(self, ffd, body=None):
+        self._fd = ffd
 
         self.header = Header()
         self.body = body or Body()
@@ -29,9 +29,9 @@ class Writer(object):
     def write(self):
         chunk = self._prepare()
 
-        self.fd.seek(0)
-        self.fd.truncate()
+        self._fd.seek(0)
+        self._fd.truncate()
 
-        self.fd.write(self.header.write())
-        self.fd.write(chunk)
-        self.fd.write(self.crc.write())
+        self._fd.write(self.header.write())
+        self._fd.write(chunk)
+        self._fd.write(self.crc.write())

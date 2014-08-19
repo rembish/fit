@@ -7,14 +7,14 @@ from fit.exceptions import HeaderFormatError, BodyFormatError, CrcFormatError
 
 
 class Reader(object):
-    def __init__(self, fd):
-        self.fd = fd
+    def __init__(self, ffd):
+        self._fd = ffd
 
         self._header = Header()
         self._body = Body()
         self._crc = Crc()
 
-        self.file_size = fstat(self.fd.fileno()).st_size
+        self.file_size = fstat(self._fd.fileno()).st_size
 
     def __repr__(self):
         return '<%s header=%r body=%r crc=%r>' % (
@@ -27,14 +27,14 @@ class Reader(object):
         if self._header:
             return self._header
 
-        self.fd.seek(0)
+        self._fd.seek(0)
 
-        header_size = ord(self.fd.read(1))
+        header_size = ord(self._fd.read(1))
         if header_size not in (12, 14):
             raise HeaderFormatError(
                 "Strange size: %d bytes" % header_size)
 
-        header = self.fd.read(header_size - 1)
+        header = self._fd.read(header_size - 1)
         if len(header) != header_size - 1:
             raise HeaderFormatError(
                 "Can't read %d bytes, read %d bytes instead" % (
@@ -56,9 +56,9 @@ class Reader(object):
     @property
     def body(self):
         if not self._body:
-            self.fd.seek(self.header.size)
+            self._fd.seek(self.header.size)
 
-            body = self.fd.read(self.header.data_size)
+            body = self._fd.read(self.header.data_size)
             if len(body) != self.header.data_size:
                 raise BodyFormatError(
                     "Can't read %d bytes, read %d bytes instead" % (
@@ -74,9 +74,9 @@ class Reader(object):
     @property
     def crc(self):
         if not self._crc:
-            self.fd.seek(self.header.size + self.header.data_size)
+            self._fd.seek(self.header.size + self.header.data_size)
 
-            chunk = self.fd.read(self._crc.size)
+            chunk = self._fd.read(self._crc.size)
             if len(chunk) != self._crc.size:
                 raise CrcFormatError(
                     "Can't read %d bytes, read %d bytes instead" % (

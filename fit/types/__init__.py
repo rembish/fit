@@ -23,11 +23,11 @@ class Type(object):
             self.__class__.__name__, self.number
         )
 
-    def read(self, buffer, architecture="<"):
+    def read(self, read_buffer, architecture="<"):
         data = unpack("%(arch)s%(format)s" % {
             "arch": architecture,
             "format": self.format
-        }, buffer.read(self.size))[0]
+        }, read_buffer.read(self.size))[0]
 
         if data == self._invalid:
             data = None

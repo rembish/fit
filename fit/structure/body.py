@@ -22,12 +22,12 @@ class Body(list):
 
     def read(self, chunk):
         size = len(chunk)
-        buffer = BytesIO(chunk)
+        read_buffer = BytesIO(chunk)
         definitions = {}
 
-        while buffer.tell() != size:
-            header = RecordHeader.read(ord(buffer.read(1)))
-            message = header.process_message(definitions, buffer)
+        while read_buffer.tell() != size:
+            header = RecordHeader.read(ord(read_buffer.read(1)))
+            message = header.process_message(definitions, read_buffer)
 
             if not isinstance(message, Definition):
                 self.append(message)

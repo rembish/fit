@@ -21,18 +21,16 @@ class DateTime(LocalDateTime):
 
 
 class Manufacturer(KnownMixin, UInt16):
-    known = {
+    known = {  # to be done
         1: "Garmin",
-        255: "Development"
-        # to be done
+        255: "Development",
     }
 
 
 class Product(KnownMixin, UInt16):
-    known = {
+    known = {  # to be done
         1551: "Garmin Fēnix",
-        65534: "Garmin Connect"
-        # to be done
+        65534: "Garmin Connect",
     }
 
 

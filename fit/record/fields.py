@@ -17,7 +17,7 @@ class Fields(list):
 
     @property
     def size(self):
-        return sum(map(lambda x: x.type.size, self))
+        return sum(field.type.size for field in self)
 
     def read(self, data):
         for offset in range(0, len(data), self.field_size):

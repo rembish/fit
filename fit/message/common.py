@@ -20,13 +20,13 @@ class FileId(Message):
         return self._meta.model[0]._save(self.type)
 
     @classmethod
-    def create(cls, type, **data):
+    def create(cls, file_type, **data):
         attributes = {
             'serial_number': 0xDEADBEAF,
             'time_created': datetime.now(),
             'manufacturer': Manufacturer.known[255],
             'product': Product.known[65534],
-            'type': File.variants[type]
+            'type': File.variants[file_type]
         }
         attributes.update(data)
 

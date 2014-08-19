@@ -15,16 +15,16 @@ class RecordHeader(object):
 
     @classmethod
     def read(cls, byte):
-        type = byte & (1 << 7)
+        msg_type = byte & (1 << 7)
 
-        if type:
+        if msg_type:
             return CompressedTimestampHeader.read(byte)
         return NormalHeader.read(byte)
 
     def write(self):
         raise NotImplementedError()
 
-    def process_message(self, owner, buffer):
+    def process_message(self, owner, read_buffer):
         raise NotImplementedError()
 
 
@@ -33,10 +33,10 @@ class NormalHeader(RecordHeader):
 
     @classmethod
     def read(cls, byte):
-        type = byte & (1 << 6)
+        msg_type = byte & (1 << 6)
         local_message_type = byte & 0b00001111  # 0-3 bits
 
-        if type:
+        if msg_type:
             return DefinitionHeader(local_message_type)
         return DataHeader(local_message_type)
 
@@ -48,16 +48,17 @@ class NormalHeader(RecordHeader):
 class DefinitionHeader(NormalHeader):
     msg_type = 1
 
-    def process_message(self, definitions, buffer):
-        return Definition.read(definitions, header=self, buffer=buffer)
+    def process_message(self, definitions, read_buffer):
+        return Definition.read(
+            definitions, header=self, read_buffer=read_buffer)
 
 
 class DataHeader(NormalHeader):
     msg_type = 0
 
-    def process_message(self, definitions, buffer):
+    def process_message(self, definitions, read_buffer):
         definition = definitions[self.type]
-        return definition.build_message(buffer)
+        return definition.build_message(read_buffer)
 
 
 class CompressedTimestampHeader(RecordHeader):
