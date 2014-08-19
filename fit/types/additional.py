@@ -126,3 +126,7 @@ class HemoglobinPercents(ScaleMixin, UInt16):
 
 class Accuracy(UInt8):
     units = "m"
+
+
+class Pressure(UInt16):
+    units = "mmHg"

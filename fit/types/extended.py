@@ -354,3 +354,20 @@ class SourceType(Enum):
         4: "WiFi",
         5: "Local",
     }
+
+
+class HrType(Enum):
+    variants = {
+        0: "Normal",
+        1: "Irregular",
+    }
+
+
+class BpStatus(Enum):
+    variants = {
+        0: "No Error",
+        1: "Error Incomplete Data",
+        2: "Error Non Measurement",
+        3: "Error Data out of Range",
+        4: "Error Irregular Heart Rate",
+    }
