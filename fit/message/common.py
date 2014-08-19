@@ -1,6 +1,8 @@
+from datetime import datetime
+
 from fit.message import Message
 from fit.types.general import UInt32Z, UInt16, UInt8
-from fit.types.extended import DateTime, Manufacturer, File
+from fit.types.extended import DateTime, Manufacturer, File, Product
 
 
 class FileId(Message):
@@ -9,9 +11,26 @@ class FileId(Message):
     serial_number = UInt32Z(3)
     time_created = DateTime(4)
     manufacturer = Manufacturer(1)
-    product = UInt16(2)
+    product = Product(2)
     number = UInt16(5)
     type = File(0)
+
+    @property
+    def filetype(self):
+        return self._meta.model[0]._save(self.type)
+
+    @classmethod
+    def create(cls, type, **data):
+        attributes = {
+            'serial_number': 0xDEADBEAF,
+            'time_created': datetime.now(),
+            'manufacturer': Manufacturer.known[255],
+            'product': Product.known[65534],
+            'type': File.variants[type]
+        }
+        attributes.update(data)
+
+        return cls(**attributes)
 
 
 class FileCreator(Message):

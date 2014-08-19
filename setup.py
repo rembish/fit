@@ -8,6 +8,6 @@ setup(
     packages=find_packages(),
     url='https://github.com/rembish/fit',
     license='BSD',
-    author='Alex Rembish',
+    author='Aleksey Rembish',
     author_email='alex@rembish.org',
     description='Python FIT filetype SDK')

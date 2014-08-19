@@ -79,11 +79,14 @@ class FitFile(FileMixin):
     def writable(self):
         return self.mode[0] in 'aw'
 
-    def flush(self):
+    def write(self):
         if not self.writable():
-            return
-
+            raise IOError("File not open for writing")
         Writer(self._fd, body=self.body).write()
+
+    def flush(self):
+        if self.writable():
+            self.write()
 
     def close(self):
         if self.closed:
@@ -101,10 +104,12 @@ class FitFile(FileMixin):
         return self.body[i]
 
     def __setitem__(self, i, value):
+        self._validate(i, value)
         self.body[i] = value
         self._apply_mixin()
 
     def __delitem__(self, i):
+        self._validate(i)
         del self.body[i]
         self._apply_mixin()
 
@@ -116,6 +121,7 @@ class FitFile(FileMixin):
         return len(self.body)
 
     def append(self, value):
+        self._validate(len(self), value)
         self.body.append(value)
         self._apply_mixin()
 
@@ -124,27 +130,18 @@ class FitFile(FileMixin):
             self.append(value)
 
     def remove(self, i):
+        self._validate(i)
         self.body.remove(i)
         self._apply_mixin()
 
-    def pop(self, i=None):
+    def pop(self, i=0):
+        self._validate(i)
         value = self.body.pop(i)
         self._apply_mixin()
         return value
 
     def index(self, i):
         return self.body.index(i)
-
-    # FIT special methods
-
-    def _apply_mixin(self):
-        mixin_cls = None
-        if self.body.file_id:
-            mixin_cls = KNOWN_MIXINS.get(self.body.file_id.type)
-        if not mixin_cls:
-            mixin_cls = FileMixin
-        self.__class__ = type(
-            mixin_cls.__name__, (FitFile, mixin_cls), {})
 
     def copy(self, other=None):
         if not other:

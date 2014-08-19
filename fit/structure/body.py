@@ -1,7 +1,7 @@
 from copy import copy
 from io import BytesIO
-from fit.message.common import FileId
 
+from fit.message.common import FileId
 from fit.record.definition import Definition, Fields
 from fit.record.header import RecordHeader
 
@@ -15,10 +15,9 @@ class Body(list):
 
     @property
     def file_id(self):
-        if not self:
+        if not self or not isinstance(self[0], FileId):
             return
 
-        assert isinstance(self[0], FileId)
         return self[0]
 
     def read(self, chunk):

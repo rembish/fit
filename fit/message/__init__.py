@@ -1,3 +1,5 @@
+from re import match
+
 from fit.record.fields import Fields
 from fit.types import Type
 from fit.utils import get_known
@@ -54,11 +56,23 @@ class Message(object):
 
     msg_type = -1
 
-    def __init__(self, definition):
+    def __init__(self, definition=None, **data):
+        if not definition:
+            from fit.record.definition import Definition
+            from fit.record.header import DefinitionHeader
+
+            definition = Definition(DefinitionHeader(self.msg_type))
+            definition.fields = Fields(self._meta.model.values())
+            definition.number = self.msg_type
+
         self._data = {}
         self._definition = definition
 
         self._unknowns = {}
+
+        for key, value in data.items():
+            print key, value
+            self[key] = value
 
     def __repr__(self):
         data = {}
@@ -75,6 +89,18 @@ class Message(object):
             ' '.join("%s=%s" % (key, value) for key, value in data.items())
         )
 
+    def __setitem__(self, key, value):
+        self._get_number(key)
+        self._data[key] = value
+
+    def __getitem__(self, key):
+        self._get_number(key)
+        return self._data[key]
+
+    def __delitem__(self, key):
+        self._get_number(key)
+        self._data[key] = None
+
     def _get_name(self, number):
         if number not in self._meta.names:
             return "unknown_%d" % number
@@ -84,6 +110,18 @@ class Message(object):
         if number not in self._meta.model:
             return self._unknowns[number]
         return self._meta.model[number]
+
+    def _get_number(self, name):
+        for number, other in self._meta.names.items():
+            if name == other:
+                return number
+
+        if match("unknown_\d+", name):
+            number = int(name.split("_")[-1])
+            if number in self._unknowns:
+                return number
+
+        raise KeyError(name)
 
     @property
     def definition(self):
@@ -111,7 +149,7 @@ class Message(object):
     def write(self, index, model=None):
         from fit.record.header import DataHeader
 
-        model = model or self.definition
+        model = model or self.definition.fields
         buffer = DataHeader(index).write()
         for field in model:
             value = getattr(self, self._get_name(field.number))

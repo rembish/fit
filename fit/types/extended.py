@@ -1,8 +1,9 @@
+# coding=utf-8
 from datetime import datetime
 from time import mktime
-from fit.types.mixins import KnownMixin
 
-from fit.types.general import UInt32, UInt16, UInt8, Enum, SInt32
+from fit.types.general import UInt32, UInt16, UInt8, Enum
+from fit.types.mixins import KnownMixin
 
 
 class LocalDateTime(UInt32):
@@ -22,6 +23,15 @@ class DateTime(LocalDateTime):
 class Manufacturer(KnownMixin, UInt16):
     known = {
         1: "Garmin",
+        255: "Development"
+        # to be done
+    }
+
+
+class Product(KnownMixin, UInt16):
+    known = {
+        1551: "Garmin Fēnix",
+        65534: "Garmin Connect"
         # to be done
     }
 
