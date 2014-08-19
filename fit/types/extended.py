@@ -581,3 +581,18 @@ class Schedule(Enum):
         0: "Workout",
         1: "Course",
     }
+
+
+class HrZoneCalc(Enum):
+    variants = {
+        0: "Custom",
+        1: "Percent Max HR",
+        2: "Percent HRR",
+    }
+
+
+class PwrZoneCalc(Enum):
+    variants = {
+        0: "Custom",
+        1: "Percent FTP",
+    }
