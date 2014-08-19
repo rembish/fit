@@ -596,3 +596,36 @@ class PwrZoneCalc(Enum):
         0: "Custom",
         1: "Percent FTP",
     }
+
+
+class WktStepDuration(Enum):
+    variants = {
+        0: "Time",
+        1: "Distance",
+        2: "HR less than",
+        3: "HR greater than",
+        4: "Calories",
+        5: "Open",
+        6: "Repeat until Steps Complete",
+        7: "Repeat until Time",
+        8: "Repeat until Distance",
+        9: "Repeat until Calories",
+        10: "Repeat until HR less than",
+        11: "Repeat until HR greater than",
+        12: "Repeat until Power less than",
+        13: "Repeat until Power greater than",
+        14: "Power less than",
+        15: "Power greater than",
+    }
+
+
+class WktStepTarget(Enum):
+    variants = {
+        0: "Speed",
+        1: "Heart Rate",
+        2: "Open",
+        3: "Cadence",
+        4: "Power",
+        5: "Grade",
+        6: "Resistance",
+    }
