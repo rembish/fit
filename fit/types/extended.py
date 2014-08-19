@@ -529,3 +529,24 @@ class MesgCount(Enum):
         1: "Max per File",
         2: "Max per File Type",
     }
+
+
+class Goal(Enum):
+    variants = {
+        0: "Time",
+        1: "Distance",
+        2: "Calories",
+        3: "Frequency",
+        4: "Steps",
+    }
+
+
+class GoalRecurrence(Enum):
+    variants = {
+        0: "Off",
+        1: "Daily",
+        2: "Weekly",
+        3: "Monthly",
+        4: "Yearly",
+        5: "Custom",
+    }
