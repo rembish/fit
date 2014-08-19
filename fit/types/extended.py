@@ -164,12 +164,12 @@ class WorkoutCapabilities(KnownMixin, UInt32Z):
         0x00000020: "TCX",  # for backwards compatibility. Watch should add
                             # missing id fields then clear flag
         0x00000080: "Speed",  # Speed source required for workout step
-        0x00000100: "Heart Rate",  # Heart rate source required for workout step
+        0x00000100: "Heart Rate",  # Heart rate src required for workout step
         0x00000200: "Distance",  # Distance source required for workout step
         0x00000400: "Cadence",  # Cadence source required for workout step
         0x00000800: "Power",  # Power source required for workout step
         0x00001000: "Grade",  # Grade source required for workout step
-        0x00002000: "Resistance",  # Resistance source required for workout step
+        0x00002000: "Resistance",  # Resistance src required for workout step
         0x00004000: "Protected",
     }
 
@@ -236,6 +236,13 @@ class Activity(Enum):
     variants = {
         0: "Manual",
         1: "Auto Multi Sport",
+    }
+
+
+class Bool(Enum):
+    variants = {
+        0: False,
+        1: True,
     }
 
 

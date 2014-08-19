@@ -19,9 +19,7 @@ class Activity(Message):
 
     timestamp = DateTime(253)
     total_timer_time = TimerTime(0)  # Exclude pauses
-    local_timestamp = LocalDateTime(5)  # Timestamp epoch expressed in local
-                                        # time, used to convert activity
-                                        # timestamps to local time
+    local_timestamp = LocalDateTime(5)
     num_sessions = UInt16(1)
     type = ActivityField(2)
     event = EventField(3)
@@ -52,14 +50,12 @@ class Session(Message):
     time_in_cadence_zone = TimerTime(67)
     time_in_power_zone = TimerTime(68)
     avg_lap_time = TimerTime(69)
-    message_index = MessageIndex(254)  # Selected bit is set for the current
-                                       # session
+    message_index = MessageIndex(254)  # Selected bit is set for the crrnt sess
     total_calories = Calories(11)
     total_fat_calories = Calories(13)
     avg_speed = Speed(14)  # total_distance / total_timer_time
     max_speed = Speed(15)
-    avg_power = Power(20)  # total_power / total_timer_time if avg_power != 0
-                           # otherwise total_power / total_elapsed_time
+    avg_power = Power(20)
     max_power = Power(21)
     total_ascent = Difference(22)
     total_descent = Difference(23)
@@ -100,9 +96,7 @@ class Session(Message):
     sub_sport = SubSport(6)
     avg_heart_rate = HeartRate(16)  # Average heart rate (excludes pause time)
     max_heart_rate = HeartRate(17)
-    avg_cadence = Cadence(18)  # total_cycles / total_timer_time
-                               # if avg_cadence != 0
-                               # otherwise total_cycles / total_elapsed_time
+    avg_cadence = Cadence(18)
     max_cadence = Cadence(19)
     total_training_effect = UInt8(24)
     event_group = UInt8(27)
@@ -114,12 +108,9 @@ class Session(Message):
     max_temperature = Temperature(58)
     min_heart_rate = HeartRate(64)
     opponent_name = String(84)
-    avg_fractional_cadence = FractionalCadence(92)  # fractional part of the
-                                                    # avg_cadence
-    max_fractional_cadence = FractionalCadence(93)  # fractional part of the
-                                                    # max_cadence
-    total_fractional_cycles = FractionalCycles(94)  # fractional part of the
-                                                    # total_cycles
+    avg_fractional_cadence = FractionalCadence(92)
+    max_fractional_cadence = FractionalCadence(93)
+    total_fractional_cycles = FractionalCycles(94)
 
 
 class Lap(Message):

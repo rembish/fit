@@ -1,6 +1,6 @@
 from fit.message import Message
 from fit.types.extended import MessageIndex, Sport, SubSport, DateTime, \
-    GoalRecurrence
+    GoalRecurrence, Bool
 from fit.types.extended import Goal as GoalField
 from fit.types.general import UInt32, UInt16
 
@@ -15,8 +15,8 @@ class Goal(Message):
     end_date = DateTime(3)
     type = GoalField(4)
     value = UInt32(5)
-    #repeat = Bool(6)
+    repeat = Bool(6)
     target_value = UInt32(7)
     recurrence = GoalRecurrence(8)
     recurrence_value = UInt16(9)
-    #enabled = Bool(10)
+    enabled = Bool(10)

@@ -1,6 +1,7 @@
 from fit.message import Message
 from fit.types.additional import Degrees, Distance
-from fit.types.extended import Sport, CourseCapabilities, MessageIndex, DateTime
+from fit.types.extended import Sport, CourseCapabilities, MessageIndex, \
+    DateTime
 from fit.types.extended import CoursePoint as CoursePointField
 from fit.types.general import String
 
