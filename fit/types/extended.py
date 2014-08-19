@@ -2,7 +2,7 @@
 from datetime import datetime
 from time import mktime
 
-from fit.types.general import UInt32, UInt16, UInt8, Enum
+from fit.types.general import UInt32, UInt16, UInt8, Enum, UInt32Z
 from fit.types.mixins import KnownMixin
 
 
@@ -71,6 +71,21 @@ class BatteryStatus(KnownMixin, UInt8):
         3: "Ok",
         4: "Low",
         5: "Critical",
+    }
+
+
+class CourseCapabilities(KnownMixin, UInt32Z):
+    known = {
+        0x00000001: "Processed",
+        0x00000002: "Valid",
+        0x00000004: "Time",
+        0x00000008: "Distance",
+        0x00000010: "Position",
+        0x00000020: "Heart Rate",
+        0x00000040: "Power",
+        0x00000080: "Cadence",
+        0x00000100: "Training",
+        0x00000200: "Navigation",
     }
 
 
@@ -370,4 +385,33 @@ class BpStatus(Enum):
         2: "Error Non Measurement",
         3: "Error Data out of Range",
         4: "Error Irregular Heart Rate",
+    }
+
+
+class CoursePoint(Enum):
+    variants = {
+        0: "Generic",
+        1: "Summit",
+        2: "Valley",
+        3: "Water",
+        4: "Food",
+        5: "Danger",
+        6: "Left",
+        7: "Right",
+        8: "Straight",
+        9: "First Aid",
+        10: "Fourth Category",
+        11: "Third Category",
+        12: "Second Category",
+        13: "First Category",
+        14: "Hors Catégorie",
+        15: "Spring",
+        16: "Left Fork",
+        17: "Right Fork",
+        18: "Middle Fork",
+        19: "Slight Left",
+        20: "Sharp Left",
+        21: "Slight Right",
+        22: "Sharp Right",
+        23: "U Turn"
     }
