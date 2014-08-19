@@ -13,6 +13,8 @@ class Degrees(SInt32):
 
 
 class Altitude(UInt16):
+    units = "m"
+
     def _load(self, data):
         return (data / 5.) - 500.
 
