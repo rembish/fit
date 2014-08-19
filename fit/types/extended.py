@@ -550,3 +550,10 @@ class GoalRecurrence(Enum):
         4: "Yearly",
         5: "Custom",
     }
+
+
+class Schedule(Enum):
+    variants = {
+        0: "Workout",
+        1: "Course",
+    }
