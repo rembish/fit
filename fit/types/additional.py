@@ -86,6 +86,11 @@ class Percents(ScaleMixin, SInt16):
     units = "%"
 
 
+class UPercents(ScaleMixin, UInt16):
+    scale = 100
+    units = "%"
+
+
 class Temperature(SInt8):
     units = "°C"
 
@@ -138,3 +143,17 @@ class Version(UInt16):
 
     def _save(self, value):
         return int(value * 100)
+
+
+class Mass(ScaleMixin, UInt16):
+    scale = 100
+    units = "kg"
+
+
+class Met(ScaleMixin, UInt16):
+    scale = 4
+    units = " KCal/day"
+
+
+class Years(UInt8):
+    units = "years"

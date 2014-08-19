@@ -3,7 +3,7 @@ from datetime import datetime
 from time import mktime
 
 from fit.types.general import UInt32, UInt16, UInt8, Enum, UInt32Z, UInt8Z
-from fit.types.mixins import KnownMixin
+from fit.types.mixins import KnownMixin, ScaleMixin
 
 
 class LocalDateTime(UInt32):
@@ -120,6 +120,25 @@ class MesgNum(KnownMixin, UInt16):
         0xff00: "Mfg Range Min",  # 0xFF00 - 0xFFFE reserved for manufacturer
         0xfffe: "Mfg Range Max",  # specific messages
     }
+
+
+class Weight(ScaleMixin, KnownMixin, UInt16):
+    known = {
+        0xfffe: "Calculating"
+    }
+    units = "kg"
+
+    def _load(self, data):
+        value = KnownMixin._load(self, data)
+        if value == data:
+            return super(Weight, self)._load(data)
+        return value
+
+    def _save(self, value):
+        data = KnownMixin._save(self, value)
+        if data == value:
+            return super(Weight, self)._save(value)
+        return data
 
 
 class CourseCapabilities(KnownMixin, UInt32Z):
