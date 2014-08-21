@@ -30,9 +30,18 @@ class FieldProxy(object):
 
 class MessageMeta(type):
     def __new__(mcs, name, bases, attrs):
-        meta = Meta()
-        meta.model = {}
-        meta.names = {}
+        meta = Meta(attrs.pop("_meta", {}))
+        meta.model = meta.get("model" , {})
+        meta.names = meta.get("names", {})
+
+        inherit = True
+        if "_meta" in attrs:
+            inherit = meta.get("inherit", True)
+
+        for base in bases:
+            if hasattr(base, "_meta") and inherit:
+                meta.model.update(base._meta.get("model", {}))
+                meta.names.update(base._meta.get("names", {}))
 
         for key, value in attrs.items():
             if isinstance(value, Type):
@@ -53,8 +62,9 @@ class MessageMeta(type):
 
 class Message(object):
     __metaclass__ = MessageMeta
+    _meta = Meta()
 
-    msg_type = -1
+    msg_type = None
 
     def __init__(self, definition=None, **data):
         if not definition:
@@ -71,7 +81,6 @@ class Message(object):
         self._unknowns = {}
 
         for key, value in data.items():
-            print key, value
             self[key] = value
 
     def __repr__(self):
@@ -79,8 +88,7 @@ class Message(object):
         for field in self.definition.fields:
             name = self._get_name(field.number)
             field = self._get_type(field.number)
-            value = str(getattr(self, name)) + (field.units or "")
-            data[name] = value
+            data[name] = "%s%s" % (getattr(self, name), field.units or "")
 
         return '<%s.%s[%d] %s>' % (
             self.__module__.split(".")[-1],
