@@ -49,7 +49,7 @@ class MessageMeta(type):
                 meta.names[value.number] = key
 
         for key in meta.names.values():
-            attrs.pop(key)
+            attrs.pop(key, None)
 
         attrs['_meta'] = meta
         instance = super(MessageMeta, mcs).__new__(mcs, name, bases, attrs)
@@ -88,7 +88,10 @@ class Message(object):
         for field in self.definition.fields:
             name = self._get_name(field.number)
             field = self._get_type(field.number)
-            data[name] = "%s%s" % (getattr(self, name), field.units or "")
+            field_name = name
+            if name.startswith("unknown_"):
+                field_name = "%s[%d]" % (field.__class__.__name__, field.number)
+            data[field_name] = "%s%s" % (getattr(self, name), field.units or "")
 
         return '<%s.%s[%d] %s>' % (
             self.__module__.split(".")[-1],

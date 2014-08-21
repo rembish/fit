@@ -29,6 +29,7 @@ class Manufacturer(KnownMixin, UInt16):
 
 class Product(KnownMixin, UInt16):
     known = {  # to be done
+        1124: "Garmin Forerunner 110",
         1551: "Garmin Fēnix",
         65534: "Garmin Connect",
     }
