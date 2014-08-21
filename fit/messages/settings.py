@@ -19,7 +19,7 @@ class UserProfile(Message):
     msg_type = 3
 
     message_index = MessageIndex(254)
-    friendly_nmae = String(0)
+    friendly_name = String(0)
     gender = Gender(1)
     age = Years(2)
     height = UInt8(3)
