@@ -629,3 +629,36 @@ class WktStepTarget(Enum):
         5: "Grade",
         6: "Resistance",
     }
+
+
+class ActivitySubType(Enum):
+    variants = {
+        0: "Generic",
+        1: "Treadmill",  # Run...
+        2: "Street",
+        3: "Trail",
+        4: "Track",
+        5: "Spin",  # Cycling...
+        6: "Indoor Cycling",
+        7: "Road",
+        8: "Mountain",
+        9: "Downhill",
+        10: "Recumbent",
+        11: "Cyclocross",
+        12: "Hand Cycling",
+        13: "Track Cycling",
+        14: "Indoor Rowing",  # Fitness Equipment..
+        15: "Elliptical",
+        16: "Stair Climbing",
+        17: "Swimming",  # Swimming...
+        18: "Open Water",
+        254: "All",
+    }
+
+
+class ActivityLevel(Enum):
+    variants = {
+        0: "Low",
+        1: "Medium",
+        2: "High",
+    }
