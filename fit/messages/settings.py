@@ -1,4 +1,4 @@
-from fit.message import Message
+from fit.messages import Message
 
 
 class DeviceSettings(Message):

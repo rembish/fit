@@ -1,4 +1,4 @@
-from fit.message import Message
+from fit.messages import Message
 from fit.types.extended import MessageIndex, Sport, SubSport, DateTime, \
     GoalRecurrence, Bool
 from fit.types.extended import Goal as GoalField

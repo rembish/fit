@@ -1,7 +1,7 @@
-from fit.message.activity import DeviceInfo
-from fit.message.common import FileId
-from fit.message.monitoring import MonitoringInfo, Monitoring
-from fit.mixin import FileMixin
+from fit.messages.activity import DeviceInfo
+from fit.messages.common import FileId
+from fit.messages.monitoring import MonitoringInfo, Monitoring
+from fit.files import FileMixin
 
 
 class MonitoringFile(FileMixin):

@@ -1,4 +1,4 @@
-from fit.message import Message
+from fit.messages import Message
 from fit.types.additional import UPercents, Mass, Met, Years
 from fit.types.extended import DateTime, Weight, MessageIndex
 from fit.types.general import UInt8

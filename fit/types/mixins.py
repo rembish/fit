@@ -5,8 +5,8 @@ class KnownMixin(object):
         return self.known.get(data, data)
 
     def _save(self, value):
-        for key, value in self.known.items():
-            if value == value:
+        for key, other in self.known.items():
+            if value == other:
                 return key
         return value
 

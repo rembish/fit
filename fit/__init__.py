@@ -2,8 +2,8 @@ from copy import copy
 
 from fit.io.reader import Reader
 from fit.io.writer import Writer
-from fit.message import Message
-from fit.mixin import KNOWN as KNOWN_MIXINS, FileMixin
+from fit.messages import Message
+from fit.files import KNOWN as KNOWN_MIXINS, FileMixin
 from fit.structure.body import Body
 
 

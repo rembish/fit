@@ -139,10 +139,10 @@ class Pressure(UInt16):
 
 class Version(UInt16):
     def _load(self, data):
-        return str(data / 100.)
+        return "%.2f" % (data / 100.)
 
     def _save(self, value):
-        return int(value * 100)
+        return int(float(value) * 100)
 
 
 class Mass(ScaleMixin, UInt16):

@@ -1,7 +1,7 @@
-from fit.message.common import FileId
-from fit.message.device import Software, Capabilities, FileCapabilities, \
+from fit.messages.common import FileId
+from fit.messages.device import Software, Capabilities, FileCapabilities, \
     MesgCapabilities, FieldCapabilities
-from fit.mixin import FileMixin
+from fit.files import FileMixin
 
 
 class DeviceFile(FileMixin):

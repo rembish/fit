@@ -1,6 +1,6 @@
 from struct import unpack, pack
 
-from fit.message import KNOWN as KNOWN_MESSAGES, GenericMessage
+from fit.messages import KNOWN as KNOWN_MESSAGES, GenericMessage
 from fit.record.fields import Fields
 
 

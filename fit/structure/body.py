@@ -1,7 +1,7 @@
 from copy import copy
 from io import BytesIO
 
-from fit.message.common import FileId
+from fit.messages.common import FileId
 from fit.record.definition import Definition, Fields
 from fit.record.header import RecordHeader
 

@@ -1,4 +1,4 @@
-from fit.message import Message
+from fit.messages import Message
 from fit.types.extended import Sport, WorkoutCapabilities, MessageIndex, \
     Intensity, WktStepTarget, WktStepDuration
 from fit.types.general import UInt16, String, UInt32

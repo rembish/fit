@@ -1,6 +1,7 @@
 from datetime import datetime
 
-from fit.message import Message
+from fit.messages import Message
+from fit.types.additional import Version
 from fit.types.general import UInt32Z, UInt16, UInt8
 from fit.types.extended import DateTime, Manufacturer, File, Product
 
@@ -36,5 +37,5 @@ class FileId(Message):
 class FileCreator(Message):
     msg_type = 49
 
-    software_version = UInt16(0)
+    software_version = Version(0)
     hardware_version = UInt8(1)

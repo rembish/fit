@@ -1,4 +1,4 @@
-from fit.message import Message
+from fit.messages import Message
 from fit.types.additional import Degrees, Distance
 from fit.types.extended import Sport, CourseCapabilities, MessageIndex, \
     DateTime

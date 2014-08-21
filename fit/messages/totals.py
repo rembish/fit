@@ -1,4 +1,4 @@
-from fit.message import Message
+from fit.messages import Message
 from fit.types.additional import TimerTime, Distance, Calories
 from fit.types.extended import MessageIndex, DateTime, Sport
 from fit.types.general import UInt16

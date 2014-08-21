@@ -1,4 +1,4 @@
-from fit.message import Message
+from fit.messages import Message
 from fit.types.additional import HeartRate, Power, Speed, Cadence, MetCalories, \
     MetFatCalories
 from fit.types.extended import SubSport, MessageIndex, HrZoneCalc, PwrZoneCalc

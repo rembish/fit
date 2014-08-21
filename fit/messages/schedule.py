@@ -1,4 +1,4 @@
-from fit.message import Message
+from fit.messages import Message
 from fit.types.extended import Manufacturer, Product, DateTime, LocalDateTime, \
     Bool
 from fit.types.extended import Schedule as ScheduleField

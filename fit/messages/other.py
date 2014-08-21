@@ -1,4 +1,4 @@
-from fit.message import Message
+from fit.messages import Message
 from fit.types.extended import MessageIndex
 from fit.types.general import UInt32, Byte, UInt16
 

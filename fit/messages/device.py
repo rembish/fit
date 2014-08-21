@@ -1,4 +1,4 @@
-from fit.message import Message
+from fit.messages import Message
 from fit.types.additional import Version
 from fit.types.extended import MessageIndex, Manufacturer, Product, \
     SportBits0, WorkoutCapabilities, ConnectivityCapabilities, File, \

@@ -1,5 +1,5 @@
-from fit.message import Message
-from fit.message.common import FileId
+from fit.messages import Message
+from fit.messages.common import FileId
 from fit.utils import get_known
 
 

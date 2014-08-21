@@ -1,7 +1,7 @@
-from fit.message.common import FileId
-from fit.message.sport_settings import ZonesTarget, Sport, HrZone, PowerZone, \
+from fit.messages.common import FileId
+from fit.messages.sport_settings import ZonesTarget, Sport, HrZone, PowerZone, \
     MetZone, SpeedZone, CadenceZone
-from fit.mixin import FileMixin
+from fit.files import FileMixin
 
 
 class SportSettingsFile(FileMixin):

@@ -1,16 +1,17 @@
-from fit.message import Message
+from fit.messages import Message
 from fit.types.additional import Altitude, Degrees, TimerTime, Distance, \
     Cycles, Calories, Speed, HeartRate, Cadence, Power, Difference, \
     StressScore, IntensityFactor, StrokeCount, Work, Percents, Temperature, \
     SSpeed, BallSpeed, Oscillation, StanceTime, FractionalCadence, \
-    FractionalCycles, Hemoglobin, HemoglobinPercents, Accuracy, StancePercents
+    FractionalCycles, Hemoglobin, HemoglobinPercents, Accuracy, \
+    StancePercents, Version
 from fit.types.general import UInt32Z, UInt16, UInt32, UInt8, SInt16, SInt8, \
     String, Byte, UInt8Z, UInt16Z
 from fit.types.extended import DateTime, Manufacturer, LocalDateTime, \
     EventType, MessageIndex, LeftRightBalance100, LeftRightBalance, Sport, \
     SubSport, SessionTrigger, SwimStroke, DisplayMeasure, Intensity, \
     LapTrigger, LengthType, ActivityType, StrokeType, DeviceIndex, \
-    BatteryStatus, BodyLocation, AntNetwork, SourceType
+    BatteryStatus, BodyLocation, AntNetwork, SourceType, Product
 from fit.types.extended import Activity as ActivityField, Event as EventField
 
 
@@ -292,8 +293,8 @@ class DeviceInfo(Message):
     serial_number = UInt32Z(3)
     cum_operating_time = UInt32(7)
     manufacturer = Manufacturer(2)
-    product = UInt16(4)
-    software_version = UInt16(5)
+    product = Product(4)
+    software_version = Version(5)
     battery_voltage = UInt16(10)
     ant_device_number = UInt16Z(21)
     device_index = DeviceIndex(0)
@@ -310,4 +311,4 @@ class DeviceInfo(Message):
 class Hrv(Message):
     msg_type = 78
 
-    time = UInt16(0)
+    time = TimerTime(0)

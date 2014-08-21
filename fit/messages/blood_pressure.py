@@ -1,4 +1,4 @@
-from fit.message import Message
+from fit.messages import Message
 from fit.types.additional import Pressure, HeartRate
 from fit.types.extended import DateTime, MessageIndex, HrType, BpStatus
 
