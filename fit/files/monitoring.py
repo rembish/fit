@@ -1,10 +1,10 @@
 from fit.messages.activity import DeviceInfo
 from fit.messages.common import FileId
 from fit.messages.monitoring import MonitoringInfo, Monitoring
-from fit.files import FileMixin
+from fit.files import FileLike
 
 
-class MonitoringFile(FileMixin):
+class MonitoringFile(FileLike):
     record_types = frozenset((FileId, MonitoringInfo, Monitoring, DeviceInfo))
 
 

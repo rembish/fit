@@ -1,7 +1,6 @@
 from copy import copy
 from io import BytesIO
 
-from fit.messages.common import FileId
 from fit.record.definition import Definition, Fields
 from fit.record.header import RecordHeader
 
@@ -12,13 +11,6 @@ class Body(list):
 
     def __repr__(self):
         return "<%s[%d]>" % (self.__class__.__name__, len(self))
-
-    @property
-    def file_id(self):
-        if not self or not isinstance(self[0], FileId):
-            return
-
-        return self[0]
 
     def read(self, chunk):
         size = len(chunk)

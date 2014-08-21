@@ -3,9 +3,15 @@ from fit.messages.common import FileId
 from fit.utils import get_known
 
 
-class FileMixin(object):
+class FileLike(object):
+    body = []
     type = None
     record_types = frozenset((Message,))
+
+    @property
+    def file_id(self):
+        if len(self.body) and isinstance(self.body[0], FileId):
+            return self.body[0]
 
     @classmethod
     def create(cls, filename, mixin=None):
@@ -27,19 +33,23 @@ class FileMixin(object):
         from fit import FitFile
 
         mcs = [FitFile]
-        if self.body.file_id:
-            mixin_cls = KNOWN.get(self.body.file_id.filetype)
+        if self.file_id:
+            mixin_cls = KNOWN.get(self.file_id.filetype)
             if mixin_cls:
                 mcs.append(mixin_cls)
         self.__class__ = type(mcs[-1].__name__, tuple(mcs), {})
 
     def _validate(self, i, value=None):
+        if value and not isinstance(value, Message):
+            raise ValueError(
+                "Item should be instance of %s type" % Message.__name__)
+
         if not value:  # removing
-            if i == 0 and len(self.body) > 1 and self.body.file_id:
+            if i == 0 and len(self.body) > 1 and self.file_id:
                 raise IndexError(
                     "Can't remove file id record from not empty file")
         else:  # inserting or updating
-            if i == 0 and len(self.body) > 1 and self.body.file_id:
+            if i == 0 and len(self.body) > 1 and self.file_id:
                 raise IndexError(
                     "Can't update file id record of not empty file")
             elif not isinstance(value, tuple(self.record_types)):
@@ -47,4 +57,4 @@ class FileMixin(object):
                     self.__class__.__name__, value.__class__.__name__))
 
 
-KNOWN = get_known(__name__, FileMixin)
+KNOWN = get_known(__name__, FileLike)

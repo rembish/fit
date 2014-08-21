@@ -3,11 +3,11 @@ from copy import copy
 from fit.io.reader import Reader
 from fit.io.writer import Writer
 from fit.messages import Message
-from fit.files import KNOWN as KNOWN_MIXINS, FileMixin
+from fit.files import KNOWN as KNOWN_MIXINS, FileLike
 from fit.structure.body import Body
 
 
-class FitFile(FileMixin):
+class FitFile(FileLike):
     def __init__(self, ffd, body=None):
         self._fd = ffd
 

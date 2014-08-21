@@ -1,8 +1,8 @@
 from fit.messages.common import FileId
 from fit.messages.goals import Goal
-from fit.files import FileMixin
+from fit.files import FileLike
 
 
-class GoalsFile(FileMixin):
+class GoalsFile(FileLike):
     type = 11
     record_types = frozenset((FileId, Goal))
