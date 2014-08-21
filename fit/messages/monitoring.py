@@ -2,7 +2,7 @@ from fit.messages import Message
 from fit.types.additional import Calories, Distance, Cycles, TimerTime, \
     Temperature, HeartRate
 from fit.types.extended import DateTime, LocalDateTime, ActivityType, \
-    DeviceIndex, Intensity, ActivitySubType
+    DeviceIndex, Intensity, ActivitySubType, ActivityLevel
 from fit.types.general import UInt16, Byte, UInt8, UInt32
 
 

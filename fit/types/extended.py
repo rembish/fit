@@ -139,6 +139,17 @@ class Weight(ScaleMixin, KnownMixin, UInt16):
         return data
 
 
+class UserLocalId(KnownMixin, UInt16):
+    known = {
+        0x0000: "Local Min",
+        0x000F: "Local Max",
+        0x0010: "Stationary Min",
+        0x00FF: "Stationary Max",
+        0x0100: "Portable Min",
+        0xFFFE: "Portable Max",
+    }
+
+
 class CourseCapabilities(KnownMixin, UInt32Z):
     known = {
         0x00000001: "Processed",
@@ -662,3 +673,80 @@ class ActivityLevel(Enum):
         1: "Medium",
         2: "High",
     }
+
+
+class Gender(Enum):
+    variants = {
+        0: "Female",
+        1: "Male",
+    }
+
+
+class Language(Enum):
+    variants = {
+        0: "English",
+        1: "French",
+        2: "Italian",
+        3: "German",
+        4: "Spanish",
+        5: "Croatian",
+        6: "Czech",
+        7: "Danish",
+        8: "Dutch",
+        9: "Finnish",
+        10: "Greek",
+        11: "Hungarian",
+        12: "Norwegian",
+        13: "Polish",
+        14: "Portuguese",
+        15: "Slovakian",
+        16: "Slovenian",
+        17: "Swedish",
+        18: "Russian",
+        19: "Turkish",
+        20: "Latvian",
+        21: "Ukrainian",
+        22: "Arabic",
+        23: "Farsi",
+        24: "Bulgarian",
+        25: "Romanian",
+        254: "Custom",
+    }
+
+
+class DisplayHeart(Enum):
+    variants = {
+        0: "BPM",
+        1: "Max",
+        2: "Reserve",
+    }
+
+
+class DisplayPower(Enum):
+    variants = {
+        0: "Watts",
+        1: "Percent FTP",
+    }
+
+
+class DisplayPosition(Enum):
+    variants = {  # to be done
+        0: "Degree",  # dd.dddddd
+    }
+
+
+class ActivityClass(Enum):
+    variants = {
+        100: "Level Max",
+        0x80: "Athlete"
+    }
+
+    def _load(self, data):
+        if 0 < data < 0x7F:
+            return data
+        return super(ActivityClass, self)._load(data)
+
+    def _save(self, value):
+        if isinstance(value, int):
+            return value
+        return super(ActivityClass, self)._save(value)
