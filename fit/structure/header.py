@@ -46,7 +46,7 @@ class Header(object):
         if len(chunk) == 14:
             self.crc.read(chunk[12:])
 
-            if not self.crc.check(chunk[:12]):
+            if self.crc.value and not self.crc.check(chunk[:12]):
                 raise BodyFormatError("Invalid CRC %x, should be %x" % (
                     compute_crc(chunk[:12]), self.crc.value))
 

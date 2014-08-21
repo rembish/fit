@@ -15,6 +15,7 @@ class Reader(object):
         self._crc = Crc()
 
         self.file_size = fstat(self._fd.fileno()).st_size
+        self.header_chunk = ""
 
     def __repr__(self):
         return '<%s header=%r body=%r crc=%r>' % (
@@ -40,7 +41,7 @@ class Reader(object):
                 "Can't read %d bytes, read %d bytes instead" % (
                     header_size, len(header) + 1))
 
-        header = "%c%s" % (header_size, header)
+        self.header_chunk = header = "%c%s" % (header_size, header)
         self._header.read(header)
 
         if not self._header.valid:
@@ -64,7 +65,8 @@ class Reader(object):
                     "Can't read %d bytes, read %d bytes instead" % (
                         self.header.data_size, len(body)))
 
-            if not self.crc.check(body):
+            header = "" if self.header.crc.value else self.header_chunk
+            if not self.crc.check(header + body):
                 raise BodyFormatError("Invalid CRC %x, should be %x" % (
                     compute_crc(body), self.crc.value))
 
