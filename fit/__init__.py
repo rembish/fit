@@ -3,7 +3,7 @@ from copy import copy
 from fit.io.reader import Reader
 from fit.io.writer import Writer
 from fit.messages import Message
-from fit.files import KNOWN as KNOWN_MIXINS, FileLike
+from fit.files import KNOWN as KNOWN_FILES, FileLike
 from fit.structure.body import Body
 
 
@@ -150,3 +150,14 @@ class FitFile(FileLike):
         assert isinstance(other, FitFile)
         self.body = other.copy()
         self._apply_mixin()
+
+
+def register(file_cls):
+    if not issubclass(file_cls, FitFile):
+        raise ValueError(
+            "%s should be subclass of FitFile" % file_cls.__name__)
+    if not isinstance(file_cls.type, int):
+        raise ValueError(
+            "%s should have defined file type" % file_cls.__name__)
+
+    KNOWN_FILES[file_cls.type] = file_cls

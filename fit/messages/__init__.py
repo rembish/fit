@@ -172,3 +172,19 @@ class GenericMessage(Message):
 
 
 KNOWN = get_known(__name__, Message, key="msg_type")
+
+
+def register(message_cls):
+    global KNOWN
+
+    if not issubclass(message_cls, Message):
+        raise ValueError(
+            "%s should be subclass of Message" % message_cls.__name__)
+    if not isinstance(message_cls.msg_type, int):
+        raise ValueError(
+            "%s should have defined message type" % message_cls.__name__)
+    if not message_cls._meta.model:
+        raise ValueError(
+            "%s should have not empty model" % message_cls.__name__)
+
+    KNOWN[message_cls.msg_type] = message_cls

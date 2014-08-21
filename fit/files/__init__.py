@@ -36,7 +36,10 @@ class FileLike(object):
         if self.file_id:
             mixin_cls = KNOWN.get(self.file_id.filetype)
             if mixin_cls:
-                mcs.append(mixin_cls)
+                if issubclass(mixin_cls, FitFile):
+                    mcs = [mixin_cls]
+                else:
+                    mcs.append(mixin_cls)
         self.__class__ = type(mcs[-1].__name__, tuple(mcs), {})
 
     def _validate(self, i, value=None):
