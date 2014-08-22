@@ -4,7 +4,7 @@ from fit.utils import get_known
 
 
 class Type(object):
-    type = -1
+    type = None
     size = 0
     format = "x"
     units = None

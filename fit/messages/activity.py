@@ -11,7 +11,7 @@ from fit.types.extended import DateTime, Manufacturer, LocalDateTime, \
     EventType, MessageIndex, LeftRightBalance100, LeftRightBalance, Sport, \
     SubSport, SessionTrigger, SwimStroke, DisplayMeasure, Intensity, \
     LapTrigger, LengthType, ActivityType, StrokeType, DeviceIndex, \
-    BatteryStatus, BodyLocation, AntNetwork, SourceType, Product
+    BatteryStatus, BodyLocation, AntNetwork, SourceType, Product, TimerTrigger
 from fit.types.extended import Activity as ActivityField, Event as EventField
 
 

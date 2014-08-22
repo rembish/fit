@@ -751,3 +751,11 @@ class ActivityClass(Enum):
         if isinstance(value, int):
             return value
         return super(ActivityClass, self)._save(value)
+
+
+class TimerTrigger(Enum):
+    variants = {
+        0: "Manual",
+        1: "Auto",
+        2: "Fitness Equipment",
+    }

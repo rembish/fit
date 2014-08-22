@@ -1,7 +1,8 @@
+from fit.files import FileLike
 from fit.messages.activity import Activity, Session, Lap, Length, Record, \
     Event, DeviceInfo, Hrv
 from fit.messages.common import FileId
-from fit.files import FileLike
+from fit.messages.course import Course, CoursePoint
 
 
 class ActivityFile(FileLike):
@@ -9,3 +10,8 @@ class ActivityFile(FileLike):
     record_types = frozenset((
         FileId, Activity, Session, Lap, Length, Record, Event, DeviceInfo, Hrv
     ))
+
+
+class ActivitySummaryFile(FileLike):
+    type = 6
+    record_types = frozenset((FileId, Course, CoursePoint, Lap, Record))

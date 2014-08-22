@@ -91,7 +91,9 @@ class Message(object):
             field_name = name
             if name.startswith("unknown_"):
                 field_name = "%s[%d]" % (field.__class__.__name__, field.number)
-            data[field_name] = "%s%s" % (getattr(self, name), field.units or "")
+
+            data[field_name] = getattr(self, name)
+            #data[field_name] = "%s%s" % (getattr(self, name), field.units or "")
 
         return '<%s.%s[%d] %s>' % (
             self.__module__.split(".")[-1],
@@ -154,7 +156,7 @@ class Message(object):
 
             setattr(
                 self, self._get_name(field.number),
-                self._get_type(field.number).read(
+                field.read(
                     read_buffer, architecture=self._definition.architecture))
 
     def write(self, index, model=None):

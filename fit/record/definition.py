@@ -1,3 +1,4 @@
+from copy import copy
 from struct import unpack, pack
 
 from fit.messages import KNOWN as KNOWN_MESSAGES, GenericMessage
@@ -45,9 +46,9 @@ class Definition(object):
 
     def build_message(self, read_buffer):
         message_cls = KNOWN_MESSAGES.get(self.number, GenericMessage)
-        message = message_cls(self)
+        message = message_cls(copy(self))
         if isinstance(message, GenericMessage):
             message.msg_type = self.number
 
-        message.read(read_buffer, self.fields)
+        message.read(read_buffer, copy(self.fields))
         return message
