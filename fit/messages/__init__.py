@@ -2,7 +2,7 @@ from re import match
 
 from fit.record.fields import Fields
 from fit.types import Type
-from fit.types.dynamic import Dynamic
+from fit.types.dynamic import DynamicField
 from fit.utils import get_known
 
 
@@ -26,7 +26,7 @@ class FieldProxy(object):
 
         field = instance._get_type(self.number)
 
-        if isinstance(field, Dynamic):
+        if isinstance(field, DynamicField):
             referred_value = instance[field.referred]
             return field.mutate(referred_value)._load(value)
 
@@ -39,7 +39,7 @@ class FieldProxy(object):
         field = instance._get_type(self.number)
 
         data = field._save(value)
-        if isinstance(field, Dynamic):
+        if isinstance(field, DynamicField):
             referred_value = instance[field.referred]
             data = field.mutate(referred_value)._save(value)
 
@@ -176,6 +176,7 @@ class Message(object):
                 unknown = self._get_name(field.number)
                 setattr(self, unknown, None)
 
+            self._meta.model[field.number].size = field.size
             self._data[self._get_name(field.number)] = field.read(
                 read_buffer, architecture=self._definition.architecture)
 
@@ -185,7 +186,7 @@ class Message(object):
         model = model or self.definition.fields
         write_buffer = DataHeader(index).write()
         for field in model:
-            value = getattr(self, self._get_name(field.number))
+            value = self._data[self._get_name(field.number)]
             write_buffer += field.write(value)
         return write_buffer
 

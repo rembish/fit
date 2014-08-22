@@ -32,12 +32,12 @@ class Type(object):
         if data == self._invalid:
             data = None
 
-        return self._load(data) if data is not None else None
+        return data
 
     def write(self, value):
         return pack(
             "<%s" % self.format,
-            self._save(value) if value is not None else self._invalid)
+            value if value is not None else self._invalid)
 
     def _load(self, data):
         return data

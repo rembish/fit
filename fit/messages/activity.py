@@ -5,7 +5,7 @@ from fit.types.additional import Altitude, Degrees, TimerTime, Distance, \
     SSpeed, BallSpeed, Oscillation, StanceTime, FractionalCadence, \
     FractionalCycles, Hemoglobin, HemoglobinPercents, Accuracy, \
     StancePercents, Version
-from fit.types.dynamic import Dynamic
+from fit.types.dynamic import DynamicField
 from fit.types.general import UInt32Z, UInt16, UInt32, UInt8, SInt16, SInt8, \
     String, Byte, UInt8Z, UInt16Z
 from fit.types.extended import DateTime, Manufacturer, LocalDateTime, \
@@ -275,7 +275,7 @@ class Event(Message):
     msg_type = 21
 
     timestamp = DateTime(253)
-    data = Dynamic(
+    data = DynamicField(
         UInt32(3),
         event={
             "timer":  TimerTrigger,
@@ -307,7 +307,7 @@ class DeviceInfo(Message):
     battery_voltage = UInt16(10)
     ant_device_number = UInt16Z(21)
     device_index = DeviceIndex(0)
-    device_type = Dynamic(
+    device_type = DynamicField(
         UInt8(1),
         source_type={
             #"antplus": AntplusDeviceType,

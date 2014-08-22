@@ -75,7 +75,10 @@ class String(Type):
 
     def __init__(self, number, size=None):
         super(String, self).__init__(number, size=size)
-        self.format = "%ds" % self.size
+
+    @property
+    def format(self):
+        return "%ds" % self.size
 
 
 class Float32(Type):

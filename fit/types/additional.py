@@ -156,14 +156,14 @@ class Met(ScaleMixin, UInt16):
 
 
 class Years(UInt8):
-    units = "years"
+    units = " years"
 
 
 class MetCalories(ScaleMixin, UInt16):
     scale = 10
-    units = "KCal/min"
+    units = " KCal/min"
 
 
 class MetFatCalories(ScaleMixin, UInt8):
     scale = 10
-    units = "KCal/min"
+    units = " KCal/min"
