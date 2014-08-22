@@ -22,16 +22,19 @@ class DateTime(LocalDateTime):
 
 class Manufacturer(KnownMixin, UInt16):
     known = {  # to be done
-        1: "Garmin",
-        255: "Development",
+        1: "garmin",
+        13: "dynastream_oem",
+        15: "dynastream",
+        255: "development",
     }
 
 
-class Product(KnownMixin, UInt16):
+class GarminProduct(KnownMixin, UInt16):
     known = {  # to be done
-        1124: "Garmin Forerunner 110",
-        1551: "Garmin Fēnix",
-        65534: "Garmin Connect",
+        1: "hrm1",
+        1124: "fr110",
+        1551: "fenix",
+        65534: "connect",
     }
 
 
@@ -226,28 +229,28 @@ class FileFlags(KnownMixin, UInt8Z):
 
 class File(Enum):
     variants = {
-        1: "Device",
-        2: "Settings",
-        3: "Sport",
-        4: "Activity",
-        5: "Workout",
-        6: "Course",
-        7: "Schedules",
-        9: "Weight",
-        10: "Totals",
-        11: "Goals",
-        14: "Blood Pressure",
-        15: "Monitoring A",
-        20: "Activity Summary",
-        28: "Monitoring Daily",
-        32: "Monitoring B",
+        1: "device",
+        2: "settings",
+        3: "sport",
+        4: "activity",
+        5: "workout",
+        6: "course",
+        7: "schedules",
+        9: "weight",
+        10: "totals",
+        11: "goals",
+        14: "blood_pressure",
+        15: "monitoring_a",
+        20: "activity_summary",
+        28: "monitoring_daily",
+        32: "monitoring_b",
     }
 
 
 class Activity(Enum):
     variants = {
-        0: "Manual",
-        1: "Auto Multi Sport",
+        0: "manual",
+        1: "auto_multi_sport",
     }
 
 
@@ -260,53 +263,53 @@ class Bool(Enum):
 
 class Event(Enum):
     variants = {
-        0: "Timer",
-        3: "Workout",
-        4: "Workout Step",
-        5: "Power Down",
-        6: "Power Up",
-        7: "Off Course",
-        8: "Session",
-        9: "Lap",
-        10: "Course Point",
-        11: "Battery",
-        12: "Virtual Partner Pace",
-        13: "HR High Alert",
-        14: "HR Low Alert",
-        15: "Speed High Alert",
-        16: "Speed Low Alert",
-        17: "Cad High Alert",
-        18: "Cad Low Alert",
-        19: "Power High Alert",
-        20: "Power Low Alert",
-        21: "Recovery HR",
-        22: "Battery Low",
-        23: "Time Duration Alert",
-        24: "Distance Duration Alert",
-        25: "Calorie Duration Alert",
-        26: "Activity",
-        27: "Fitness Equipment",
-        28: "Length",
-        32: "User Marker",
-        33: "Sport Point",
-        36: "Calibration",
-        42: "Front Gear Change",
-        43: "Rear Gear Change",
+        0: "timer",
+        3: "workout",
+        4: "workout_step",
+        5: "power_down",
+        6: "power_up",
+        7: "off_course",
+        8: "session",
+        9: "lap",
+        10: "course_point",
+        11: "battery",
+        12: "virtual_partner_pace",
+        13: "hr_high_alert",
+        14: "hr_low_alert",
+        15: "speed_high_alert",
+        16: "speed_low_alert",
+        17: "cad_high_alert",
+        18: "cad_low_alert",
+        19: "power_high_alert",
+        20: "power_low_alert",
+        21: "recovery_hr",
+        22: "battery_low",
+        23: "time_duration_alert",
+        24: "distance_duration_alert",
+        25: "calorie_duration_alert",
+        26: "activity",
+        27: "fitness_equipment",
+        28: "length",
+        32: "user_marker",
+        33: "sport_point",
+        36: "calibration",
+        42: "front_gear_change",
+        43: "rear_gear_change",
     }
 
 
 class EventType(Enum):
     variants = {
-        0: "Start",
-        1: "Stop",
-        2: "Consecutive Depreciated",
-        3: "Marker",
-        4: "Stop All",
-        5: "Begin Depreciated",
-        6: "End Depreciated",
-        7: "End All Depreciated",
-        8: "Stop Disable",
-        9: "Stop Disable All"
+        0: "start",
+        1: "stop",
+        2: "consecutive_depreciated",
+        3: "marker",
+        4: "stop_all",
+        5: "begin_depreciated",
+        6: "end_depreciated",
+        7: "end_all_depreciated",
+        8: "stop_disable",
+        9: "stop_disable_all"
     }
 
 
@@ -504,12 +507,12 @@ class AntNetwork(Enum):
 
 class SourceType(Enum):
     variants = {
-        0: "Ant",
-        1: "Ant+",
-        2: "Bluetooth",
-        3: "Bluetooth Low Energy",
-        4: "WiFi",
-        5: "Local",
+        0: "ant",
+        1: "antplus",
+        2: "bluetooth",
+        3: "bluetooth_low_energy",
+        4: "wifi",
+        5: "local",
     }
 
 

@@ -1,6 +1,6 @@
 from fit.messages import Message
 from fit.types.additional import Version
-from fit.types.extended import MessageIndex, Manufacturer, Product, \
+from fit.types.extended import MessageIndex, Manufacturer, GarminProduct, \
     SportBits0, WorkoutCapabilities, ConnectivityCapabilities, File, \
     FileFlags, MesgNum, MesgCount
 from fit.types.general import String, UInt8Z, UInt16, UInt32, UInt8
@@ -18,7 +18,7 @@ class SlaveDevice(Message):
     msg_type = 106
 
     manufacturer = Manufacturer(0)
-    product = Product(1)
+    product = GarminProduct(1)
 
 
 class Capabilities(Message):

@@ -5,13 +5,15 @@ from fit.types.additional import Altitude, Degrees, TimerTime, Distance, \
     SSpeed, BallSpeed, Oscillation, StanceTime, FractionalCadence, \
     FractionalCycles, Hemoglobin, HemoglobinPercents, Accuracy, \
     StancePercents, Version
+from fit.types.dynamic import Dynamic
 from fit.types.general import UInt32Z, UInt16, UInt32, UInt8, SInt16, SInt8, \
     String, Byte, UInt8Z, UInt16Z
 from fit.types.extended import DateTime, Manufacturer, LocalDateTime, \
     EventType, MessageIndex, LeftRightBalance100, LeftRightBalance, Sport, \
     SubSport, SessionTrigger, SwimStroke, DisplayMeasure, Intensity, \
     LapTrigger, LengthType, ActivityType, StrokeType, DeviceIndex, \
-    BatteryStatus, BodyLocation, AntNetwork, SourceType, Product, TimerTrigger
+    BatteryStatus, BodyLocation, AntNetwork, SourceType, GarminProduct, \
+    TimerTrigger
 from fit.types.extended import Activity as ActivityField, Event as EventField
 
 
@@ -273,7 +275,14 @@ class Event(Message):
     msg_type = 21
 
     timestamp = DateTime(253)
-    data = UInt32(3)
+    data = Dynamic(
+        UInt32(3),
+        event={
+            "timer":  TimerTrigger,
+            "course_point": MessageIndex,
+            #"battery": Volts,
+        }
+    )
     data16 = UInt16(2)
     score = UInt16(7)
     opponent_score = UInt16(8)
@@ -293,12 +302,18 @@ class DeviceInfo(Message):
     serial_number = UInt32Z(3)
     cum_operating_time = UInt32(7)
     manufacturer = Manufacturer(2)
-    product = Product(4)
+    product = GarminProduct(4)
     software_version = Version(5)
     battery_voltage = UInt16(10)
     ant_device_number = UInt16Z(21)
     device_index = DeviceIndex(0)
-    device_type = UInt8(1)
+    device_type = Dynamic(
+        UInt8(1),
+        source_type={
+            #"antplus": AntplusDeviceType,
+            "ant": UInt8,
+        }
+    )
     hardware_version = UInt8(6)
     battery_status = BatteryStatus(11)
     sensor_position = BodyLocation(18)

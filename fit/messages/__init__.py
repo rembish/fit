@@ -2,6 +2,7 @@ from re import match
 
 from fit.record.fields import Fields
 from fit.types import Type
+from fit.types.dynamic import Dynamic
 from fit.utils import get_known
 
 
@@ -19,10 +20,30 @@ class FieldProxy(object):
         self.key = key
 
     def __get__(self, instance, owner):
-        return instance._data.get(self.key, None)
+        value = instance._data.get(self.key, None)
+        if value is None:
+            return None
+
+        field = instance._get_type(self.number)
+
+        if isinstance(field, Dynamic):
+            referred_value = instance[field.referred]
+            return field.mutate(referred_value)._load(value)
+
+        return field._load(value)
 
     def __set__(self, instance, value):
-        instance._data[self.key] = value
+        if value is None:
+            return self.__delete__(instance)
+
+        field = instance._get_type(self.number)
+
+        data = field._save(value)
+        if isinstance(field, Dynamic):
+            referred_value = instance[field.referred]
+            data = field.mutate(referred_value)._save(value)
+
+        instance._data[self.key] = data
 
     def __delete__(self, instance):
         instance._data[self.key] = None
@@ -92,8 +113,7 @@ class Message(object):
             if name.startswith("unknown_"):
                 field_name = "%s[%d]" % (field.__class__.__name__, field.number)
 
-            data[field_name] = getattr(self, name)
-            #data[field_name] = "%s%s" % (getattr(self, name), field.units or "")
+            data[field_name] = "%s%s" % (getattr(self, name), field.units or "")
 
         return '<%s.%s[%d] %s>' % (
             self.__module__.split(".")[-1],
@@ -104,15 +124,15 @@ class Message(object):
 
     def __setitem__(self, key, value):
         self._get_number(key)
-        self._data[key] = value
+        setattr(self, key, value)
 
     def __getitem__(self, key):
         self._get_number(key)
-        return self._data[key]
+        return getattr(self, key)
 
     def __delitem__(self, key):
         self._get_number(key)
-        self._data[key] = None
+        delattr(self, key)
 
     def _get_name(self, number):
         if number not in self._meta.names:
@@ -153,11 +173,11 @@ class Message(object):
         for field in model:
             if field.number not in self._meta.names:
                 self._unknowns[field.number] = field
+                unknown = self._get_name(field.number)
+                setattr(self, unknown, None)
 
-            setattr(
-                self, self._get_name(field.number),
-                field.read(
-                    read_buffer, architecture=self._definition.architecture))
+            self._data[self._get_name(field.number)] = field.read(
+                read_buffer, architecture=self._definition.architecture)
 
     def write(self, index, model=None):
         from fit.record.header import DataHeader
