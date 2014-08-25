@@ -9,6 +9,11 @@ class DynamicField(Type):
         self.referred = kwargs.keys()[0]
         self.variants = kwargs[self.referred] or {}
 
+    def __repr__(self):
+        return '<%s of %r>' % (
+            self.__class__.__name__, self.base
+        )
+
     @property
     def type(self):
         return self.base.type
@@ -20,10 +25,16 @@ class DynamicField(Type):
         return self.base.write(value)
 
     def mutate(self, referred_value):
-        for keys, field_cls in self.variants.items():
+        for keys, subfield in self.variants.items():
             if not isinstance(keys, (list, tuple, set, frozenset)):
                 keys = (keys,)
             if referred_value in keys:
-                return field_cls(self.number)
+                return subfield.type(self.number)
 
         return self.base
+
+
+class SubField(object):
+    def __init__(self, field_name, field_type):
+        self.name = field_name
+        self.type = field_type

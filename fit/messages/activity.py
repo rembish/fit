@@ -275,14 +275,15 @@ class Event(Message):
     msg_type = 21
 
     timestamp = DateTime(253)
-    data = DynamicField(
+    data = UInt32(3)
+    '''DynamicField(
         UInt32(3),
         event={
-            "timer":  TimerTrigger,
+            "timer": TimerTrigger,
             "course_point": MessageIndex,
             #"battery": Volts,
         }
-    )
+    )'''
     data16 = UInt16(2)
     score = UInt16(7)
     opponent_score = UInt16(8)
@@ -307,13 +308,14 @@ class DeviceInfo(Message):
     battery_voltage = UInt16(10)
     ant_device_number = UInt16Z(21)
     device_index = DeviceIndex(0)
-    device_type = DynamicField(
+    device_type = UInt8(1)
+    '''DynamicField(
         UInt8(1),
         source_type={
             #"antplus": AntplusDeviceType,
             "ant": UInt8,
         }
-    )
+    )'''
     hardware_version = UInt8(6)
     battery_status = BatteryStatus(11)
     sensor_position = BodyLocation(18)
