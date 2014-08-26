@@ -1,9 +1,9 @@
 from fit.messages import Message
-from fit.types.additional import degrees, Distance
+from fit.types.additional import degrees
 from fit.types.extended import Sport, CourseCapabilities, MessageIndex, \
     DateTime
 from fit.types.extended import CoursePoint as CoursePointField
-from fit.types.general import String
+from fit.types.general import String, UInt32
 
 
 class Course(Message):
@@ -21,6 +21,6 @@ class CoursePoint(Message):
     timestamp = DateTime(1)
     position_lat = degrees(2)
     position_long = degrees(3)
-    distance = Distance(4)
+    distance = UInt32(4, units="m") * 100
     type = CoursePointField(5)
     name = String(6)

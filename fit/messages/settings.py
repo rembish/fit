@@ -1,5 +1,4 @@
 from fit.messages import Message
-from fit.types.additional import Years, HeartRate, Distance
 from fit.types.extended import MessageIndex, DisplayMeasure, Bool, Sport, \
     SubSport, Gender, Language, DisplayHeart, DisplayPower, DisplayPosition, \
     ActivityClass, UserLocalId
@@ -12,7 +11,7 @@ class DeviceSettings(Message):
 
     active_time_zone = UInt8(0)
     utc_offset = UInt32(1)
-    time_zone_offset = SInt8(5)
+    time_zone_offset = SInt8(5)  # array
 
 
 class UserProfile(Message):
@@ -21,16 +20,16 @@ class UserProfile(Message):
     message_index = MessageIndex(254)
     friendly_name = String(0)
     gender = Gender(1)
-    age = Years(2)
+    age = UInt8(2) * "years"
     height = UInt8(3)
     weight = UInt16(4)
     language = Language(5)
     elev_setting = DisplayMeasure(6)
     weight_settings = DisplayMeasure(7)
-    resting_heart_rate = HeartRate(8)
-    default_max_running_heart_rate = HeartRate(9)
-    default_max_biking_heart_rate = HeartRate(10)
-    default_max_heart_rate = HeartRate(11)
+    resting_heart_rate = UInt8(8) * "bpm"
+    default_max_running_heart_rate = UInt8(9) * "bpm"
+    default_max_biking_heart_rate = UInt8(10) * "bpm"
+    default_max_heart_rate = UInt8(11) * "bpm"
     hr_setting = DisplayHeart(12)
     speed_setting = DisplayMeasure(13)
     dist_setting = DisplayMeasure(14)
@@ -39,7 +38,7 @@ class UserProfile(Message):
     position_setting = DisplayPosition(18)
     temperature_setting = DisplayMeasure(21)
     local_id = UserLocalId(22)
-    global_id = Byte(23)
+    global_id = Byte(23)  # array
     height_setting = DisplayMeasure(30)
 
 
@@ -60,7 +59,7 @@ class SdmProfile(Message):
     enabled = Bool(0)
     sdm_ant_id = UInt16Z(1)
     sdm_cal_factor = UInt16(2)
-    odometer = Distance(3)
+    odometer = UInt32(3, units="m") * 100
     speed_source = Bool(4)
     sdm_ant_id_trans_byte = UInt8Z(5)
     odometer_rollover = UInt8(7)
@@ -73,7 +72,7 @@ class BikeProfile(Message):
     name = String(0)
     sport = Sport(1)
     sub_sport = SubSport(2)
-    odometer = Distance(3)
+    odometer = UInt32(3, units="m") * 100
     bike_spd_ant_id = UInt16Z(4)
     bike_cad_ant_id = UInt16Z(5)
     bike_spdcad_ant_id = UInt16Z(6)

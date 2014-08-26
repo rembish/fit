@@ -1,11 +1,6 @@
 # coding=utf-8
 from fit.messages import Message
-from fit.types.additional import Altitude, TimerTime, Distance, \
-    Cycles, Calories, Speed, HeartRate, Cadence, Power, Difference, \
-    StressScore, IntensityFactor, StrokeCount, Work, Percents, Temperature, \
-    SSpeed, BallSpeed, Oscillation, StanceTime, FractionalCadence, \
-    FractionalCycles, Hemoglobin, HemoglobinPercents, Accuracy, \
-    StancePercents, Version, degrees
+from fit.types.additional import degrees
 from fit.types.dynamic import DynamicField, SubField
 from fit.types.general import UInt32Z, UInt16, UInt32, UInt8, SInt16, SInt8, \
     String, Byte, UInt8Z, UInt16Z, SInt32
@@ -13,8 +8,8 @@ from fit.types.extended import DateTime, Manufacturer, LocalDateTime, \
     EventType, MessageIndex, LeftRightBalance100, LeftRightBalance, Sport, \
     SubSport, SessionTrigger, SwimStroke, DisplayMeasure, Intensity, \
     LapTrigger, LengthType, ActivityType, StrokeType, DeviceIndex, \
-    BatteryStatus, BodyLocation, AntNetwork, SourceType, GarminProduct, \
-    TimerTrigger, AntplusDeviceType, FitnessEquipmentState
+    BatteryStatus, BodyLocation, AntNetwork, SourceType, TimerTrigger, \
+    AntplusDeviceType, FitnessEquipmentState
 from fit.types.extended import Activity as ActivityField, Event as EventField
 
 
@@ -146,83 +141,103 @@ class Session(Message):
 class Lap(Message):
     msg_type = 19
 
+    message_index = MessageIndex(254)
     timestamp = DateTime(253)
+    event = EventField(0)
+    event_type = EventType(1)
     start_time = DateTime(2)
     start_position_lat = degrees(3)
     start_position_long = degrees(4)
     end_position_lat = degrees(5)
     end_position_long = degrees(6)
-    total_elapsed_time = TimerTime(7)
-    total_timer_time = TimerTime(8)
-    total_distance = Distance(9)
-    total_cycles = UInt32(10)
-    total_work = UInt32(41)
-    total_moving_time = UInt32(52)
-    time_in_hr_zone = UInt32(57)
-    time_in_speed_zone = UInt32(58)
-    time_in_cadence_zone = UInt32(59)
-    time_in_power_zone = UInt32(60)
-    message_index = MessageIndex(254)
-    total_calories = UInt16(11)
-    total_fat_calories = UInt16(12)
-    avg_speed = UInt16(13)
-    max_speed = Speed(14)
-    avg_power = UInt16(19)
-    max_power = UInt16(20)
-    total_ascent = Difference(21)
-    total_descent = Difference(22)
-    num_lengths = UInt16(32)
-    normalized_power = UInt16(33)
-    left_right_balance = LeftRightBalance100(34)
-    first_length_index = UInt16(35)
-    avg_stroke_distance = UInt16(37)
-    num_active_lengths = UInt16(40)
-    avg_altitude = Altitude(42)
-    max_altitude = Altitude(43)
-    avg_grade = SInt16(45)
-    avg_pos_grade = SInt16(46)
-    avg_neg_grade = SInt16(47)
-    max_pos_grade = SInt16(48)
-    max_neg_grade = SInt16(49)
-    avg_pos_vertical_speed = SInt16(53)
-    avg_neg_vertical_speed = SInt16(54)
-    max_pos_vertical_speed = SInt16(55)
-    max_neg_vertical_speed = SInt16(56)
-    repetition_num = UInt16(61)
-    min_altitude = Altitude(62)
-    wkt_step_index = MessageIndex(71)
-    opponent_score = UInt16(74)
-    stroke_count = UInt16(75)
-    zone_count = UInt16(76)
-    avg_vertical_oscillation = UInt16(77)
-    avg_stance_time_percent = UInt16(78)
-    avg_stance_time = UInt16(79)
-    player_score = UInt16(83)
-    avg_total_hemoglobin_conc = Hemoglobin(84)
-    min_total_hemoglobin_conc = Hemoglobin(85)
-    max_total_hemoglobin_conc = Hemoglobin(86)
-    avg_saturated_hemoglobin_percent = HemoglobinPercents(87)
-    min_saturated_hemoglobin_percent = HemoglobinPercents(88)
-    max_saturated_hemoglobin_percent = HemoglobinPercents(89)
-    event = EventField(0)
-    event_type = EventType(1)
-    avg_heart_rate = UInt8(15)
-    max_heart_rate = UInt8(16)
-    avg_cadence = UInt8(17)
-    max_cadence = UInt8(18)
+    total_elapsed_time = UInt32(7, units="s") * 1000
+    total_timer_time = UInt32(8, units="s") * 1000
+    total_distance = UInt32(9, units="m") * 100
+    total_cycles = DynamicField(
+        UInt32(10, units="cycles"),
+        sport={
+            "running": SubField("total_strides", units="strides")
+        }
+    )
+    total_calories = UInt16(11) * "kcal"
+    total_fat_calories = UInt16(12) * "kcal"
+    avg_speed = UInt16(13, units="m/s") * 1000
+    max_speed = UInt16(14, units="m/s") * 1000
+    avg_heart_rate = UInt8(15) * "bpm"
+    max_heart_rate = UInt8(16) * "bpm"
+    avg_cadence = DynamicField(
+        UInt8(17, units="rpm"),
+        sport={
+            "running": SubField("avg_running_cadence", units="strides/min")
+        }
+    )
+    max_cadence = DynamicField(
+        UInt8(18, units="rpc"),
+        sport={
+            "running": SubField("max_running_cadence", units="strides/min")
+        }
+    )
+    avg_power = UInt16(19) * "watts"
+    max_power = UInt16(20) * "watts"
+    total_ascent = UInt16(21) * "m"
+    total_descent = UInt16(22) * "m"
     intensity = Intensity(23)
     lap_trigger = LapTrigger(24)
     sport = Sport(25)
-    EventGroup = UInt8(26)
+    event_group = UInt8(26)
+    num_lengths = UInt16(32)
+    normalized_power = UInt16(33) * "watts"
+    left_right_balance = LeftRightBalance100(34)
+    first_length_index = UInt16(35)
+    avg_stroke_distance = UInt16(37, units="m") * 100
     swim_stroke = SwimStroke(38)
     sub_sport = SubSport(39)
-    gps_accuracy = UInt8(44)
-    avg_temperature = SInt8(50)
-    max_temperature = SInt8(51)
-    min_heart_rate = UInt8(63)
-    avg_fractional_cadence = UInt8(80)
-    max_fractional_cadence = UInt8(81)
-    total_fractional_cycles = UInt8(82)
+    num_active_lengths = UInt16(40)
+    total_work = UInt32(41) * "J"
+    avg_altitude = UInt16(42, units="m") * 5 + 500
+    max_altitude = UInt16(43, units="m") * 5 + 500
+    gps_accuracy = UInt8(44) * "m"
+    avg_grade = SInt16(45, units="%") * 100
+    avg_pos_grade = SInt16(46, units="%") * 100
+    avg_neg_grade = SInt16(47, units="%") * 100
+    max_pos_grade = SInt16(48, units="%") * 100
+    max_neg_grade = SInt16(49, units="%") * 100
+    avg_temperature = SInt8(50) * "°C"
+    max_temperature = SInt8(51) * "°C"
+    total_moving_time = UInt32(52, units="s") * 1000
+    avg_pos_vertical_speed = SInt16(53, units="m/s") * 1000
+    avg_neg_vertical_speed = SInt16(54, units="m/s") * 1000
+    max_pos_vertical_speed = SInt16(55, units="m/s") * 1000
+    max_neg_vertical_speed = SInt16(56, units="m/s") * 1000
+    time_in_hr_zone = UInt32(57, units="s") * 1000  # array
+    time_in_speed_zone = UInt32(58, units="s") * 1000  # array
+    time_in_cadence_zone = UInt32(59, units="s") * 1000  # array
+    time_in_power_zone = UInt32(60, units="s") * 1000  # array
+    repetition_num = UInt16(61)
+    min_altitude = UInt16(62, units="m") * 5 + 500
+    min_heart_rate = UInt8(63) * "bpm"
+    wkt_step_index = MessageIndex(71)
+    opponent_score = UInt16(74)
+    stroke_count = UInt16(75)  # array
+    zone_count = UInt16(76)  # array
+    avg_vertical_oscillation = UInt16(77, units="mm") * 10
+    avg_stance_time_percent = UInt16(78, units="%") * 100
+    avg_stance_time = UInt16(79, units="ms") * 10
+    avg_fractional_cadence = UInt8(80, units="rpm") * 128
+    max_fractional_cadence = UInt8(81, units="rpm") * 128
+    total_fractional_cycles = UInt8(82, units="cycles") * 128
+    player_score = UInt16(83)
+    avg_total_hemoglobin_conc = UInt16(84, units="g/dL") * 100  # array
+    min_total_hemoglobin_conc = UInt16(85, units="g/dL") * 100  # array
+    max_total_hemoglobin_conc = UInt16(86, units="g/dL") * 100  # array
+    avg_saturated_hemoglobin_percent = UInt16(87, units="%") * 10  # array
+    min_saturated_hemoglobin_percent = UInt16(88, units="%") * 10  # array
+    max_saturated_hemoglobin_percent = UInt16(89, units="%") * 10  # array
+    avg_left_torque_effectiveness = UInt8(91, units="%") * 2
+    avg_right_torque_effectiveness = UInt8(92, units="%") * 2
+    avg_left_pedal_smoothness = UInt8(93, units="%") * 2
+    avg_right_pedal_smoothness = UInt8(94, units="%") * 2
+    avg_combined_pedal_smoothness = UInt8(95, units="%") * 2
 
 
 class Length(Message):

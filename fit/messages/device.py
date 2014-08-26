@@ -1,5 +1,4 @@
 from fit.messages import Message
-from fit.types.additional import Version
 from fit.types.extended import MessageIndex, Manufacturer, GarminProduct, \
     SportBits0, WorkoutCapabilities, ConnectivityCapabilities, File, \
     FileFlags, MesgNum, MesgCount
@@ -10,7 +9,7 @@ class Software(Message):
     msg_type = 35
 
     message_index = MessageIndex(254)
-    version = Version(3)
+    version = UInt16(3) * 100
     part_number = String(5)
 
 
