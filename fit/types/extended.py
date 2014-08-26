@@ -3,7 +3,7 @@ from datetime import datetime
 from time import mktime
 
 from fit.types.general import UInt32, UInt16, UInt8, Enum, UInt32Z, UInt8Z
-from fit.types.mixins import KnownMixin, ScaleMixin
+from fit.types.helpers import KnownMixin
 
 
 class LocalDateTime(UInt32):
@@ -124,11 +124,10 @@ class MesgNum(KnownMixin, UInt16):
     }
 
 
-class Weight(ScaleMixin, KnownMixin, UInt16):
+class Weight(KnownMixin, UInt16):
     known = {
         0xfffe: "Calculating"
     }
-    units = "kg"
 
     def _load(self, data):
         value = KnownMixin._load(self, data)

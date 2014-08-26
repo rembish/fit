@@ -1,6 +1,5 @@
 # coding=utf-8
 from fit.messages import Message
-from fit.types.additional import degrees
 from fit.types.dynamic import DynamicField, SubField
 from fit.types.general import UInt32Z, UInt16, UInt32, UInt8, SInt16, SInt8, \
     String, Byte, UInt8Z, UInt16Z, SInt32
@@ -11,6 +10,7 @@ from fit.types.extended import DateTime, Manufacturer, LocalDateTime, \
     BatteryStatus, BodyLocation, AntNetwork, SourceType, TimerTrigger, \
     AntplusDeviceType, FitnessEquipmentState
 from fit.types.extended import Activity as ActivityField, Event as EventField
+from fit.types.helpers import degrees
 
 
 class Activity(Message):

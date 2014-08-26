@@ -1,9 +1,9 @@
 from fit.messages import Message
-from fit.types.additional import degrees
 from fit.types.extended import Sport, CourseCapabilities, MessageIndex, \
     DateTime
 from fit.types.extended import CoursePoint as CoursePointField
 from fit.types.general import String, UInt32
+from fit.types.helpers import degrees
 
 
 class Course(Message):
