@@ -36,11 +36,10 @@ How-To
 
 TODO
 ----
-* Dynamic/Sub fields rework
 * Component fields
 * Array like data in fields
-* Type (units) rework
 * Compressed Timestamp Records right processing
 * Tests (you can submit me some cool examples)
 * Entry Points for external extensions
+* Convertable types
 * ...
