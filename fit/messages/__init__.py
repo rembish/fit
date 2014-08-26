@@ -244,12 +244,6 @@ class Message(object):
         return write_buffer
 
 
-class GenericMessage(Message):
-    def __init__(self, definition):
-        super(GenericMessage, self).__init__(definition)
-        self.msg_type = None
-
-
 KNOWN = get_known(__name__, Message, key="msg_type")
 
 
