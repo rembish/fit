@@ -3,9 +3,12 @@ from fit.types.general import SInt32, UInt16, UInt32, UInt8, SInt16, SInt8
 from fit.types.mixins import ScaleMixin
 
 
-class Degrees(ScaleMixin, SInt32):
-    scale = 2 ** 31 / 180.
-    units = "°"
+def degrees(number):
+    return SInt32(number, units="°") * (2 ** 31 / 180.)
+
+#class Degrees(ScaleMixin, SInt32):
+#    scale = 2 ** 31 / 180.
+#    units = "°"
 
 
 class Altitude(ScaleMixin, UInt16):

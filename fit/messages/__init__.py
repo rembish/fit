@@ -29,8 +29,15 @@ class FieldProxy(object):
         field = instance._get_type(self.number)
 
         if self.key != main_key:  # Subfield
-            return instance._meta.subfields[self.key]._load(value)
+            dynamic_field = instance._meta.model[self.number]
+            referred_key = dynamic_field.referred
+            referred_value = instance[referred_key]
+            subfield = dynamic_field.get_subfield(referred_value)
 
+            if not subfield or self.key != subfield.name:
+                return None
+
+            return instance._meta.subfields[self.key]._load(value)
         return field._load(value)
 
     def __set__(self, instance, value):
@@ -41,6 +48,14 @@ class FieldProxy(object):
         main_key = instance._get_name(self.number)
 
         if self.key != main_key:  # Subfield
+            dynamic_field = instance._meta.model[self.number]
+            referred_key = dynamic_field.referred
+            referred_value = instance[referred_key]
+            subfield = dynamic_field.get_subfield(referred_value)
+
+            if self.key != subfield.name:
+                raise AttributeError("Irrelevant subfield '%s'" % self.key)
+
             data = instance._meta.subfields[self.key]._save(value)
         else:
             data = field._save(value)
@@ -69,9 +84,15 @@ class MessageMeta(type):
                 meta.subfields.update(base._meta.get("subfields", {}))
 
         for key, value in attrs.items():
+            #if value and isinstance(value, tuple) \
+            #        and isinstance(value[0], Type):
+            #    value = value[0]  # Scale/Offset workaround
+
             if isinstance(value, DynamicField):
                 for subfield in value.variants.values():
-                    meta.subfields[subfield.name] = subfield.type(value.number)
+                    subfield.type = subfield.type or value.base.__class__
+                    meta.subfields[subfield.name] = subfield.type(
+                        value.number, **subfield.kwargs)
 
             if isinstance(value, Type):
                 meta.model[value.number] = value
@@ -123,18 +144,27 @@ class Message(object):
             if name.startswith("unknown_"):
                 field_name = "%s[%d]" % (field.__class__.__name__, field.number)
 
-            data[field_name] = "%s%s" % (getattr(self, name), field.units or "")
+            data[field_name] = "%s%s" % (
+                getattr(self, name),
+                getattr(field, "units", None) or ""
+            )
 
-        return '<%s.%s[%d] %s %s>' % (
+        normal_part = (' %s' % ' '.join(
+            "%s=%s" % (key, value)
+            for key, value in data.items()
+        )).rstrip()
+
+        dynamic_part = (' %s' % ' '.join(
+            "%s=%s" % (key, self[key])
+            for key in self._meta.subfields.keys()
+            if self[key] is not None
+        )).rstrip()
+
+        return '<%s.%s[%d]%s%s>' % (
             self.__module__.split(".")[-1],
             self.__class__.__name__,
             self.msg_type,
-            ' '.join("%s=%s" % (key, value) for key, value in data.items()),
-            ' '.join(
-                "%s=%s" % (key, self[key])
-                for key in self._meta.subfields.keys()
-                if self[key]
-            )
+            normal_part, dynamic_part
         )
 
     def __setitem__(self, key, value):
@@ -189,15 +219,18 @@ class Message(object):
 
     def read(self, read_buffer, model):
         for field in model:
+            unknown = None
             if field.number not in self._meta.names:
                 self._unknowns[field.number] = field
                 unknown = self._get_name(field.number)
-                setattr(self, unknown, FieldProxy(field.number, unknown))
 
             resolved = self._get_type(field.number)
             resolved.size = field.size
             self._data[self._get_name(field.number)] = field.read(
                 read_buffer, architecture=self._definition.architecture)
+
+            if unknown:
+                setattr(self, unknown, self._data[unknown])
 
     def write(self, index, model=None):
         from fit.record.header import DataHeader
@@ -205,8 +238,9 @@ class Message(object):
         model = model or self.definition.fields
         write_buffer = DataHeader(index).write()
         for field in model:
-            value = self._data[self._get_name(field.number)]
-            write_buffer += field.write(value)
+            value = self[self._get_name(field.number)]
+            data = field._save(value)
+            write_buffer += field.write(data)
         return write_buffer
 
 

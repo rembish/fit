@@ -7,7 +7,6 @@ class Type(object):
     type = None
     size = 0
     format = "x"
-    units = None
 
     _invalid = None
 
@@ -44,6 +43,55 @@ class Type(object):
 
     def _save(self, value):
         return value
+
+
+class BinaryType(Type):
+    def __init__(self, number, size=None, units=None):
+        super(BinaryType, self).__init__(number, size=size)
+        self.units = units
+        self.scale = None
+        self.offset = None
+
+    def __mul__(self, other):
+        if isinstance(other, (int, long, float)):
+            self.scale = other
+        if isinstance(other, (str, unicode)):
+            self.units = other
+        return self
+
+    def __rmul__(self, other):
+        self.scale = other
+        return self
+
+    def __sub__(self, other):
+        self.offset = -other
+        return self
+
+    def __add__(self, other):
+        self.offset = other
+        return self
+
+    def _load(self, data):
+        if not self.scale and not self.offset:
+            return super(BinaryType, self)._load(data)
+
+        value = float(data)
+        if self.scale:
+            value /= float(self.scale)
+        if self.offset:
+            value -= float(self.offset)
+        return value
+
+    def _save(self, value):
+        if not self.scale and not self.offset:
+            return super(BinaryType, self)._save(value)
+
+        data = value
+        if self.offset:
+            data += self.offset
+        if self.scale:
+            data *= self.scale
+        return int(data)
 
 
 KNOWN = get_known(__name__, Type)

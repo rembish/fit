@@ -1,4 +1,4 @@
-from fit.types import Type
+from fit.types import Type, BinaryType
 
 
 class Enum(Type):
@@ -19,7 +19,7 @@ class Enum(Type):
         return value
 
 
-class SInt8(Type):
+class SInt8(BinaryType):
     type = 1
     size = 1
     format = "b"
@@ -27,7 +27,7 @@ class SInt8(Type):
     _invalid = 0x7f
 
 
-class UInt8(Type):
+class UInt8(BinaryType):
     type = 2
     size = 1
     format = "B"
@@ -35,7 +35,7 @@ class UInt8(Type):
     _invalid = 0xff
 
 
-class SInt16(Type):
+class SInt16(BinaryType):
     type = 3
     size = 2
     format = "h"
@@ -43,7 +43,7 @@ class SInt16(Type):
     _invalid = 0x7fff
 
 
-class UInt16(Type):
+class UInt16(BinaryType):
     type = 4
     size = 2
     format = "H"
@@ -51,7 +51,7 @@ class UInt16(Type):
     _invalid = 0xffff
 
 
-class SInt32(Type):
+class SInt32(BinaryType):
     type = 5
     size = 4
     format = "i"
@@ -59,7 +59,7 @@ class SInt32(Type):
     _invalid = 0x7fffffff
 
 
-class UInt32(Type):
+class UInt32(BinaryType):
     type = 6
     size = 4
     format = "I"

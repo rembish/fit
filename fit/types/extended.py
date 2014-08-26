@@ -62,17 +62,17 @@ class LeftRightBalance100(KnownMixin, UInt16):
 
 class DeviceIndex(KnownMixin, UInt8):
     known = {
-        0: "Creator",
+        0: "creator",
     }
 
 
 class BatteryStatus(KnownMixin, UInt8):
     known = {
-        1: "New",
-        2: "Good",
-        3: "Ok",
-        4: "Low",
-        5: "Critical",
+        1: "new",
+        2: "good",
+        3: "ok",
+        4: "low",
+        5: "critical",
     }
 
 
@@ -151,6 +151,12 @@ class UserLocalId(KnownMixin, UInt16):
         0x00FF: "Stationary Max",
         0x0100: "Portable Min",
         0xFFFE: "Portable Max",
+    }
+
+class AntplusDeviceType(KnownMixin, UInt8):
+    known = {  # to be done
+        1: "antfs",
+        11: "bike_power",
     }
 
 
@@ -315,60 +321,60 @@ class EventType(Enum):
 
 class Sport(Enum):
     variants = {
-        0: "Generic",
-        1: "Running",
-        2: "Cycling",
-        3: "Transition",
-        4: "Fitness Equipment",
-        5: "Swimming",
-        6: "Basketball",
-        7: "Soccer",
-        8: "Tennis",
-        9: "American Football",
-        10: "Training",
-        11: "Walking",
-        12: "Cross Country Skiing",
-        13: "Alpine Skiing",
-        14: "Snowboarding",
-        15: "Rowing",
-        16: "Mountaineering",
-        17: "Hiking",
-        18: "Multisport",
-        19: "Padding",
-        254: "All",
+        0: "generic",
+        1: "running",
+        2: "cycling",
+        3: "transition",
+        4: "fitness_equipment",
+        5: "swimming",
+        6: "basketball",
+        7: "soccer",
+        8: "tennis",
+        9: "american_football",
+        10: "training",
+        11: "walking",
+        12: "cross_country_skiing",
+        13: "alpine_skiing",
+        14: "snowboarding",
+        15: "rowing",
+        16: "mountaineering",
+        17: "hiking",
+        18: "multisport",
+        19: "padding",
+        254: "all",
     }
 
 
 class SubSport(Enum):
     variants = {
-        0: "Generic",
-        1: "Treadmill",
-        2: "Street",
-        3: "Trail",
-        4: "Track",
-        5: "Spin",
-        6: "Indoor Cycling",
-        7: "Road",
-        8: "Mountain",
-        9: "Downhill",
-        10: "Recumbent",
-        11: "Cyclocross",
-        12: "Hand Cycling",
-        13: "Track Cycling",
-        14: "Indoor Rowing",
-        15: "Elliptical",
-        16: "Stair Climbing",
-        17: "Lap Swimming",
-        18: "Open Water",
-        19: "Flexibility Training",
-        20: "Strength Training",
-        21: "Warm Up",
-        22: "Match",
-        23: "Exercise",
-        24: "Challenge",
-        25: "Indoor Skiing",
-        26: "Cardio Training",
-        254: "All",
+        0: "generic",
+        1: "treadmill",
+        2: "street",
+        3: "trail",
+        4: "track",
+        5: "spin",
+        6: "indoor_cycling",
+        7: "road",
+        8: "mountain",
+        9: "downhill",
+        10: "recumbent",
+        11: "cyclocross",
+        12: "hand_cycling",
+        13: "track_cycling",
+        14: "indoor_rowing",
+        15: "elliptical",
+        16: "stair_climbing",
+        17: "lap_swimming",
+        18: "open_water",
+        19: "flexibility_training",
+        20: "strength_training",
+        21: "warm_up",
+        22: "match",
+        23: "exercise",
+        24: "challenge",
+        25: "indoor_skiing",
+        26: "cardio_training",
+        254: "all",
     }
 
 
@@ -456,52 +462,52 @@ class StrokeType(Enum):
 
 class BodyLocation(Enum):
     variants = {
-        0: "Left Leg",
-        1: "Left Calf",
-        2: "Left Shin",
-        3: "Left Hamstring",
-        4: "Left Quad",
-        5: "Left Glute",
-        6: "Right Leg",
-        7: "Right Calf",
-        8: "Right Shin",
-        9: "Right Hamstring",
-        10: "Right Quad",
-        11: "Right Glute",
-        12: "Torso Back",
-        13: "Left Lower Back",
-        14: "Left Upper Back",
-        15: "Right Lower Back",
-        16: "Right Upper Back",
-        17: "Torso Front",
-        18: "Left Abdomen",
-        19: "Left Chest",
-        20: "Right Abdomen",
-        21: "Right Chest",
-        22: "Left Arm",
-        23: "Left Shoulder",
-        24: "Left Bicep",
-        25: "Left Tricep",
-        26: "Left Brachioradialis",
-        27: "Left Forearm Extensors",
-        28: "Right Arm",
-        29: "Right Shoulder",
-        30: "Right Bicep",
-        31: "Right Tricep",
-        32: "Right Brachioradialis",
-        33: "Right Forearm Extensors",
-        34: "Neck",
-        35: "Throat",
+        0: "left_leg",
+        1: "left_calf",
+        2: "left_shin",
+        3: "left_hamstring",
+        4: "left_quad",
+        5: "left_glute",
+        6: "right_leg",
+        7: "right_calf",
+        8: "right_shin",
+        9: "right_hamstring",
+        10: "right_quad",
+        11: "right_glute",
+        12: "torso_back",
+        13: "left_lower_back",
+        14: "left_upper_back",
+        15: "right_lower_back",
+        16: "right_upper_back",
+        17: "torso_front",
+        18: "left_abdomen",
+        19: "left_chest",
+        20: "right_abdomen",
+        21: "right_chest",
+        22: "left_arm",
+        23: "left_shoulder",
+        24: "left_bicep",
+        25: "left_tricep",
+        26: "left_brachioradialis",
+        27: "left_forearm_extensors",
+        28: "right_arm",
+        29: "right_shoulder",
+        30: "right_bicep",
+        31: "right_tricep",
+        32: "right_brachioradialis",
+        33: "right_forearm_extensors",
+        34: "neck",
+        35: "throat",
 
     }
 
 
 class AntNetwork(Enum):
     variants = {
-        0: "Public",
-        1: "Ant+",
-        2: "AntFS",
-        3: "Private",
+        0: "public",
+        1: "antplus",
+        2: "antfs",
+        3: "private",
     }
 
 
@@ -758,7 +764,16 @@ class ActivityClass(Enum):
 
 class TimerTrigger(Enum):
     variants = {
-        0: "Manual",
-        1: "Auto",
-        2: "Fitness Equipment",
+        0: "manual",
+        1: "auto",
+        2: "fitness_equipment",
+    }
+
+
+class FitnessEquipmentState(Enum):
+    variants = {
+        0: "ready",
+        1: "in_use",
+        2: "paused",
+        3: "unknown",  # lost connection to fitness equipment
     }

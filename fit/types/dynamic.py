@@ -24,17 +24,18 @@ class DynamicField(Type):
     def write(self, value):
         return self.base.write(value)
 
-    def mutate(self, referred_value):
+    def get_subfield(self, referred_value):
         for keys, subfield in self.variants.items():
             if not isinstance(keys, (list, tuple, set, frozenset)):
                 keys = (keys,)
             if referred_value in keys:
-                return subfield.type(self.number)
+                return subfield
 
-        return self.base
+        return None
 
 
 class SubField(object):
-    def __init__(self, field_name, field_type):
+    def __init__(self, field_name, field_type=None, **kwargs):
         self.name = field_name
         self.type = field_type
+        self.kwargs = kwargs
