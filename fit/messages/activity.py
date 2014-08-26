@@ -17,7 +17,7 @@ class Activity(Message):
     msg_type = 34
 
     timestamp = DateTime(253)
-    total_timer_time = UInt32(0, units="s") * 1000   # Exclude pauses
+    total_timer_time = UInt32(0, units="s") * 1000
     num_sessions = UInt16(1)
     type = ActivityField(2)
     event = EventField(3)
@@ -33,7 +33,7 @@ class Session(Message):
     timestamp = DateTime(253)
     event = EventField(0)
     event_type = EventType(1)
-    start_time = DateTime(2) * "s"
+    start_time = DateTime(2)
     start_position_lat = degrees(3)
     start_position_long = degrees(4)
     sport = Sport(5)
@@ -84,7 +84,7 @@ class Session(Message):
     left_right_balance = LeftRightBalance100(37)
     avg_stroke_count = UInt32(41, units="strokes/lap") * 10
     avg_stroke_distance = UInt16(42, units="m") * 100
-    swim_stroke = SwimStroke(43)  # Should be SubField
+    swim_stroke = SwimStroke(43)
     pool_length = UInt16(44, units="m") * 100
     pool_length_unit = DisplayMeasure(46)
     num_active_lengths = UInt16(47)

@@ -40,23 +40,23 @@ class GarminProduct(KnownMixin, UInt16):
 
 class MessageIndex(KnownMixin, UInt16):
     known = {
-        0x8000: "Selected",
-        0x7000: "Reserved",
-        0x0fff: "Mask"
+        0x8000: "selected",
+        0x7000: "reserved",
+        0x0fff: "mask"
     }
 
 
 class LeftRightBalance(KnownMixin, UInt8):
     known = {
-        0x7f: "Mask",
-        0x80: "Right"
+        0x7f: "mask",
+        0x80: "right"
     }
 
 
 class LeftRightBalance100(KnownMixin, UInt16):
     known = {
-        0x3fff: "Mask",
-        0x8000: "Right"
+        0x3fff: "mask",
+        0x8000: "right"
     }
 
 
@@ -78,55 +78,55 @@ class BatteryStatus(KnownMixin, UInt8):
 
 class MesgNum(KnownMixin, UInt16):
     known = {
-        0: "File ID",
-        1: "Capabilities",
-        2: "Device Settings",
-        3: "User Profile",
-        4: "HRM Profile",
-        5: "SDM Profile",
-        6: "Bike Profile",
-        7: "Zones Target",
-        8: "HR Zone",
-        9: "Power Zone",
-        10: "Met Zone",
-        12: "Sport",
-        15: "Goal",
-        18: "Session",
-        19: "Lap",
-        20: "Record",
-        21: "Event",
-        23: "Device Info",
-        26: "Workout",
-        27: "Workout Step",
-        28: "Schedule",
-        30: "Weight Scale",
-        31: "Course",
-        32: "Course Point",
-        33: "Totals",
-        34: "Activity",
-        35: "Software",
-        37: "File Capabilities",
-        38: "Mesg Capabilities",
-        39: "Field Capabilities",
-        49: "File Creator",
-        51: "Blood Pressure",
-        53: "Speed Zone",
-        55: "Monitoring",
-        78: "HRV",
-        101: "Length",
-        103: "Monitoring Info",
-        105: "Pad",
-        106: "Slave Device",
-        132: "Cadence Zone",
-        145: "Memo Glob",
-        0xff00: "Mfg Range Min",  # 0xFF00 - 0xFFFE reserved for manufacturer
-        0xfffe: "Mfg Range Max",  # specific messages
+        0: "file_id",
+        1: "capabilities",
+        2: "device_settings",
+        3: "user_profile",
+        4: "hrm_profile",
+        5: "sdm_profile",
+        6: "bike_profile",
+        7: "zones_target",
+        8: "hr_zone",
+        9: "power_zone",
+        10: "met_zone",
+        12: "sport",
+        15: "goal",
+        18: "session",
+        19: "lap",
+        20: "record",
+        21: "event",
+        23: "device_info",
+        26: "workout",
+        27: "workout_step",
+        28: "schedule",
+        30: "weight_scale",
+        31: "course",
+        32: "course_point",
+        33: "totals",
+        34: "activity",
+        35: "software",
+        37: "file_capabilities",
+        38: "mesg_capabilities",
+        39: "field_capabilities",
+        49: "file_creator",
+        51: "blood_pressure",
+        53: "speed_zone",
+        55: "monitoring",
+        78: "hrv",
+        101: "length",
+        103: "monitoring_info",
+        105: "pad",
+        106: "slave_device",
+        132: "cadence_zone",
+        145: "memo_glob",
+        0xff00: "mfg_range_min",  # 0xFF00 - 0xFFFE reserved for manufacturer
+        0xfffe: "mfg_range_max",  # specific messages
     }
 
 
 class Weight(KnownMixin, UInt16):
     known = {
-        0xfffe: "Calculating"
+        0xfffe: "calculating"
     }
 
     def _load(self, data):
@@ -144,12 +144,12 @@ class Weight(KnownMixin, UInt16):
 
 class UserLocalId(KnownMixin, UInt16):
     known = {
-        0x0000: "Local Min",
-        0x000F: "Local Max",
-        0x0010: "Stationary Min",
-        0x00FF: "Stationary Max",
-        0x0100: "Portable Min",
-        0xFFFE: "Portable Max",
+        0x0000: "local_min",
+        0x000F: "local_max",
+        0x0010: "stationary_min",
+        0x00FF: "stationary_max",
+        0x0100: "portable_min",
+        0xFFFE: "portable_max",
     }
 
 class AntplusDeviceType(KnownMixin, UInt8):
@@ -161,74 +161,74 @@ class AntplusDeviceType(KnownMixin, UInt8):
 
 class CourseCapabilities(KnownMixin, UInt32Z):
     known = {
-        0x00000001: "Processed",
-        0x00000002: "Valid",
-        0x00000004: "Time",
-        0x00000008: "Distance",
-        0x00000010: "Position",
-        0x00000020: "Heart Rate",
-        0x00000040: "Power",
-        0x00000080: "Cadence",
-        0x00000100: "Training",
-        0x00000200: "Navigation",
+        0x00000001: "processed",
+        0x00000002: "valid",
+        0x00000004: "time",
+        0x00000008: "distance",
+        0x00000010: "position",
+        0x00000020: "heart_rate",
+        0x00000040: "power",
+        0x00000080: "cadence",
+        0x00000100: "training",
+        0x00000200: "navigation",
     }
 
 
 class WorkoutCapabilities(KnownMixin, UInt32Z):
     known = {
-        0x00000001: "Interval",
-        0x00000002: "Custom",
-        0x00000004: "Fitness Equipment",
-        0x00000008: "Firstbeat",
-        0x00000010: "New Leaf",
-        0x00000020: "TCX",  # for backwards compatibility. Watch should add
+        0x00000001: "interval",
+        0x00000002: "custom",
+        0x00000004: "fitness_equipment",
+        0x00000008: "firstbeat",
+        0x00000010: "new_leaf",
+        0x00000020: "tcx",  # for backwards compatibility. Watch should add
                             # missing id fields then clear flag
-        0x00000080: "Speed",  # Speed source required for workout step
-        0x00000100: "Heart Rate",  # Heart rate src required for workout step
-        0x00000200: "Distance",  # Distance source required for workout step
-        0x00000400: "Cadence",  # Cadence source required for workout step
-        0x00000800: "Power",  # Power source required for workout step
-        0x00001000: "Grade",  # Grade source required for workout step
-        0x00002000: "Resistance",  # Resistance src required for workout step
-        0x00004000: "Protected",
+        0x00000080: "speed",  # Speed source required for workout step
+        0x00000100: "heart_rate",  # Heart rate src required for workout step
+        0x00000200: "distance",  # Distance source required for workout step
+        0x00000400: "cadence",  # Cadence source required for workout step
+        0x00000800: "power",  # Power source required for workout step
+        0x00001000: "grade",  # Grade source required for workout step
+        0x00002000: "resistance",  # Resistance src required for workout step
+        0x00004000: "protected",
     }
 
 
 class ConnectivityCapabilities(KnownMixin, UInt32Z):
     known = {
-        0x00000001: "Bluetooth",
-        0x00000002: "Bluetooth LE",
-        0x00000004: "ANT",
-        0x00000008: "Activity Upload",
-        0x00000010: "Course Download",
-        0x00000020: "Workout Download",
-        0x00000040: "Live Track",
-        0x00000080: "Weather Conditions",
-        0x00000100: "Weather Alerts",
-        0x00000200: "GPS Ephemeris Download",
-        0x00000400: "Explicit Archive",
-        0x00000800: "Setup Incomplete",
+        0x00000001: "bluetooth",
+        0x00000002: "bluetooth_le",
+        0x00000004: "ant",
+        0x00000008: "activity_upload",
+        0x00000010: "course_download",
+        0x00000020: "workout_download",
+        0x00000040: "live_track",
+        0x00000080: "weather_conditions",
+        0x00000100: "weather_alerts",
+        0x00000200: "gps_ephemeris_download",
+        0x00000400: "explicit_archive",
+        0x00000800: "setup_incomplete",
     }
 
 
 class SportBits0(KnownMixin, UInt8Z):
     known = {
-        0x01: "Generic",
-        0x02: "Running",
-        0x04: "Cycling",
-        0x08: "Transition",  # Multisport transition
-        0x10: "Fitness Equipment",
-        0x20: "Swimming",
-        0x40: "Basketball",
-        0x80: "Soccer",
+        0x01: "generic",
+        0x02: "running",
+        0x04: "cycling",
+        0x08: "transition",  # Multisport transition
+        0x10: "fitness_equipment",
+        0x20: "swimming",
+        0x40: "basketball",
+        0x80: "soccer",
     }
 
 
 class FileFlags(KnownMixin, UInt8Z):
     known = {
-        0x02: "Read",
-        0x04: "Write",
-        0x08: "Erase",
+        0x02: "read",
+        0x04: "write",
+        0x08: "erase",
     }
 
 
@@ -379,83 +379,83 @@ class SubSport(Enum):
 
 class SessionTrigger(Enum):
     variants = {
-        0: "Activity End",
-        1: "Manual",
-        2: "Auto Multi Sport",
-        3: "Fitness Equipment",
+        0: "activity_end",
+        1: "manual",
+        2: "auto_multi_sport",
+        3: "fitness_equipment",
     }
 
 
 class SwimStroke(Enum):
     variants = {
-        0: "Freestyle",
-        1: "Backstroke",
-        2: "Breaststroke",
-        3: "Butterfly",
-        4: "Drill",
-        5: "Mixed",
-        6: "IM"
+        0: "freestyle",
+        1: "backstroke",
+        2: "breaststroke",
+        3: "butterfly",
+        4: "drill",
+        5: "mixed",
+        6: "im"
     }
 
 
 class DisplayMeasure(Enum):
     variants = {
-        0: "Metric",
-        1: "Statute",
+        0: "metric",
+        1: "statute",
     }
 
 
 class Intensity(Enum):
     variants = {
-        0: "Active",
-        1: "Rest",
-        2: "Warm Up",
-        3: "Cool Down",
+        0: "active",
+        1: "rest",
+        2: "warm_up",
+        3: "cool_down",
     }
 
 
 class LapTrigger(Enum):
     variants = {
-        0: "Manual",
-        1: "Time",
-        2: "Distance",
-        3: "Position Start",
-        4: "Position Lap",
-        5: "Position Waypoint",
-        6: "Position Marked",
-        7: "Session End",
-        8: "Fitness Equipment",
+        0: "manual",
+        1: "time",
+        2: "distance",
+        3: "position_start",
+        4: "position_lap",
+        5: "position_waypoint",
+        6: "position_marked",
+        7: "session_end",
+        8: "fitness_equipment",
     }
 
 
 class LengthType(Enum):
     variants = {
-        0: "Idle",
-        1: "Active",
+        0: "idle",
+        1: "active",
     }
 
 
 class ActivityType(Enum):
     variants = {
-        0: "Generic",
-        1: "Running",
-        2: "Cycling",
-        3: "Transition",
-        4: "Fitness Equipment",
-        5: "Swimming",
-        6: "Walking",
-        254: "All",
+        0: "generic",
+        1: "running",
+        2: "cycling",
+        3: "transition",
+        4: "fitness_equipment",
+        5: "swimming",
+        6: "walking",
+        254: "all",
     }
 
 
 class StrokeType(Enum):
     variants = {
-        0: "No Event",
-        1: "Other",
-        2: "Serve",
-        3: "Forehand",
-        4: "Backhand",
-        5: "Smash",
+        0: "no_event",
+        1: "other",
+        2: "serve",
+        3: "forehand",
+        4: "backhand",
+        5: "smash",
     }
 
 
@@ -523,119 +523,119 @@ class SourceType(Enum):
 
 class HrType(Enum):
     variants = {
-        0: "Normal",
-        1: "Irregular",
+        0: "normal",
+        1: "irregular",
     }
 
 
 class BpStatus(Enum):
     variants = {
-        0: "No Error",
-        1: "Error Incomplete Data",
-        2: "Error Non Measurement",
-        3: "Error Data out of Range",
-        4: "Error Irregular Heart Rate",
+        0: "no_error",
+        1: "error_incomplete_data",
+        2: "error_non_measurement",
+        3: "error_data_out_of_range",
+        4: "error_irregular_heart_rate",
     }
 
 
 class CoursePoint(Enum):
     variants = {
-        0: "Generic",
-        1: "Summit",
-        2: "Valley",
-        3: "Water",
-        4: "Food",
-        5: "Danger",
-        6: "Left",
-        7: "Right",
-        8: "Straight",
-        9: "First Aid",
-        10: "Fourth Category",
-        11: "Third Category",
-        12: "Second Category",
-        13: "First Category",
-        14: "Hors Catégorie",
-        15: "Spring",
-        16: "Left Fork",
-        17: "Right Fork",
-        18: "Middle Fork",
-        19: "Slight Left",
-        20: "Sharp Left",
-        21: "Slight Right",
-        22: "Sharp Right",
-        23: "U Turn"
+        0: "generic",
+        1: "summit",
+        2: "valley",
+        3: "water",
+        4: "food",
+        5: "danger",
+        6: "left",
+        7: "right",
+        8: "straight",
+        9: "first_aid",
+        10: "fourth_category",
+        11: "third_category",
+        12: "second_category",
+        13: "first_category",
+        14: "hors_categorie",
+        15: "spring",
+        16: "left_fork",
+        17: "right_fork",
+        18: "middle_fork",
+        19: "slight_left",
+        20: "sharp_left",
+        21: "slight_right",
+        22: "sharp_right",
+        23: "u_turn"
     }
 
 
 class MesgCount(Enum):
     variants = {
-        0: "Num per File",
-        1: "Max per File",
-        2: "Max per File Type",
+        0: "num_per_file",
+        1: "max_per_file",
+        2: "max_per_file_type",
     }
 
 
 class Goal(Enum):
     variants = {
-        0: "Time",
-        1: "Distance",
-        2: "Calories",
-        3: "Frequency",
-        4: "Steps",
+        0: "time",
+        1: "distance",
+        2: "calories",
+        3: "frequency",
+        4: "steps",
     }
 
 
 class GoalRecurrence(Enum):
     variants = {
-        0: "Off",
-        1: "Daily",
-        2: "Weekly",
-        3: "Monthly",
-        4: "Yearly",
-        5: "Custom",
+        0: "off",
+        1: "daily",
+        2: "weekly",
+        3: "monthly",
+        4: "yearly",
+        5: "custom",
     }
 
 
 class Schedule(Enum):
     variants = {
-        0: "Workout",
-        1: "Course",
+        0: "workout",
+        1: "course",
     }
 
 
 class HrZoneCalc(Enum):
     variants = {
-        0: "Custom",
-        1: "Percent Max HR",
-        2: "Percent HRR",
+        0: "custom",
+        1: "percent_max_hr",
+        2: "percent_hrr",
     }
 
 
 class PwrZoneCalc(Enum):
     variants = {
-        0: "Custom",
-        1: "Percent FTP",
+        0: "custom",
+        1: "percent_ftp",
     }
 
 
 class WktStepDuration(Enum):
     variants = {
-        0: "Time",
-        1: "Distance",
-        2: "HR less than",
-        3: "HR greater than",
-        4: "Calories",
-        5: "Open",
-        6: "Repeat until Steps Complete",
-        7: "Repeat until Time",
-        8: "Repeat until Distance",
-        9: "Repeat until Calories",
-        10: "Repeat until HR less than",
-        11: "Repeat until HR greater than",
-        12: "Repeat until Power less than",
-        13: "Repeat until Power greater than",
-        14: "Power less than",
-        15: "Power greater than",
+        0: "time",
+        1: "distance",
+        2: "hr_less_than",
+        3: "hr_greater_than",
+        4: "calories",
+        5: "open",
+        6: "repeat_until_steps_complete",
+        7: "repeat_until_time",
+        8: "repeat_until_distance",
+        9: "repeat_until_calories",
+        10: "repeat_until_hr_less_than",
+        11: "repeat_until_hr_greater_than",
+        12: "repeat_until_power_less_than",
+        13: "repeat_until_power_greater_than",
+        14: "rower_less_than",
+        15: "rower_greater_than",
     }
 
 
@@ -653,101 +653,101 @@ class WktStepTarget(Enum):
 
 class ActivitySubType(Enum):
     variants = {
-        0: "Generic",
-        1: "Treadmill",  # Run...
-        2: "Street",
-        3: "Trail",
-        4: "Track",
-        5: "Spin",  # Cycling...
-        6: "Indoor Cycling",
-        7: "Road",
-        8: "Mountain",
-        9: "Downhill",
-        10: "Recumbent",
-        11: "Cyclocross",
-        12: "Hand Cycling",
-        13: "Track Cycling",
-        14: "Indoor Rowing",  # Fitness Equipment..
-        15: "Elliptical",
-        16: "Stair Climbing",
-        17: "Swimming",  # Swimming...
-        18: "Open Water",
-        254: "All",
+        0: "generic",
+        1: "treadmill",  # Run...
+        2: "street",
+        3: "trail",
+        4: "track",
+        5: "spin",  # Cycling...
+        6: "indoor_cycling",
+        7: "road",
+        8: "mountain",
+        9: "downhill",
+        10: "recumbent",
+        11: "cyclocross",
+        12: "hand_cycling",
+        13: "track_cycling",
+        14: "indoor_rowing",  # Fitness Equipment..
+        15: "elliptical",
+        16: "stair_climbing",
+        17: "swimming",  # Swimming...
+        18: "open_water",
+        254: "all",
     }
 
 
 class ActivityLevel(Enum):
     variants = {
-        0: "Low",
-        1: "Medium",
-        2: "High",
+        0: "low",
+        1: "medium",
+        2: "high",
     }
 
 
 class Gender(Enum):
     variants = {
-        0: "Female",
-        1: "Male",
+        0: "female",
+        1: "male",
     }
 
 
 class Language(Enum):
     variants = {
-        0: "English",
-        1: "French",
-        2: "Italian",
-        3: "German",
-        4: "Spanish",
-        5: "Croatian",
-        6: "Czech",
-        7: "Danish",
-        8: "Dutch",
-        9: "Finnish",
-        10: "Greek",
-        11: "Hungarian",
-        12: "Norwegian",
-        13: "Polish",
-        14: "Portuguese",
-        15: "Slovakian",
-        16: "Slovenian",
-        17: "Swedish",
-        18: "Russian",
-        19: "Turkish",
-        20: "Latvian",
-        21: "Ukrainian",
-        22: "Arabic",
-        23: "Farsi",
-        24: "Bulgarian",
-        25: "Romanian",
-        254: "Custom",
+        0: "english",
+        1: "french",
+        2: "italian",
+        3: "german",
+        4: "spanish",
+        5: "croatian",
+        6: "czech",
+        7: "danish",
+        8: "dutch",
+        9: "finnish",
+        10: "greek",
+        11: "hungarian",
+        12: "norwegian",
+        13: "polish",
+        14: "portuguese",
+        15: "slovakian",
+        16: "slovenian",
+        17: "swedish",
+        18: "russian",
+        19: "turkish",
+        20: "latvian",
+        21: "ukrainian",
+        22: "arabic",
+        23: "farsi",
+        24: "bulgarian",
+        25: "romanian",
+        254: "custom",
     }
 
 
 class DisplayHeart(Enum):
     variants = {
-        0: "BPM",
-        1: "Max",
-        2: "Reserve",
+        0: "bpm",
+        1: "max",
+        2: "reserve",
     }
 
 
 class DisplayPower(Enum):
     variants = {
-        0: "Watts",
-        1: "Percent FTP",
+        0: "watts",
+        1: "percent_ftp",
     }
 
 
 class DisplayPosition(Enum):
     variants = {  # to be done
-        0: "Degree",  # dd.dddddd
+        0: "degree",  # dd.dddddd
     }
 
 
 class ActivityClass(Enum):
     variants = {
-        100: "Level Max",
-        0x80: "Athlete"
+        100: "level_max",
+        0x80: "athlete"
     }
 
     def _load(self, data):
