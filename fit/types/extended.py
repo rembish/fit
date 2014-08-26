@@ -152,6 +152,7 @@ class UserLocalId(KnownMixin, UInt16):
         0xFFFE: "portable_max",
     }
 
+
 class AntplusDeviceType(KnownMixin, UInt8):
     known = {  # to be done
         1: "antfs",

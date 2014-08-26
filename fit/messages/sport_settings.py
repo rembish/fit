@@ -6,7 +6,7 @@ from fit.types.general import String, UInt8, UInt16
 
 class ZonesTarget(Message):
     msg_type = 7
-    
+
     max_heart_rate = UInt8(1)
     threshold_heart_rate = UInt8(2)
     functional_threshold_power = UInt16(3)

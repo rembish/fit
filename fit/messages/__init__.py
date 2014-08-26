@@ -84,10 +84,6 @@ class MessageMeta(type):
                 meta.subfields.update(base._meta.get("subfields", {}))
 
         for key, value in attrs.items():
-            #if value and isinstance(value, tuple) \
-            #        and isinstance(value[0], Type):
-            #    value = value[0]  # Scale/Offset workaround
-
             if isinstance(value, DynamicField):
                 for subfield in value.variants.values():
                     subfield.type = subfield.type or value.base.__class__
@@ -142,7 +138,10 @@ class Message(object):
             field = self._get_type(field.number)
             field_name = name
             if name.startswith("unknown_"):
-                field_name = "%s[%d]" % (field.__class__.__name__, field.number)
+                field_name = "%s[%d]" % (
+                    field.__class__.__name__,
+                    field.number
+                )
 
             data[field_name] = "%s%s" % (
                 getattr(self, name),

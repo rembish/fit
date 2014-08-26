@@ -7,7 +7,7 @@ class Enum(Type):
     format = "B"
     variants = {}
 
-    _invalid = 0xFF
+    _invalid = 0xff
 
     def _load(self, data):
         return self.variants.get(data, data)

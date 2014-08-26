@@ -8,7 +8,6 @@ class GenericMessage(Message):
     message_index = MessageIndex(254)
     part_index = UInt32(250)
 
-
     def __init__(self, definition):
         super(GenericMessage, self).__init__(definition)
         self.msg_type = None
