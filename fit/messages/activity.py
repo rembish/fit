@@ -1,5 +1,6 @@
 # coding=utf-8
 from fit.messages import Message
+from fit.types.array import Array
 from fit.types.dynamic import DynamicField, SubField
 from fit.types.general import UInt32Z, UInt16, UInt32, UInt8, SInt16, SInt8, \
     String, Byte, UInt8Z, UInt16Z, SInt32
@@ -105,18 +106,18 @@ class Session(Message):
     max_pos_vertical_speed = SInt16(62, units="m/s") * 1000
     max_neg_vertical_speed = SInt16(63, units="m/s") * 1000
     min_heart_rate = UInt8(64) * "bpm"
-    time_in_hr_zone = UInt32(65, units="s") * 1000  # array
-    time_in_speed_zone = UInt32(66, units="s") * 1000  # array
-    time_in_cadence_zone = UInt32(67, units="s") * 1000  # array
-    time_in_power_zone = UInt32(68, units="s") * 1000  # array
+    time_in_hr_zone = Array(UInt32(65, units="s") * 1000)
+    time_in_speed_zone = Array(UInt32(66, units="s") * 1000)
+    time_in_cadence_zone = Array(UInt32(67, units="s") * 1000)
+    time_in_power_zone = Array(UInt32(68, units="s") * 1000)
     avg_lap_time = UInt32(69, units="s") * 1000
     best_lap_index = UInt16(70)
     min_altitude = UInt16(71, units="m") * 5 + 500
     player_score = UInt16(82)
     opponent_score = UInt16(83)
     opponent_name = String(84)
-    stroke_count = UInt16(85)  # array
-    zone_count = UInt16(86)  # array
+    stroke_count = Array(UInt16(85))
+    zone_count = Array(UInt16(86))
     max_ball_speed = UInt16(87, units="m/s") * 100
     avg_ball_speed = UInt16(88, units="m/s") * 100
     avg_vertical_oscillation = UInt16(89, units="mm") * 10
@@ -125,12 +126,12 @@ class Session(Message):
     avg_fractional_cadence = UInt8(92, units="rpm") * 128
     max_fractional_cadence = UInt8(93, units="rpm") * 128
     total_fractional_cycles = UInt8(94, units="cycles") * 128
-    avg_total_hemoglobin_conc = UInt16(95, units="g/dL") * 100  # array
-    min_total_hemoglobin_conc = UInt16(96, units="g/dL") * 100  # array
-    max_total_hemoglobin_conc = UInt16(97, units="g/dL") * 100  # array
-    avg_saturated_hemoglobin_percent = UInt16(98, units="%") * 10  # array
-    min_saturated_hemoglobin_percent = UInt16(99, units="%") * 10  # array
-    max_saturated_hemoglobin_percent = UInt16(100, units="%") * 10  # array
+    avg_total_hemoglobin_conc = Array(UInt16(95, units="g/dL") * 100)
+    min_total_hemoglobin_conc = Array(UInt16(96, units="g/dL") * 100)
+    max_total_hemoglobin_conc = Array(UInt16(97, units="g/dL") * 100)
+    avg_saturated_hemoglobin_percent = Array(UInt16(98, units="%") * 10)
+    min_saturated_hemoglobin_percent = Array(UInt16(99, units="%") * 10)
+    max_saturated_hemoglobin_percent = Array(UInt16(100, units="%") * 10)
     avg_left_torque_effectiveness = UInt8(101, units="%") * 2
     avg_right_torque_effectiveness = UInt8(102, units="%") * 2
     avg_left_pedal_smoothness = UInt8(103, units="%") * 2
@@ -209,17 +210,17 @@ class Lap(Message):
     avg_neg_vertical_speed = SInt16(54, units="m/s") * 1000
     max_pos_vertical_speed = SInt16(55, units="m/s") * 1000
     max_neg_vertical_speed = SInt16(56, units="m/s") * 1000
-    time_in_hr_zone = UInt32(57, units="s") * 1000  # array
-    time_in_speed_zone = UInt32(58, units="s") * 1000  # array
-    time_in_cadence_zone = UInt32(59, units="s") * 1000  # array
-    time_in_power_zone = UInt32(60, units="s") * 1000  # array
+    time_in_hr_zone = Array(UInt32(57, units="s") * 1000)
+    time_in_speed_zone = Array(UInt32(58, units="s") * 1000)
+    time_in_cadence_zone = Array(UInt32(59, units="s") * 1000)
+    time_in_power_zone = Array(UInt32(60, units="s") * 1000)
     repetition_num = UInt16(61)
     min_altitude = UInt16(62, units="m") * 5 + 500
     min_heart_rate = UInt8(63) * "bpm"
     wkt_step_index = MessageIndex(71)
     opponent_score = UInt16(74)
-    stroke_count = UInt16(75)  # array
-    zone_count = UInt16(76)  # array
+    stroke_count = Array(UInt16(75))
+    zone_count = Array(UInt16(76))
     avg_vertical_oscillation = UInt16(77, units="mm") * 10
     avg_stance_time_percent = UInt16(78, units="%") * 100
     avg_stance_time = UInt16(79, units="ms") * 10
@@ -227,12 +228,12 @@ class Lap(Message):
     max_fractional_cadence = UInt8(81, units="rpm") * 128
     total_fractional_cycles = UInt8(82, units="cycles") * 128
     player_score = UInt16(83)
-    avg_total_hemoglobin_conc = UInt16(84, units="g/dL") * 100  # array
-    min_total_hemoglobin_conc = UInt16(85, units="g/dL") * 100  # array
-    max_total_hemoglobin_conc = UInt16(86, units="g/dL") * 100  # array
-    avg_saturated_hemoglobin_percent = UInt16(87, units="%") * 10  # array
-    min_saturated_hemoglobin_percent = UInt16(88, units="%") * 10  # array
-    max_saturated_hemoglobin_percent = UInt16(89, units="%") * 10  # array
+    avg_total_hemoglobin_conc = Array(UInt16(84, units="g/dL") * 100)
+    min_total_hemoglobin_conc = Array(UInt16(85, units="g/dL") * 100)
+    max_total_hemoglobin_conc = Array(UInt16(86, units="g/dL") * 100)
+    avg_saturated_hemoglobin_percent = Array(UInt16(87, units="%") * 10)
+    min_saturated_hemoglobin_percent = Array(UInt16(88, units="%") * 10)
+    max_saturated_hemoglobin_percent = Array(UInt16(89, units="%") * 10)
     avg_left_torque_effectiveness = UInt8(91, units="%") * 2
     avg_right_torque_effectiveness = UInt8(92, units="%") * 2
     avg_left_pedal_smoothness = UInt8(93, units="%") * 2
@@ -259,8 +260,8 @@ class Length(Message):
     length_type = LengthType(12)
     player_score = UInt16(18)
     opponent_score = UInt16(19)
-    stroke_count = UInt16(20)  # array
-    zone_count = UInt16(21)  # array
+    stroke_count = Array(UInt16(20))
+    zone_count = Array(UInt16(21))
 
 
 class Record(Message):
@@ -275,13 +276,13 @@ class Record(Message):
     distance = UInt32(5, units="m") * 100
     speed = UInt16(6, units="m/s") * 1000
     power = UInt16(7) * "watts"
-    compressed_speed_distance = Byte(8, count=3)  # components
+    compressed_speed_distance = Array(Byte(8), size=3)  # components
     grade = SInt16(9, units="%") * 100
     resistance = UInt8(10)
     time_from_course = SInt32(11, units="s") * 1000
     cycle_length = UInt8(12, units="m") * 100
     temperature = SInt8(13) * "°C"
-    speed_1s = UInt8(17, units="m/s") * 16  # array
+    speed_1s = Array(UInt8(17, units="m/s") * 16)
     cycles = UInt8(18) * "cycles"  # components
     total_cycles = UInt32(19) * "cycles"
     compressed_accumulated_power = UInt16(28) * "watts"  # components
@@ -400,4 +401,4 @@ class DeviceInfo(Message):
 class Hrv(Message):
     msg_type = 78
 
-    time = UInt16(0, units="s") * 1000  # array
+    time = Array(UInt16(0, units="s") * 1000)

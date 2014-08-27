@@ -2,6 +2,7 @@ from re import match
 
 from fit.record.fields import Fields
 from fit.types import Type
+from fit.types.array import Array
 from fit.types.dynamic import DynamicField
 from fit.utils import get_known
 
@@ -212,6 +213,11 @@ class Message(object):
         for number, field in self._unknowns.items():
             if getattr(self, self._get_name(number)) is not None:
                 fields.append(field)
+
+        for field in fields:
+            if isinstance(field, Array):
+                field.size = field.value_type.size * len(
+                    getattr(self, self._get_name(field.number)))
 
         self._definition.fields = fields
         return self._definition
