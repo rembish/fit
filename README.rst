@@ -30,15 +30,14 @@ How-To
         fout.copy(fin)
 
     fnew = ActivityFile.create("path/to/new.fit")
-    fnew.append(FileCreator(software_version="6.66"))
+    fnew.append(FileCreator(software_version=666))
     fnew.write()
     fnew.close()
 
 TODO
 ----
 * Component fields
-* Array like data in fields
-* Compressed Timestamp Records right processing
+* Accumulatable fields
 * Tests (you can submit me some cool examples)
 * Entry Points for external extensions
 * Convertable types
