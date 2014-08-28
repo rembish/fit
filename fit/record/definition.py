@@ -53,3 +53,6 @@ class Definition(object):
 
         message.read(read_buffer, copy(self.fields))
         return message
+
+    def process_timestamp(self, timestamp, offset):
+        return timestamp, offset

@@ -6,7 +6,7 @@ from fit.types.general import UInt8, UInt16
 class WeightScale(Message):
     msg_type = 30
 
-    timestamp = DateTime(243)
+    timestamp = DateTime(253)
     weight = Weight(0, units="kg") * 100
     percent_fat = UInt16(1, units="%") * 100
     percent_hydration = UInt16(2, units="%") * 100

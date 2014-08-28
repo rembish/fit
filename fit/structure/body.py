@@ -16,10 +16,12 @@ class Body(list):
         size = len(chunk)
         read_buffer = BytesIO(chunk)
         definitions = {}
+        timestamp, offset = 0, 0
 
         while read_buffer.tell() != size:
             header = RecordHeader.read(ord(read_buffer.read(1)))
             message = header.process_message(definitions, read_buffer)
+            timestamp, offset = message.process_timestamp(timestamp, offset)
 
             if not isinstance(message, Definition):
                 self.append(message)

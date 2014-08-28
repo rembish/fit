@@ -1,9 +1,12 @@
 from re import match
 
+from fit.record import TIMESTAMP_FIELD_NUM, TIMESTAMP_MASK, \
+    TIMESTAMP_FIELD_NAME
 from fit.record.fields import Fields
 from fit.types import Type
 from fit.types.array import Array
 from fit.types.dynamic import DynamicField
+from fit.types.extended import LocalDateTime
 from fit.utils import get_known
 
 
@@ -168,16 +171,38 @@ class Message(object):
         )
 
     def __setitem__(self, key, value):
+        if isinstance(key, int):
+            key = self._get_name(key)
+
         self._get_number(key)
         setattr(self, key, value)
 
     def __getitem__(self, key):
+        if isinstance(key, int):
+            key = self._get_name(key)
+
         self._get_number(key)
         return getattr(self, key)
 
     def __delitem__(self, key):
+        if isinstance(key, int):
+            key = self._get_name(key)
+
         self._get_number(key)
         delattr(self, key)
+
+    def __contains__(self, key):
+        if isinstance(key, int):
+            key = self._get_name(key)
+
+        return hasattr(self, key)
+
+    def __iter__(self):
+        for field in self.definition.fields:
+            yield self[field.number]
+
+    def __len__(self):
+        return len(self.definition.fields)
 
     def _get_name(self, number):
         if number not in self._meta.names:
@@ -248,13 +273,30 @@ class Message(object):
             write_buffer += field.write(data)
         return write_buffer
 
+    def process_timestamp(self, timestamp, offset):
+        if TIMESTAMP_FIELD_NUM in self:  # Message already has TS field
+            timestamp = self._data[self._get_name(TIMESTAMP_FIELD_NUM)]
+            offset = timestamp & TIMESTAMP_MASK
+
+        # Current message isn't compressed TS data
+        if not hasattr(self._definition.header, "offset"):
+            return timestamp, offset
+
+        # Compressed TS data message: calculate new TS and update model
+        timestamp += (self._definition.header.offset - offset) & TIMESTAMP_MASK
+        offset = self._definition.header.offset
+        self._meta.names[TIMESTAMP_FIELD_NUM] = TIMESTAMP_FIELD_NAME
+        ts_field = self._meta.model[TIMESTAMP_FIELD_NUM] = \
+            LocalDateTime(TIMESTAMP_FIELD_NUM)
+        setattr(self, TIMESTAMP_FIELD_NAME, ts_field._load(timestamp))
+
+        return timestamp, offset
+
 
 KNOWN = get_known(__name__, Message, key="msg_type")
 
 
 def register(message_cls):
-    global KNOWN
-
     if not issubclass(message_cls, Message):
         raise ValueError(
             "%s should be subclass of Message" % message_cls.__name__)
