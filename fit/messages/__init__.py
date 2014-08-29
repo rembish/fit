@@ -275,7 +275,8 @@ class Message(object):
 
     def process_timestamp(self, timestamp, offset):
         if TIMESTAMP_FIELD_NUM in self:  # Message already has TS field
-            timestamp = self._data[self._get_name(TIMESTAMP_FIELD_NUM)]
+            timestamp = self._data.get(
+                self._get_name(TIMESTAMP_FIELD_NUM), timestamp)
             offset = timestamp & TIMESTAMP_MASK
 
         # Current message isn't compressed TS data

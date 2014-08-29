@@ -37,8 +37,8 @@ How-To
 TODO
 ----
 * Component fields
-* Accumulatable fields
+* Accumulated fields
 * Tests (you can submit me some cool examples)
 * Entry Points for external extensions
-* Convertable types
+* Convertible types
 * ...
