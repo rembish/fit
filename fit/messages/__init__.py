@@ -5,7 +5,7 @@ from fit.record import TIMESTAMP_FIELD_NUM, TIMESTAMP_MASK, \
 from fit.record.fields import Fields
 from fit.types import Type
 from fit.types.array import Array
-from fit.types.dynamic import DynamicField
+from fit.types.dynamic import Dynamic
 from fit.types.extended import LocalDateTime
 from fit.utils import get_known
 
@@ -88,7 +88,7 @@ class MessageMeta(type):
                 meta.subfields.update(base._meta.get("subfields", {}))
 
         for key, value in attrs.items():
-            if isinstance(value, DynamicField):
+            if isinstance(value, Dynamic):
                 for subfield in value.variants.values():
                     subfield.type = subfield.type or value.base.__class__
                     meta.subfields[subfield.name] = subfield.type(

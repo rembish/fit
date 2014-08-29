@@ -1,7 +1,8 @@
 # coding=utf-8
 from fit.messages import Message
 from fit.types.array import Array
-from fit.types.dynamic import DynamicField, SubField
+from fit.types.composite import Composite, ComponentField
+from fit.types.dynamic import Dynamic, SubField
 from fit.types.general import UInt32Z, UInt16, UInt32, UInt8, SInt16, SInt8, \
     String, Byte, UInt8Z, UInt16Z, SInt32
 from fit.types.extended import DateTime, Manufacturer, LocalDateTime, \
@@ -42,11 +43,10 @@ class Session(Message):
     total_elapsed_time = UInt32(7, units="s") * 1000
     total_timer_time = UInt32(8, units="s") * 1000
     total_distance = UInt32(9, units="m") * 100
-    total_cycles = DynamicField(
+    total_cycles = Dynamic(
         UInt32(10, units="cycles"),
-        sport={
-            "running": SubField("total_strides", units="strides")
-        }
+        referred_to="sport",
+        running=SubField("total_strides", units="strides")
     )
     total_calories = UInt16(11) * "kcal"
     total_fat_calories = UInt16(13) * "kcal"
@@ -54,17 +54,15 @@ class Session(Message):
     max_speed = UInt16(15, units="m/s") * 1000
     avg_heart_rate = UInt8(16) * "bpm"
     max_heart_rate = UInt8(17) * "bpm"
-    avg_cadence = DynamicField(
+    avg_cadence = Dynamic(
         UInt8(18, units="rpm"),
-        sport={
-            "running": SubField("avg_running_cadence", units="strides/min")
-        }
+        referred_to="sport",
+        running=SubField("avg_running_cadence", units="strides/min")
     )
-    max_cadence = DynamicField(
+    max_cadence = Dynamic(
         UInt8(19, units="rpm"),
-        sport={
-            "running": SubField("max_running_cadence", units="strides/min")
-        }
+        referred_to="sport",
+        running=SubField("max_running_cadence", units="strides/min")
     )
     avg_power = UInt16(20) * "watts"
     max_power = UInt16(21) * "watts"
@@ -154,11 +152,10 @@ class Lap(Message):
     total_elapsed_time = UInt32(7, units="s") * 1000
     total_timer_time = UInt32(8, units="s") * 1000
     total_distance = UInt32(9, units="m") * 100
-    total_cycles = DynamicField(
+    total_cycles = Dynamic(
         UInt32(10, units="cycles"),
-        sport={
-            "running": SubField("total_strides", units="strides")
-        }
+        referred_to="sport",
+        running=SubField("total_strides", units="strides")
     )
     total_calories = UInt16(11) * "kcal"
     total_fat_calories = UInt16(12) * "kcal"
@@ -166,17 +163,15 @@ class Lap(Message):
     max_speed = UInt16(14, units="m/s") * 1000
     avg_heart_rate = UInt8(15) * "bpm"
     max_heart_rate = UInt8(16) * "bpm"
-    avg_cadence = DynamicField(
+    avg_cadence = Dynamic(
         UInt8(17, units="rpm"),
-        sport={
-            "running": SubField("avg_running_cadence", units="strides/min")
-        }
+        referred_to="sport",
+        running=SubField("avg_running_cadence", units="strides/min")
     )
-    max_cadence = DynamicField(
+    max_cadence = Dynamic(
         UInt8(18, units="rpc"),
-        sport={
-            "running": SubField("max_running_cadence", units="strides/min")
-        }
+        referred_to="sport",
+        running=SubField("max_running_cadence", units="strides/min")
     )
     avg_power = UInt16(19) * "watts"
     max_power = UInt16(20) * "watts"
@@ -276,7 +271,11 @@ class Record(Message):
     distance = UInt32(5, units="m") * 100
     speed = UInt16(6, units="m/s") * 1000
     power = UInt16(7) * "watts"
-    compressed_speed_distance = Array(Byte(8), size=3)  # components
+    compressed_speed_distance = Composite(
+        Array(Byte(8), size=3),
+        speed=ComponentField(bits=12) * 100,
+        distance=ComponentField(bits=12, offset=12) * 16
+    )
     grade = SInt16(9, units="%") * 100
     resistance = UInt8(10)
     time_from_course = SInt32(11, units="s") * 1000
@@ -321,45 +320,41 @@ class Event(Message):
     event = EventField(0)
     event_type = EventType(1)
     data16 = UInt16(2)  # components
-    data = DynamicField(
+    data = Dynamic(
         UInt32(3),
-        event={
-            "timer": SubField("timer_trigger", TimerTrigger),
-            "course_point": SubField("course_point_index", MessageIndex),
-            "battery": SubField(
-                "battery_level",
-                lambda number: UInt16(number, units="V") * 1000),
-            "virtual_partner_pace": SubField(
-                "virtual_partner_speed",
-                lambda number: UInt16(number, units="m/s") * 1000),
-            "hr_high_alert": SubField("hr_high_alert", UInt8, units="bpm"),
-            "hr_low_alert": SubField("hr_low_alert", UInt8, units="bpm"),
-            "speed_high_alert": SubField(
-                "speed_high_alert",
-                lambda number: UInt16(number, units="m/s") * 1000),
-            "speed_low_alert": SubField(
-                "speed_low_alert",
-                lambda number: UInt16(number, units="m/s") * 1000),
-            "cad_high_alert": SubField("cad_high_alert", UInt16, units="rpm"),
-            "cad_low_alert": SubField("cad_low_alert", UInt16, units="rpm"),
-            "power_high_alert": SubField(
-                "power_high_alert", UInt16, units="watts"),
-            "power_low_alert": SubField(
-                "power_low_alert", UInt16, units="watts"),
-            "time_duration_alert": SubField(
-                "time_duration_alert",
-                lambda number: UInt32(number, units="s") * 1000),
-            "distance_duration_alert": SubField(
-                "distance_duration_alert",
-                lambda number: UInt32(number, units="m") * 100),
-            "calorie_duration_alert": SubField(
-                "calorie_duration_alert", units="calories"),
-            "fitness_equipment": SubField(
-                "fitness_equipment_state", FitnessEquipmentState),
-            "sport_point": SubField("sport_point"),  # components
-            ("front_gear_change", "rear_gear_change"): SubField(
-                "gear_change_data")  # components
-        }
+        referred_to="event",
+        timer=SubField("timer_trigger", TimerTrigger),
+        course_point=SubField("course_point_index", MessageIndex),
+        battery=SubField(
+            "battery_level", lambda number: UInt16(number, units="V") * 1000),
+        virtual_partner_pace=SubField(
+            "virtual_partner_speed",
+            lambda number: UInt16(number, units="m/s") * 1000),
+        hr_high_alert=SubField("hr_high_alert", UInt8, units="bpm"),
+        hr_low_alert=SubField("hr_low_alert", UInt8, units="bpm"),
+        speed_high_alert=SubField(
+            "speed_high_alert",
+            lambda number: UInt16(number, units="m/s") * 1000),
+        speed_low_alert=SubField(
+            "speed_low_alert",
+            lambda number: UInt16(number, units="m/s") * 1000),
+        cad_high_alert=SubField("cad_high_alert", UInt16, units="rpm"),
+        cad_low_alert=SubField("cad_low_alert", UInt16, units="rpm"),
+        power_high_alert=SubField("power_high_alert", UInt16, units="watts"),
+        power_low_alert=SubField("power_low_alert", UInt16, units="watts"),
+        time_duration_alert=SubField(
+            "time_duration_alert",
+            lambda number: UInt32(number, units="s") * 1000),
+        distance_duration_alert=SubField(
+            "distance_duration_alert",
+            lambda number: UInt32(number, units="m") * 100),
+        calorie_duration_alert=SubField(
+            "calorie_duration_alert", units="calories"),
+        fitness_equipment=SubField(
+            "fitness_equipment_state", FitnessEquipmentState),
+        sport_point=SubField("sport_point"),  # components
+        front_gear_change=SubField("gear_change_data"),  # components
+        rear_gear_change=SubField("gear_change_data")  # components
     )
     event_group = UInt8(4)
     score = UInt16(7)
@@ -375,12 +370,11 @@ class DeviceInfo(Message):
 
     timestamp = DateTime(253)
     device_index = DeviceIndex(0)
-    device_type = DynamicField(
+    device_type = Dynamic(
         UInt8(1),
-        source_type={
-            "antplus": SubField("antplus_device_type", AntplusDeviceType),
-            "ant": SubField("ant_device_type")
-        }
+        referred_to="source_type",
+        antplus=SubField("antplus_device_type", AntplusDeviceType),
+        ant=SubField("ant_device_type")
     )
     manufacturer = Manufacturer(2)
     serial_number = UInt32Z(3)

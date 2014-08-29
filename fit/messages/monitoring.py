@@ -1,6 +1,6 @@
 # coding=utf-8
 from fit.messages import Message
-from fit.types.dynamic import DynamicField, SubField
+from fit.types.dynamic import Dynamic, SubField
 from fit.types.extended import DateTime, LocalDateTime, ActivityType, \
     DeviceIndex, Intensity, ActivitySubType, ActivityLevel
 from fit.types.general import UInt16, Byte, UInt8, UInt32, SInt16
@@ -24,14 +24,15 @@ class Monitoring(Message):
     device_index = DeviceIndex(0)
     calories = UInt16(1) * "kcal"
     distance = UInt32(2, units="m") * 100
-    cycles = DynamicField(
+    cycles = Dynamic(
         UInt32(3, units="cycles") * 2,
-        activity_type={
-            ("walking", "running"): SubField("steps", units="steps"),
-            ("cycling", "swimming"): SubField(
-                "strokes", lambda number: UInt32(number, units="strokes") * 2
-            )
-        }
+        referred_to="activity_type",
+        walking=SubField("steps", units="steps"),
+        running=SubField("steps", units="steps"),
+        cycling=SubField(
+            "strokes", lambda number: UInt32(number, units="strokes") * 2),
+        swimming=SubField(
+            "strokes", lambda number: UInt32(number, units="strokes") * 2)
     )
     active_time = UInt32(4, units="s") * 1000
     activity_type = ActivityType(5)

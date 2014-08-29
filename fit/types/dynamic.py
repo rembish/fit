@@ -1,13 +1,13 @@
 from fit.types import Type
 
 
-class DynamicField(Type):
-    def __init__(self, base, **kwargs):
-        super(DynamicField, self).__init__(base.number)
+class Dynamic(Type):
+    def __init__(self, base, referred_to, **kwargs):
+        super(Dynamic, self).__init__(base.number)
 
         self.base = base
-        self.referred = kwargs.keys()[0]
-        self.variants = kwargs[self.referred] or {}
+        self.referred = referred_to
+        self.variants = kwargs
 
     def __repr__(self):
         return '<%s of %r>' % (

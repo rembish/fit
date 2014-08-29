@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from fit.messages import Message
-from fit.types.dynamic import DynamicField, SubField
+from fit.types.dynamic import Dynamic, SubField
 from fit.types.general import UInt32Z, UInt16, UInt8
 from fit.types.extended import DateTime, Manufacturer, File, GarminProduct
 
@@ -11,12 +11,12 @@ class FileId(Message):
 
     type = File(0)
     manufacturer = Manufacturer(1)
-    product = DynamicField(
+    product = Dynamic(
         UInt16(2),
-        manufacturer={
-            ("garmin", "dynastream", "dynastream_oem"): SubField(
-                "garmin_product", GarminProduct),
-        }
+        referred_to="manufacturer",
+        garmin=SubField("garmin_product", GarminProduct),
+        dynastream=SubField("garmin_product", GarminProduct),
+        dynastream_oem=SubField("garmin_product", GarminProduct)
     )
     serial_number = UInt32Z(3)
     time_created = DateTime(4)
