@@ -1,4 +1,5 @@
-from os import fstat
+from io import UnsupportedOperation
+from os import fstat, SEEK_END
 
 from fit.structure.body import Body
 from fit.structure.crc import Crc, compute_crc
@@ -14,7 +15,13 @@ class Reader(object):
         self._body = Body()
         self._crc = Crc()
 
-        self.file_size = fstat(self._fd.fileno()).st_size
+        try:
+            self.file_size = fstat(self._fd.fileno()).st_size
+        except UnsupportedOperation:
+            self._fd.seek(0, SEEK_END)
+            self.file_size = self._fd.tell()
+            self._fd.seek(0)
+
         self.header_chunk = ""
 
     def __repr__(self):
