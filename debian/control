@@ -1,0 +1,19 @@
+Source: python-fit
+Section: python
+Priority: extra
+Maintainer: Aleksey Rembish <alex@rembish.org>
+Build-Depends:
+ debhelper (>= 9),
+ python,
+ python-setuptools
+Standards-Version: 3.9.5
+X-Python-Version: 2.7
+
+Package: python-fit
+Architecture: all
+Depends:
+ ${misc:Depends},
+ ${python:Depends}
+Description: Python FIT I/O wrapper
+ Unified interface for reading, updating and creating Garmin FIT files from
+ Python.

@@ -1,4 +1,6 @@
 build/
+debian/files
+debian/python-fit*
 dist/
 *.pyc
 *.fit

@@ -1,0 +1,5 @@
+python-fit (0.4.1) trusty; urgency=medium
+
+  * Initial Debian/Ubuntu release.
+
+ -- Aleksey Rembish <alex@rembish.org>  Thu, 04 Sep 2014 20:06:27 +0200
