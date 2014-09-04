@@ -15,7 +15,7 @@ device.
 
 How-To
 ------
-::
+.. code:: python
 
     from fit import FitFile
     from fit.files.activity import ActivityFile
