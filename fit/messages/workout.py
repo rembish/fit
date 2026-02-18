@@ -1,7 +1,17 @@
-from fit.messages import Message
-from fit.types.extended import Sport, WorkoutCapabilities, MessageIndex, \
-    Intensity, WktStepTarget, WktStepDuration
-from fit.types.general import UInt16, String, UInt32
+"""Module docstring."""
+
+from __future__ import annotations
+
+from fit.messages.message import Message
+from fit.types.extended import (
+    Intensity,
+    MessageIndex,
+    Sport,
+    WktStepDuration,
+    WktStepTarget,
+    WorkoutCapabilities,
+)
+from fit.types.general import String, UInt16, UInt32
 
 
 class Workout(Message):

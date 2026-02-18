@@ -1,6 +1,10 @@
+"""Module docstring."""
+
+from __future__ import annotations
+
+from fit.files.filelike import FileLike
 from fit.messages.common import FileId
 from fit.messages.workout import Workout, WorkoutStep
-from fit.files import FileLike
 
 
 class WorkoutFile(FileLike):

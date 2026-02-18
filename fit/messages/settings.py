@@ -1,9 +1,32 @@
-from fit.messages import Message
-from fit.types.extended import MessageIndex, DisplayMeasure, Bool, Sport, \
-    SubSport, Gender, Language, DisplayHeart, DisplayPower, DisplayPosition, \
-    ActivityClass, UserLocalId
-from fit.types.general import UInt8, UInt32, SInt8, UInt16, String, Byte, \
-    UInt16Z, UInt8Z
+"""Module docstring."""
+
+from __future__ import annotations
+
+from fit.messages.message import Message
+from fit.types.extended import (
+    ActivityClass,
+    Bool,
+    DisplayHeart,
+    DisplayMeasure,
+    DisplayPosition,
+    DisplayPower,
+    Gender,
+    Language,
+    MessageIndex,
+    Sport,
+    SubSport,
+    UserLocalId,
+)
+from fit.types.general import (
+    Byte,
+    SInt8,
+    String,
+    UInt8,
+    UInt8Z,
+    UInt16,
+    UInt16Z,
+    UInt32,
+)
 
 
 class DeviceSettings(Message):

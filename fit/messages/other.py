@@ -1,6 +1,10 @@
-from fit.messages import Message
+"""Module docstring."""
+
+from __future__ import annotations
+
+from fit.messages.message import Message
 from fit.types.extended import MessageIndex
-from fit.types.general import UInt32, Byte, UInt16
+from fit.types.general import Byte, UInt16, UInt32
 
 
 class MemoGlob(Message):

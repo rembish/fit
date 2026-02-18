@@ -1,5 +1,9 @@
-from fit.messages import Message
-from fit.types.extended import MessageIndex, DateTime, Sport
+"""Module docstring."""
+
+from __future__ import annotations
+
+from fit.messages.message import Message
+from fit.types.extended import DateTime, MessageIndex, Sport
 from fit.types.general import UInt16, UInt32
 
 

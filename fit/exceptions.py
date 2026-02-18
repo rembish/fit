@@ -1,14 +1,26 @@
+"""Custom exceptions for the FIT file I/O library."""
+
+from __future__ import annotations
+
+__all__ = [
+    "BodyFormatError",
+    "CrcFormatError",
+    "FormatError",
+    "HeaderFormatError",
+]
+
+
 class FormatError(Exception):
-    pass
+    """Base exception for all FIT format errors."""
 
 
 class HeaderFormatError(FormatError):
-    pass
+    """Raised when the FIT file header is malformed or unrecognised."""
 
 
 class BodyFormatError(FormatError):
-    pass
+    """Raised when the FIT file body is malformed."""
 
 
 class CrcFormatError(FormatError):
-    pass
+    """Raised when the FIT file CRC section cannot be read."""

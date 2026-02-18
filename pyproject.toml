@@ -1,0 +1,80 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fit"
+version = "0.5.0"
+description = "FIT file I/O for Python"
+readme = "README.md"
+license = { text = "BSD-3-Clause" }
+authors = [{ name = "Alex Rembish", email = "alex@rembish.org" }]
+requires-python = ">=3.9"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: BSD License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+[project.urls]
+Homepage = "https://github.com/rembish/fit"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "pytest-cov",
+    "black>=24",
+    "ruff>=0.4",
+    "mypy>=1.10",
+    "pre-commit>=3",
+    "tox>=4",
+]
+
+[tool.setuptools.packages.find]
+include = ["fit*"]
+
+[tool.setuptools.package-data]
+"fit" = ["py.typed"]
+
+[tool.black]
+line-length = 88
+target-version = ["py39"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "C4", "SIM", "RUF"]
+ignore = [
+    "N818",   # exception name without Error suffix — FormatError hierarchy is intentional
+    "SIM108", # ternary operator — readability sometimes favours if/else
+    "SIM115", # use context manager for open() — FitFile.open() intentionally holds the fd
+    "E501",   # line too long — long docstring lines are acceptable
+    "RUF012", # mutable class attributes — known/variants dicts are intentional class-level data (type enum tables)
+]
+
+[tool.mypy]
+python_version = "3.9"
+ignore_missing_imports = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_return_any = false        # too noisy for the metaclass-heavy type system
+warn_unreachable = true
+# strict = true is deferred until the metaclass-based message system
+# can be typed accurately with Protocol / overload stubs
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--cov=fit --cov-report=term-missing --cov-fail-under=90"

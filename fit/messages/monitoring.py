@@ -1,9 +1,19 @@
-# coding=utf-8
-from fit.messages import Message
+"""Module docstring."""
+
+from __future__ import annotations
+
+from fit.messages.message import Message
 from fit.types.dynamic import Dynamic, SubField
-from fit.types.extended import DateTime, LocalDateTime, ActivityType, \
-    DeviceIndex, Intensity, ActivitySubType, ActivityLevel
-from fit.types.general import UInt16, Byte, UInt8, UInt32, SInt16
+from fit.types.extended import (
+    ActivityLevel,
+    ActivitySubType,
+    ActivityType,
+    DateTime,
+    DeviceIndex,
+    Intensity,
+    LocalDateTime,
+)
+from fit.types.general import Byte, SInt16, UInt8, UInt16, UInt32
 
 
 class MonitoringInfo(Message):
@@ -29,10 +39,10 @@ class Monitoring(Message):
         referred_to="activity_type",
         walking=SubField("steps", units="steps"),
         running=SubField("steps", units="steps"),
-        cycling=SubField(
-            "strokes", lambda number: UInt32(number, units="strokes") * 2),
+        cycling=SubField("strokes", lambda number: UInt32(number, units="strokes") * 2),
         swimming=SubField(
-            "strokes", lambda number: UInt32(number, units="strokes") * 2)
+            "strokes", lambda number: UInt32(number, units="strokes") * 2
+        ),
     )
     active_time = UInt32(4, units="s") * 1000
     activity_type = ActivityType(5)

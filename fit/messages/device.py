@@ -1,8 +1,21 @@
-from fit.messages import Message
-from fit.types.extended import MessageIndex, Manufacturer, GarminProduct, \
-    SportBits0, WorkoutCapabilities, ConnectivityCapabilities, File, \
-    FileFlags, MesgNum, MesgCount
-from fit.types.general import String, UInt8Z, UInt16, UInt32, UInt8
+"""Module docstring."""
+
+from __future__ import annotations
+
+from fit.messages.message import Message
+from fit.types.extended import (
+    ConnectivityCapabilities,
+    File,
+    FileFlags,
+    GarminProduct,
+    Manufacturer,
+    MesgCount,
+    MesgNum,
+    MessageIndex,
+    SportBits0,
+    WorkoutCapabilities,
+)
+from fit.types.general import String, UInt8, UInt8Z, UInt16, UInt32
 
 
 class Software(Message):

@@ -1,17 +1,53 @@
-# coding=utf-8
-from fit.messages import Message
+"""Module docstring."""
+
+from __future__ import annotations
+
+from fit.messages.message import Message
 from fit.types.array import Array
-from fit.types.composite import Composite, ComponentField
+from fit.types.composite import ComponentField, Composite
 from fit.types.dynamic import Dynamic, SubField
-from fit.types.general import UInt32Z, UInt16, UInt32, UInt8, SInt16, SInt8, \
-    String, Byte, UInt8Z, UInt16Z, SInt32
-from fit.types.extended import DateTime, Manufacturer, LocalDateTime, \
-    EventType, MessageIndex, LeftRightBalance100, LeftRightBalance, Sport, \
-    SubSport, SessionTrigger, SwimStroke, DisplayMeasure, Intensity, \
-    LapTrigger, LengthType, ActivityType, StrokeType, DeviceIndex, \
-    BatteryStatus, BodyLocation, AntNetwork, SourceType, TimerTrigger, \
-    AntplusDeviceType, FitnessEquipmentState
-from fit.types.extended import Activity as ActivityField, Event as EventField
+from fit.types.extended import Activity as ActivityField
+from fit.types.extended import (
+    ActivityType,
+    AntNetwork,
+    AntplusDeviceType,
+    BatteryStatus,
+    BodyLocation,
+    DateTime,
+    DeviceIndex,
+    DisplayMeasure,
+    EventType,
+    FitnessEquipmentState,
+    Intensity,
+    LapTrigger,
+    LeftRightBalance,
+    LeftRightBalance100,
+    LengthType,
+    LocalDateTime,
+    Manufacturer,
+    MessageIndex,
+    SessionTrigger,
+    SourceType,
+    Sport,
+    StrokeType,
+    SubSport,
+    SwimStroke,
+    TimerTrigger,
+)
+from fit.types.extended import Event as EventField
+from fit.types.general import (
+    Byte,
+    SInt8,
+    SInt16,
+    SInt32,
+    String,
+    UInt8,
+    UInt8Z,
+    UInt16,
+    UInt16Z,
+    UInt32,
+    UInt32Z,
+)
 from fit.types.helpers import degrees
 
 
@@ -46,7 +82,7 @@ class Session(Message):
     total_cycles = Dynamic(
         UInt32(10, units="cycles"),
         referred_to="sport",
-        running=SubField("total_strides", units="strides")
+        running=SubField("total_strides", units="strides"),
     )
     total_calories = UInt16(11) * "kcal"
     total_fat_calories = UInt16(13) * "kcal"
@@ -57,12 +93,12 @@ class Session(Message):
     avg_cadence = Dynamic(
         UInt8(18, units="rpm"),
         referred_to="sport",
-        running=SubField("avg_running_cadence", units="strides/min")
+        running=SubField("avg_running_cadence", units="strides/min"),
     )
     max_cadence = Dynamic(
         UInt8(19, units="rpm"),
         referred_to="sport",
-        running=SubField("max_running_cadence", units="strides/min")
+        running=SubField("max_running_cadence", units="strides/min"),
     )
     avg_power = UInt16(20) * "watts"
     max_power = UInt16(21) * "watts"
@@ -155,7 +191,7 @@ class Lap(Message):
     total_cycles = Dynamic(
         UInt32(10, units="cycles"),
         referred_to="sport",
-        running=SubField("total_strides", units="strides")
+        running=SubField("total_strides", units="strides"),
     )
     total_calories = UInt16(11) * "kcal"
     total_fat_calories = UInt16(12) * "kcal"
@@ -166,12 +202,12 @@ class Lap(Message):
     avg_cadence = Dynamic(
         UInt8(17, units="rpm"),
         referred_to="sport",
-        running=SubField("avg_running_cadence", units="strides/min")
+        running=SubField("avg_running_cadence", units="strides/min"),
     )
     max_cadence = Dynamic(
         UInt8(18, units="rpc"),
         referred_to="sport",
-        running=SubField("max_running_cadence", units="strides/min")
+        running=SubField("max_running_cadence", units="strides/min"),
     )
     avg_power = UInt16(19) * "watts"
     max_power = UInt16(20) * "watts"
@@ -274,7 +310,7 @@ class Record(Message):
     compressed_speed_distance = Composite(
         Array(Byte(8), size=3),
         speed=ComponentField(bits=12) * 100,
-        distance=ComponentField(bits=12, offset=12) * 16
+        distance=ComponentField(bits=12, offset=12) * 16,
     )
     grade = SInt16(9, units="%") * 100
     resistance = UInt8(10)
@@ -326,35 +362,34 @@ class Event(Message):
         timer=SubField("timer_trigger", TimerTrigger),
         course_point=SubField("course_point_index", MessageIndex),
         battery=SubField(
-            "battery_level", lambda number: UInt16(number, units="V") * 1000),
+            "battery_level", lambda number: UInt16(number, units="V") * 1000
+        ),
         virtual_partner_pace=SubField(
-            "virtual_partner_speed",
-            lambda number: UInt16(number, units="m/s") * 1000),
+            "virtual_partner_speed", lambda number: UInt16(number, units="m/s") * 1000
+        ),
         hr_high_alert=SubField("hr_high_alert", UInt8, units="bpm"),
         hr_low_alert=SubField("hr_low_alert", UInt8, units="bpm"),
         speed_high_alert=SubField(
-            "speed_high_alert",
-            lambda number: UInt16(number, units="m/s") * 1000),
+            "speed_high_alert", lambda number: UInt16(number, units="m/s") * 1000
+        ),
         speed_low_alert=SubField(
-            "speed_low_alert",
-            lambda number: UInt16(number, units="m/s") * 1000),
+            "speed_low_alert", lambda number: UInt16(number, units="m/s") * 1000
+        ),
         cad_high_alert=SubField("cad_high_alert", UInt16, units="rpm"),
         cad_low_alert=SubField("cad_low_alert", UInt16, units="rpm"),
         power_high_alert=SubField("power_high_alert", UInt16, units="watts"),
         power_low_alert=SubField("power_low_alert", UInt16, units="watts"),
         time_duration_alert=SubField(
-            "time_duration_alert",
-            lambda number: UInt32(number, units="s") * 1000),
+            "time_duration_alert", lambda number: UInt32(number, units="s") * 1000
+        ),
         distance_duration_alert=SubField(
-            "distance_duration_alert",
-            lambda number: UInt32(number, units="m") * 100),
-        calorie_duration_alert=SubField(
-            "calorie_duration_alert", units="calories"),
-        fitness_equipment=SubField(
-            "fitness_equipment_state", FitnessEquipmentState),
+            "distance_duration_alert", lambda number: UInt32(number, units="m") * 100
+        ),
+        calorie_duration_alert=SubField("calorie_duration_alert", units="calories"),
+        fitness_equipment=SubField("fitness_equipment_state", FitnessEquipmentState),
         sport_point=SubField("sport_point"),  # components
         front_gear_change=SubField("gear_change_data"),  # components
-        rear_gear_change=SubField("gear_change_data")  # components
+        rear_gear_change=SubField("gear_change_data"),  # components
     )
     event_group = UInt8(4)
     score = UInt16(7)
@@ -374,7 +409,7 @@ class DeviceInfo(Message):
         UInt8(1),
         referred_to="source_type",
         antplus=SubField("antplus_device_type", AntplusDeviceType),
-        ant=SubField("ant_device_type")
+        ant=SubField("ant_device_type"),
     )
     manufacturer = Manufacturer(2)
     serial_number = UInt32Z(3)

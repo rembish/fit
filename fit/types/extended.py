@@ -1,26 +1,110 @@
-from datetime import datetime
-from time import mktime
+"""Extended FIT types: domain-specific enumerations, datetime, and numeric types."""
 
-from fit.types.general import UInt32, UInt16, UInt8, Enum, UInt32Z, UInt8Z
+from __future__ import annotations
+
+from datetime import datetime
+from typing import Any
+
+from fit.types.general import (
+    Enum,
+    UInt8,
+    UInt8Z,
+    UInt16,
+    UInt32,
+    UInt32Z,
+)
 from fit.types.helpers import KnownMixin
+
+__all__ = [
+    "Activity",
+    "ActivityClass",
+    "ActivityLevel",
+    "ActivitySubType",
+    "ActivityType",
+    "AntNetwork",
+    "AntplusDeviceType",
+    "BatteryStatus",
+    "BodyLocation",
+    "Bool",
+    "BpStatus",
+    "ConnectivityCapabilities",
+    "CourseCapabilities",
+    "CoursePoint",
+    "DateTime",
+    "DatetimeWithUnits",
+    "DeviceIndex",
+    "DisplayHeart",
+    "DisplayMeasure",
+    "DisplayPosition",
+    "DisplayPower",
+    "Event",
+    "EventType",
+    "File",
+    "FileFlags",
+    "FitnessEquipmentState",
+    "GarminProduct",
+    "Gender",
+    "Goal",
+    "GoalRecurrence",
+    "HrType",
+    "HrZoneCalc",
+    "Intensity",
+    "Language",
+    "LapTrigger",
+    "LeftRightBalance",
+    "LeftRightBalance100",
+    "LengthType",
+    "LocalDateTime",
+    "Manufacturer",
+    "MesgCount",
+    "MesgNum",
+    "MessageIndex",
+    "Product",
+    "PwrZoneCalc",
+    "Schedule",
+    "SessionTrigger",
+    "SourceType",
+    "Sport",
+    "SportBits0",
+    "StrokeType",
+    "SubSport",
+    "SwimStroke",
+    "TimerTrigger",
+    "UserLocalId",
+    "Weight",
+    "WktStepDuration",
+    "WktStepTarget",
+    "WorkoutCapabilities",
+]
+
+# FIT epoch: 00:00:00 UTC on 31 December 1989
+_FIT_EPOCH = 631062000
 
 
 class LocalDateTime(UInt32):
-    start_ts = 631062000  # 00:00 Dec 31 1989
+    """FIT local datetime: seconds since the FIT epoch (1989-12-31T00:00:00)."""
 
-    def _load(self, data):
+    start_ts: int = _FIT_EPOCH
+
+    def _load(self, data: Any) -> datetime | None:
         return datetime.fromtimestamp(self.start_ts + data)
 
-    def _save(self, value):
-        return int(mktime(value.timetuple()) - self.start_ts)
+    def _save(self, value: Any) -> int:
+        return int(value.timestamp() - self.start_ts)
 
 
 class DateTime(LocalDateTime):
-    pass
+    """FIT UTC datetime field (same encoding as :class:`LocalDateTime`)."""
+
+
+class DatetimeWithUnits(LocalDateTime):
+    """FIT datetime with an accompanying units hint."""
 
 
 class Manufacturer(KnownMixin, UInt16):
-    known = {  # to be done
+    """FIT manufacturer identifier."""
+
+    known: dict[int, str] = {
         1: "garmin",
         13: "dynastream_oem",
         15: "dynastream",
@@ -28,8 +112,16 @@ class Manufacturer(KnownMixin, UInt16):
     }
 
 
+class Product(KnownMixin, UInt16):
+    """Generic product identifier."""
+
+    known: dict[int, str] = {}
+
+
 class GarminProduct(KnownMixin, UInt16):
-    known = {  # to be done
+    """Garmin-specific product identifier."""
+
+    known: dict[int, str] = {
         1: "hrm1",
         1124: "fr110",
         1551: "fenix",
@@ -38,35 +130,37 @@ class GarminProduct(KnownMixin, UInt16):
 
 
 class MessageIndex(KnownMixin, UInt16):
-    known = {
+    """FIT message index field."""
+
+    known: dict[int, str] = {
         0x8000: "selected",
         0x7000: "reserved",
-        0x0fff: "mask"
+        0x0FFF: "mask",
     }
 
 
 class LeftRightBalance(KnownMixin, UInt8):
-    known = {
-        0x7f: "mask",
-        0x80: "right"
+    known: dict[int, str] = {
+        0x7F: "mask",
+        0x80: "right",
     }
 
 
 class LeftRightBalance100(KnownMixin, UInt16):
-    known = {
-        0x3fff: "mask",
-        0x8000: "right"
+    known: dict[int, str] = {
+        0x3FFF: "mask",
+        0x8000: "right",
     }
 
 
 class DeviceIndex(KnownMixin, UInt8):
-    known = {
+    known: dict[int, str] = {
         0: "creator",
     }
 
 
 class BatteryStatus(KnownMixin, UInt8):
-    known = {
+    known: dict[int, str] = {
         1: "new",
         2: "good",
         3: "ok",
@@ -76,7 +170,7 @@ class BatteryStatus(KnownMixin, UInt8):
 
 
 class MesgNum(KnownMixin, UInt16):
-    known = {
+    known: dict[int, str] = {
         0: "file_id",
         1: "capabilities",
         2: "device_settings",
@@ -118,31 +212,31 @@ class MesgNum(KnownMixin, UInt16):
         106: "slave_device",
         132: "cadence_zone",
         145: "memo_glob",
-        0xff00: "mfg_range_min",  # 0xFF00 - 0xFFFE reserved for manufacturer
-        0xfffe: "mfg_range_max",  # specific messages
+        0xFF00: "mfg_range_min",
+        0xFFFE: "mfg_range_max",
     }
 
 
 class Weight(KnownMixin, UInt16):
-    known = {
-        0xfffe: "calculating"
+    known: dict[int, str] = {
+        0xFFFE: "calculating",
     }
 
-    def _load(self, data):
+    def _load(self, data: Any) -> Any:
         value = KnownMixin._load(self, data)
         if value == data:
-            return super(Weight, self)._load(data)
+            return super()._load(data)
         return value
 
-    def _save(self, value):
+    def _save(self, value: Any) -> Any:
         data = KnownMixin._save(self, value)
         if data == value:
-            return super(Weight, self)._save(value)
+            return super()._save(value)
         return data
 
 
 class UserLocalId(KnownMixin, UInt16):
-    known = {
+    known: dict[int, str] = {
         0x0000: "local_min",
         0x000F: "local_max",
         0x0010: "stationary_min",
@@ -153,14 +247,14 @@ class UserLocalId(KnownMixin, UInt16):
 
 
 class AntplusDeviceType(KnownMixin, UInt8):
-    known = {  # to be done
+    known: dict[int, str] = {
         1: "antfs",
         11: "bike_power",
     }
 
 
 class CourseCapabilities(KnownMixin, UInt32Z):
-    known = {
+    known: dict[int, str] = {
         0x00000001: "processed",
         0x00000002: "valid",
         0x00000004: "time",
@@ -175,27 +269,26 @@ class CourseCapabilities(KnownMixin, UInt32Z):
 
 
 class WorkoutCapabilities(KnownMixin, UInt32Z):
-    known = {
+    known: dict[int, str] = {
         0x00000001: "interval",
         0x00000002: "custom",
         0x00000004: "fitness_equipment",
         0x00000008: "firstbeat",
         0x00000010: "new_leaf",
-        0x00000020: "tcx",  # for backwards compatibility. Watch should add
-                            # missing id fields then clear flag
-        0x00000080: "speed",  # Speed source required for workout step
-        0x00000100: "heart_rate",  # Heart rate src required for workout step
-        0x00000200: "distance",  # Distance source required for workout step
-        0x00000400: "cadence",  # Cadence source required for workout step
-        0x00000800: "power",  # Power source required for workout step
-        0x00001000: "grade",  # Grade source required for workout step
-        0x00002000: "resistance",  # Resistance src required for workout step
+        0x00000020: "tcx",
+        0x00000080: "speed",
+        0x00000100: "heart_rate",
+        0x00000200: "distance",
+        0x00000400: "cadence",
+        0x00000800: "power",
+        0x00001000: "grade",
+        0x00002000: "resistance",
         0x00004000: "protected",
     }
 
 
 class ConnectivityCapabilities(KnownMixin, UInt32Z):
-    known = {
+    known: dict[int, str] = {
         0x00000001: "bluetooth",
         0x00000002: "bluetooth_le",
         0x00000004: "ant",
@@ -212,11 +305,11 @@ class ConnectivityCapabilities(KnownMixin, UInt32Z):
 
 
 class SportBits0(KnownMixin, UInt8Z):
-    known = {
+    known: dict[int, str] = {
         0x01: "generic",
         0x02: "running",
         0x04: "cycling",
-        0x08: "transition",  # Multisport transition
+        0x08: "transition",
         0x10: "fitness_equipment",
         0x20: "swimming",
         0x40: "basketball",
@@ -225,7 +318,7 @@ class SportBits0(KnownMixin, UInt8Z):
 
 
 class FileFlags(KnownMixin, UInt8Z):
-    known = {
+    known: dict[int, str] = {
         0x02: "read",
         0x04: "write",
         0x08: "erase",
@@ -233,7 +326,9 @@ class FileFlags(KnownMixin, UInt8Z):
 
 
 class File(Enum):
-    variants = {
+    """FIT file type enumeration."""
+
+    variants: dict[int, str] = {
         1: "device",
         2: "settings",
         3: "sport",
@@ -253,21 +348,21 @@ class File(Enum):
 
 
 class Activity(Enum):
-    variants = {
+    variants: dict[int, str] = {
         0: "manual",
         1: "auto_multi_sport",
     }
 
 
 class Bool(Enum):
-    variants = {
+    variants: dict[int, Any] = {  # type: ignore[assignment]
         0: False,
         1: True,
     }
 
 
 class Event(Enum):
-    variants = {
+    variants: dict[int, str] = {
         0: "timer",
         3: "workout",
         4: "workout_step",
@@ -304,7 +399,7 @@ class Event(Enum):
 
 
 class EventType(Enum):
-    variants = {
+    variants: dict[int, str] = {
         0: "start",
         1: "stop",
         2: "consecutive_depreciated",
@@ -314,12 +409,12 @@ class EventType(Enum):
         6: "end_depreciated",
         7: "end_all_depreciated",
         8: "stop_disable",
-        9: "stop_disable_all"
+        9: "stop_disable_all",
     }
 
 
 class Sport(Enum):
-    variants = {
+    variants: dict[int, str] = {
         0: "generic",
         1: "running",
         2: "cycling",
@@ -345,7 +440,7 @@ class Sport(Enum):
 
 
 class SubSport(Enum):
-    variants = {
+    variants: dict[int, str] = {
         0: "generic",
         1: "treadmill",
         2: "street",
@@ -378,7 +473,7 @@ class SubSport(Enum):
 
 
 class SessionTrigger(Enum):
-    variants = {
+    variants: dict[int, str] = {
         0: "activity_end",
         1: "manual",
         2: "auto_multi_sport",
@@ -387,26 +482,26 @@ class SessionTrigger(Enum):
 
 
 class SwimStroke(Enum):
-    variants = {
+    variants: dict[int, str] = {
         0: "freestyle",
         1: "backstroke",
         2: "breaststroke",
         3: "butterfly",
         4: "drill",
         5: "mixed",
-        6: "im"
+        6: "im",
     }
 
 
 class DisplayMeasure(Enum):
-    variants = {
+    variants: dict[int, str] = {
         0: "metric",
         1: "statute",
     }
 
 
 class Intensity(Enum):
-    variants = {
+    variants: dict[int, str] = {
         0: "active",
         1: "rest",
         2: "warm_up",
@@ -415,7 +510,7 @@ class Intensity(Enum):
 
 
 class LapTrigger(Enum):
-    variants = {
+    variants: dict[int, str] = {
         0: "manual",
         1: "time",
         2: "distance",
@@ -429,14 +524,14 @@ class LapTrigger(Enum):
 
 
 class LengthType(Enum):
-    variants = {
+    variants: dict[int, str] = {
         0: "idle",
         1: "active",
     }
 
 
 class ActivityType(Enum):
-    variants = {
+    variants: dict[int, str] = {
         0: "generic",
         1: "running",
         2: "cycling",
@@ -449,7 +544,7 @@ class ActivityType(Enum):
 
 
 class StrokeType(Enum):
-    variants = {
+    variants: dict[int, str] = {
         0: "no_event",
         1: "other",
         2: "serve",
@@ -460,7 +555,7 @@ class StrokeType(Enum):
 
 
 class BodyLocation(Enum):
-    variants = {
+    variants: dict[int, str] = {
         0: "left_leg",
         1: "left_calf",
         2: "left_shin",
@@ -497,12 +592,11 @@ class BodyLocation(Enum):
         33: "right_forearm_extensors",
         34: "neck",
         35: "throat",
-
     }
 
 
 class AntNetwork(Enum):
-    variants = {
+    variants: dict[int, str] = {
         0: "public",
         1: "antplus",
         2: "antfs",
@@ -511,7 +605,7 @@ class AntNetwork(Enum):
 
 
 class SourceType(Enum):
-    variants = {
+    variants: dict[int, str] = {
         0: "ant",
         1: "antplus",
         2: "bluetooth",
@@ -522,14 +616,14 @@ class SourceType(Enum):
 
 
 class HrType(Enum):
-    variants = {
+    variants: dict[int, str] = {
         0: "normal",
         1: "irregular",
     }
 
 
 class BpStatus(Enum):
-    variants = {
+    variants: dict[int, str] = {
         0: "no_error",
         1: "error_incomplete_data",
         2: "error_non_measurement",
@@ -539,7 +633,7 @@ class BpStatus(Enum):
 
 
 class CoursePoint(Enum):
-    variants = {
+    variants: dict[int, str] = {
         0: "generic",
         1: "summit",
         2: "valley",
@@ -563,12 +657,12 @@ class CoursePoint(Enum):
         20: "sharp_left",
         21: "slight_right",
         22: "sharp_right",
-        23: "u_turn"
+        23: "u_turn",
     }
 
 
 class MesgCount(Enum):
-    variants = {
+    variants: dict[int, str] = {
         0: "num_per_file",
         1: "max_per_file",
         2: "max_per_file_type",
@@ -576,7 +670,7 @@ class MesgCount(Enum):
 
 
 class Goal(Enum):
-    variants = {
+    variants: dict[int, str] = {
         0: "time",
         1: "distance",
         2: "calories",
@@ -586,7 +680,7 @@ class Goal(Enum):
 
 
 class GoalRecurrence(Enum):
-    variants = {
+    variants: dict[int, str] = {
         0: "off",
         1: "daily",
         2: "weekly",
@@ -597,14 +691,14 @@ class GoalRecurrence(Enum):
 
 
 class Schedule(Enum):
-    variants = {
+    variants: dict[int, str] = {
         0: "workout",
         1: "course",
     }
 
 
 class HrZoneCalc(Enum):
-    variants = {
+    variants: dict[int, str] = {
         0: "custom",
         1: "percent_max_hr",
         2: "percent_hrr",
@@ -612,14 +706,14 @@ class HrZoneCalc(Enum):
 
 
 class PwrZoneCalc(Enum):
-    variants = {
+    variants: dict[int, str] = {
         0: "custom",
         1: "percent_ftp",
     }
 
 
 class WktStepDuration(Enum):
-    variants = {
+    variants: dict[int, str] = {
         0: "time",
         1: "distance",
         2: "hr_less_than",
@@ -640,7 +734,7 @@ class WktStepDuration(Enum):
 
 
 class WktStepTarget(Enum):
-    variants = {
+    variants: dict[int, str] = {
         0: "Speed",
         1: "Heart Rate",
         2: "Open",
@@ -652,13 +746,13 @@ class WktStepTarget(Enum):
 
 
 class ActivitySubType(Enum):
-    variants = {
+    variants: dict[int, str] = {
         0: "generic",
-        1: "treadmill",  # Run...
+        1: "treadmill",
         2: "street",
         3: "trail",
         4: "track",
-        5: "spin",  # Cycling...
+        5: "spin",
         6: "indoor_cycling",
         7: "road",
         8: "mountain",
@@ -667,17 +761,17 @@ class ActivitySubType(Enum):
         11: "cyclocross",
         12: "hand_cycling",
         13: "track_cycling",
-        14: "indoor_rowing",  # Fitness Equipment..
+        14: "indoor_rowing",
         15: "elliptical",
         16: "stair_climbing",
-        17: "swimming",  # Swimming...
+        17: "swimming",
         18: "open_water",
         254: "all",
     }
 
 
 class ActivityLevel(Enum):
-    variants = {
+    variants: dict[int, str] = {
         0: "low",
         1: "medium",
         2: "high",
@@ -685,14 +779,14 @@ class ActivityLevel(Enum):
 
 
 class Gender(Enum):
-    variants = {
+    variants: dict[int, str] = {
         0: "female",
         1: "male",
     }
 
 
 class Language(Enum):
-    variants = {
+    variants: dict[int, str] = {
         0: "english",
         1: "french",
         2: "italian",
@@ -724,7 +818,7 @@ class Language(Enum):
 
 
 class DisplayHeart(Enum):
-    variants = {
+    variants: dict[int, str] = {
         0: "bpm",
         1: "max",
         2: "reserve",
@@ -732,37 +826,37 @@ class DisplayHeart(Enum):
 
 
 class DisplayPower(Enum):
-    variants = {
+    variants: dict[int, str] = {
         0: "watts",
         1: "percent_ftp",
     }
 
 
 class DisplayPosition(Enum):
-    variants = {  # to be done
-        0: "degree",  # dd.dddddd
+    variants: dict[int, str] = {
+        0: "degree",
     }
 
 
 class ActivityClass(Enum):
-    variants = {
+    variants: dict[int, str] = {
         100: "level_max",
-        0x80: "athlete"
+        0x80: "athlete",
     }
 
-    def _load(self, data):
+    def _load(self, data: Any) -> Any:
         if 0 < data < 0x7F:
             return data
-        return super(ActivityClass, self)._load(data)
+        return super()._load(data)
 
-    def _save(self, value):
+    def _save(self, value: Any) -> Any:
         if isinstance(value, int):
             return value
-        return super(ActivityClass, self)._save(value)
+        return super()._save(value)
 
 
 class TimerTrigger(Enum):
-    variants = {
+    variants: dict[int, str] = {
         0: "manual",
         1: "auto",
         2: "fitness_equipment",
@@ -770,9 +864,9 @@ class TimerTrigger(Enum):
 
 
 class FitnessEquipmentState(Enum):
-    variants = {
+    variants: dict[int, str] = {
         0: "ready",
         1: "in_use",
         2: "paused",
-        3: "unknown",  # lost connection to fitness equipment
+        3: "unknown",
     }

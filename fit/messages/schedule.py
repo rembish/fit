@@ -1,6 +1,15 @@
-from fit.messages import Message
-from fit.types.extended import Manufacturer, GarminProduct, DateTime, \
-    LocalDateTime, Bool
+"""Module docstring."""
+
+from __future__ import annotations
+
+from fit.messages.message import Message
+from fit.types.extended import (
+    Bool,
+    DateTime,
+    GarminProduct,
+    LocalDateTime,
+    Manufacturer,
+)
 from fit.types.extended import Schedule as ScheduleField
 from fit.types.general import UInt32Z
 

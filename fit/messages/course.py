@@ -1,6 +1,9 @@
-from fit.messages import Message
-from fit.types.extended import Sport, CourseCapabilities, MessageIndex, \
-    DateTime
+"""Module docstring."""
+
+from __future__ import annotations
+
+from fit.messages.message import Message
+from fit.types.extended import CourseCapabilities, DateTime, MessageIndex, Sport
 from fit.types.extended import CoursePoint as CoursePointField
 from fit.types.general import String, UInt32
 from fit.types.helpers import degrees

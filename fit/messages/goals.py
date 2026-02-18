@@ -1,8 +1,18 @@
-from fit.messages import Message
-from fit.types.extended import MessageIndex, Sport, SubSport, DateTime, \
-    GoalRecurrence, Bool
+"""Module docstring."""
+
+from __future__ import annotations
+
+from fit.messages.message import Message
+from fit.types.extended import (
+    Bool,
+    DateTime,
+    GoalRecurrence,
+    MessageIndex,
+    Sport,
+    SubSport,
+)
 from fit.types.extended import Goal as GoalField
-from fit.types.general import UInt32, UInt16
+from fit.types.general import UInt16, UInt32
 
 
 class Goal(Message):

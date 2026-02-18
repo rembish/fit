@@ -1,7 +1,11 @@
+"""Module docstring."""
+
+from __future__ import annotations
+
+from fit.files.filelike import FileLike
 from fit.messages.activity import DeviceInfo
 from fit.messages.common import FileId
-from fit.messages.monitoring import MonitoringInfo, Monitoring
-from fit.files import FileLike
+from fit.messages.monitoring import Monitoring, MonitoringInfo
 
 
 class MonitoringFile(FileLike):
