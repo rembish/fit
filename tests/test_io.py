@@ -205,7 +205,7 @@ def test_fitfile_extend_with_list(tmp_path: Path) -> None:
 
 
 def test_fitfile_version_is_exported() -> None:
-    assert fit.__version__ == "0.5.0"
+    assert fit.__version__ == "0.5.1"
 
 
 def test_get_messages_by_class(tmp_path: Path) -> None:

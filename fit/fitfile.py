@@ -315,12 +315,17 @@ def _load_plugins() -> None:
 
     from fit.messages import register as register_message
 
-    msg_eps = entry_points(group="fit.messages")  # type: ignore[call-arg]
-    file_eps = entry_points(group="fit.files")  # type: ignore[call-arg]
-
+    try:
+        # Python 3.10+: entry_points() supports group= kwarg
+        msg_eps = entry_points(group="fit.messages")  # type: ignore[call-arg]
+        file_eps = entry_points(group="fit.files")  # type: ignore[call-arg]
+    except TypeError:
+        # Python 3.9: entry_points() returns a plain dict
+        _all = entry_points()
+        msg_eps = _all.get("fit.messages", [])  # type: ignore[union-attr,assignment]
+        file_eps = _all.get("fit.files", [])  # type: ignore[union-attr,assignment]
     for ep in msg_eps:
         register_message(ep.load())  # type: ignore[attr-defined]
-
     for ep in file_eps:
         register(ep.load())  # type: ignore[attr-defined]
 

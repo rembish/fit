@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "fit"
-version = "0.5.0"
+version = "0.5.1"
 description = "FIT file I/O for Python"
 readme = "README.md"
 license = { text = "BSD-3-Clause" }

@@ -12,6 +12,7 @@ from fit.record import TIMESTAMP_FIELD_NAME, TIMESTAMP_FIELD_NUM, TIMESTAMP_MASK
 from fit.record.fields import Fields
 from fit.types import Type as FitType
 from fit.types.array import Array
+from fit.types.composite import ComponentField, Composite
 from fit.types.dynamic import Dynamic
 from fit.types.extended import LocalDateTime
 from fit.utils import get_known
@@ -27,12 +28,14 @@ class Meta:
         model: Maps field number → :class:`~fit.types.Type` instance.
         names: Maps field number → attribute name.
         subfields: Maps subfield name → resolved :class:`~fit.types.Type` instance.
+        components: Maps component name → ``(composite_field_number, ComponentField)``.
         inherit: Whether to copy parent-class fields into this class (default ``True``).
     """
 
     model: dict[int, FitType] = dc_field(default_factory=dict)
     names: dict[int, str] = dc_field(default_factory=dict)
     subfields: dict[str, Any] = dc_field(default_factory=dict)
+    components: dict[str, tuple[int, ComponentField]] = dc_field(default_factory=dict)
     inherit: bool = True
 
 
@@ -100,6 +103,38 @@ class FieldProxy:
         instance._data[self.key] = None
 
 
+class ComponentProxy:
+    """Read-only descriptor that extracts a component from a :class:`Composite` field.
+
+    Args:
+        composite_number: FIT field number of the parent :class:`~fit.types.composite.Composite`.
+        name: Component attribute name.
+        comp_field: The :class:`~fit.types.composite.ComponentField` defining extraction.
+    """
+
+    def __init__(
+        self, composite_number: int, name: str, comp_field: ComponentField
+    ) -> None:
+        self.composite_number: int = composite_number
+        self.name: str = name
+        self.comp_field: ComponentField = comp_field
+
+    def __get__(self, instance: Any, owner: type) -> Any:
+        if instance is None:
+            return self
+        composite_key = instance._get_name(self.composite_number)
+        raw = instance._data.get(composite_key)
+        return self.comp_field.extract(raw)
+
+    def __set__(self, instance: Any, value: Any) -> None:
+        composite_key = instance._get_name(self.composite_number)
+        raw = instance._data.get(composite_key)
+        instance._data[composite_key] = self.comp_field.pack_into(raw, value)
+
+    def __delete__(self, instance: Any) -> None:
+        pass
+
+
 class MessageMeta(type):
     """Metaclass for :class:`Message` that registers field descriptors at class creation."""
 
@@ -117,6 +152,7 @@ class MessageMeta(type):
                 meta.model.update(base._meta.model)
                 meta.names.update(base._meta.names)
                 meta.subfields.update(base._meta.subfields)
+                meta.components.update(base._meta.components)
 
         for key, value in attrs.items():
             if isinstance(value, Dynamic):
@@ -125,6 +161,10 @@ class MessageMeta(type):
                     meta.subfields[subfield.name] = subfield.type(
                         value.number, **subfield.kwargs
                     )
+
+            if isinstance(value, Composite):
+                for comp_name, comp_field in value.components.items():
+                    meta.components[comp_name] = (value.number, comp_field)
 
             if isinstance(value, FitType):
                 meta.model[value.number] = value
@@ -140,6 +180,15 @@ class MessageMeta(type):
             setattr(instance, key, FieldProxy(number, key))
         for sf_name, sf_type in meta.subfields.items():
             setattr(instance, sf_name, FieldProxy(sf_type.number, sf_name))
+
+        existing_names = set(meta.names.values()) | set(meta.subfields)
+        for comp_name, (comp_number, comp_field) in meta.components.items():
+            if comp_name not in existing_names:
+                setattr(
+                    instance,
+                    comp_name,
+                    ComponentProxy(comp_number, comp_name, comp_field),
+                )
 
         return instance
 
@@ -207,10 +256,23 @@ class Message(metaclass=MessageMeta):
             )
         ).rstrip()
 
+        existing_field_names = set(self._meta.names.values()) | set(
+            self._meta.subfields
+        )
+        component_part = (
+            " "
+            + " ".join(
+                f"{comp_name}={getattr(self, comp_name)}"
+                for comp_name in self._meta.components
+                if comp_name not in existing_field_names
+                and getattr(self, comp_name) is not None
+            )
+        ).rstrip()
+
         return (
             f"<{self.__module__.split('.')[-1]}."
             f"{self.__class__.__name__}[{self.msg_type}]"
-            f"{normal_part}{dynamic_part}>"
+            f"{normal_part}{dynamic_part}{component_part}>"
         )
 
     def __setitem__(self, key: str | int, value: Any) -> None:
@@ -254,7 +316,7 @@ class Message(metaclass=MessageMeta):
         return self._meta.model[number]
 
     def _get_number(self, name: str) -> int | None:
-        if name in self._meta.subfields:
+        if name in self._meta.subfields or name in self._meta.components:
             return None
 
         for number, other in self._meta.names.items():

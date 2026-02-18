@@ -6,3 +6,6 @@ dist/
 *.fit
 *.egg-info
 *.html
+.venv/
+.coverage
+htmlcov/

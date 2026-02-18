@@ -3,4 +3,4 @@
 from fit.fitfile import FitFile, register
 
 __all__ = ["FitFile", "register"]
-__version__ = "0.5.0"
+__version__ = "0.5.1"

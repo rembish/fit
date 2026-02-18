@@ -134,7 +134,7 @@ class CompressedTimestampHeader(RecordHeader):
         return cls(local_message_type, time_offset)
 
     def write(self) -> bytes:
-        byte = 1 | (self.type << 5) | self.offset
+        byte = (1 << 7) | (self.type << 5) | self.offset
         return pack("<B", byte)
 
     def process_message(

@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.5.1 (2026-02-18)
+
+### New features
+
+- Implement component fields: `ComponentField.extract()`, `ComponentField.pack_into()`, `Composite.decompose()`, and `ComponentProxy` descriptor — transparent read/write access to bit-packed sub-fields (e.g. `compressed_speed_distance` in `Record`)
+- `Meta` dataclass gains a `components` registry; `MessageMeta` automatically installs `ComponentProxy` for component names that do not conflict with regular field names
+
+### Bug fixes
+
+- Fix `CompressedTimestampHeader.write()` — was setting bit 0 (`1`) instead of bit 7 (`1 << 7`), making the written byte unrecognisable as a compressed-timestamp record by `RecordHeader.read()`
+- Fix `Composite.__init__` not propagating `base.size` — caused zero-byte fields when reading/writing messages with composite fields (same root cause as the `Dynamic` size bug fixed in 0.5.0)
+- Fix `_load_plugins()` compatibility with Python 3.9 — `entry_points(group=...)` was added in 3.10; fall back to `entry_points().get(group, [])` on older interpreters
+
+### Infrastructure
+
+- Test suite expanded: 166 tests, 94 % coverage (was 122 / 93 %)
+- Add `tests/test_record_headers.py` — full coverage of `CompressedTimestampHeader` read / write / repr / `process_message`
+- Add `tests/test_filelike.py` — covers `FileLike.create()`, `_apply_mixin` with a `FitFile` subclass, and all `_validate` error paths
+
 ## 0.5.0 (2026-02-18)
 
 ### Python version

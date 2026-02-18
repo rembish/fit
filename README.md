@@ -74,7 +74,7 @@ make format      # run black
 make lint        # run ruff
 make typecheck   # run mypy
 make test        # run pytest with coverage
-make tox         # run tests across Python 3.8, 3.10, 3.12
+make tox         # run tests across Python 3.9, 3.10, 3.12
 make clean       # remove build artefacts and the virtualenv
 ```
 

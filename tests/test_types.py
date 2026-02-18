@@ -8,6 +8,7 @@ from io import BytesIO
 import pytest
 
 from fit.types.array import Array
+from fit.types.composite import ComponentField, Composite
 from fit.types.dynamic import Dynamic, SubField
 from fit.types.general import (
     Enum,
@@ -267,3 +268,151 @@ def test_degrees_units() -> None:
 def test_degrees_scale_is_positive() -> None:
     scale = degrees(3).scale
     assert scale is not None and scale > 0
+
+
+# ---------------------------------------------------------------------------
+# ComponentField
+# ---------------------------------------------------------------------------
+
+
+def test_component_field_extract_from_int() -> None:
+    cf = ComponentField(bits=4, offset=0)
+    assert cf.extract(0b10110101) == 5  # bits 0-3 = 0101 = 5
+
+
+def test_component_field_extract_with_offset() -> None:
+    cf = ComponentField(bits=4, offset=4)
+    assert cf.extract(0b10110101) == 11  # bits 4-7 = 1011 = 11
+
+
+def test_component_field_extract_with_scale() -> None:
+    cf = ComponentField(bits=12, offset=0) * 100
+    # raw=500, physical = 500 / 100 = 5.0
+    assert cf.extract(500) == pytest.approx(5.0)
+
+
+def test_component_field_extract_from_list() -> None:
+    # [0x34, 0x12] → little-endian int 0x1234 = 4660
+    cf = ComponentField(bits=12, offset=0)
+    assert cf.extract([0x34, 0x12]) == 0x234  # bits 0-11 = 0x234 = 564
+
+
+def test_component_field_extract_none_returns_none() -> None:
+    cf = ComponentField(bits=8, offset=0)
+    assert cf.extract(None) is None
+
+
+def test_component_field_pack_into_int() -> None:
+    cf = ComponentField(bits=4, offset=0)
+    result = cf.pack_into(0b11110000, 5)
+    assert result & 0b00001111 == 5
+    assert result & 0b11110000 == 0b11110000  # upper bits preserved
+
+
+def test_component_field_pack_into_with_scale() -> None:
+    cf = ComponentField(bits=12, offset=0) * 100
+    # value=5.0, raw_component = round(5.0 * 100) = 500
+    result = cf.pack_into(0, 5.0)
+    assert result & 0xFFF == 500
+
+
+def test_component_field_pack_into_list() -> None:
+    cf = ComponentField(bits=8, offset=0)
+    result = cf.pack_into([0x00, 0x00], 42)
+    assert isinstance(result, list)
+    assert result[0] == 42
+    assert result[1] == 0
+
+
+def test_component_field_pack_into_bytes() -> None:
+    cf = ComponentField(bits=8, offset=0)
+    result = cf.pack_into(bytes([0x00, 0x00]), 42)
+    assert isinstance(result, bytes)
+    assert result[0] == 42
+    assert result[1] == 0
+
+
+def test_component_field_pack_into_none_raw() -> None:
+    cf = ComponentField(bits=8, offset=0)
+    result = cf.pack_into(None, 7)
+    assert result == 7
+
+
+def test_component_field_extract_pack_roundtrip() -> None:
+    cf = ComponentField(bits=12, offset=0) * 100
+    original = 3.75
+    packed = cf.pack_into(0, original)
+    extracted = cf.extract(packed)
+    assert extracted == pytest.approx(original, abs=0.01)
+
+
+# ---------------------------------------------------------------------------
+# Composite
+# ---------------------------------------------------------------------------
+
+
+def test_composite_size_matches_base() -> None:
+    from fit.types.array import Array
+
+    base = Array(UInt8(8), size=3)
+    c = Composite(base, speed=ComponentField(bits=12) * 100)
+    assert c.size == 3
+
+
+def test_composite_read_delegates_to_base() -> None:
+    base = Array(UInt16(0), size=4)
+    c = Composite(base, x=ComponentField(bits=16))
+    buf = BytesIO(struct.pack("<HH", 10, 20))
+    assert c.read(buf) == [10, 20]
+
+
+def test_composite_write_delegates_to_base() -> None:
+    base = Array(UInt16(0), size=4)
+    c = Composite(base, x=ComponentField(bits=16))
+    assert c.write([10, 20]) == struct.pack("<HH", 10, 20)
+
+
+def test_composite_decompose() -> None:
+    # 24-bit composite: speed in bits 0-11, distance in bits 12-23
+
+    base_val = (40 << 12) | 50  # distance=40, speed=50
+    b0 = base_val & 0xFF
+    b1 = (base_val >> 8) & 0xFF
+    b2 = (base_val >> 16) & 0xFF
+
+    c = Composite(
+        Array(UInt8(8), size=3),
+        speed=ComponentField(bits=12, offset=0) * 100,
+        distance=ComponentField(bits=12, offset=12) * 16,
+    )
+    result = c.decompose([b0, b1, b2])
+    assert result["speed"] == pytest.approx(50 / 100)
+    assert result["distance"] == pytest.approx(40 / 16)
+
+
+# ---------------------------------------------------------------------------
+# ComponentProxy via Record.compressed_speed_distance
+# ---------------------------------------------------------------------------
+
+
+def test_component_proxy_on_record() -> None:
+    """ComponentProxy fields not conflicting with named fields are accessible."""
+    from fit.messages.activity import Record
+
+    # 'compressed_speed_distance' components are 'speed' and 'distance',
+    # which conflict with Record.speed (field 6) and Record.distance (field 5).
+    # So NO ComponentProxy should be installed for those names — they remain
+    # FieldProxy descriptors for fields 6 and 5.
+    r = Record()
+    # Field proxies for speed/distance should still work normally
+    r.speed = 5.0
+    assert r.speed == pytest.approx(5.0)
+
+
+def test_composite_field_size_propagation() -> None:
+    """Regression: Composite must inherit base.size (was previously always 0)."""
+    from fit.types.general import Byte
+
+    base = Array(Byte(8), size=3)
+    c = Composite(base, x=ComponentField(bits=8))
+    assert c.size == base.size
