@@ -7,13 +7,12 @@ name = "fit"
 version = "0.5.1"
 description = "FIT file I/O for Python"
 readme = "README.md"
-license = { text = "BSD-3-Clause" }
+license = "BSD-3-Clause"
 authors = [{ name = "Alex Rembish", email = "alex@rembish.org" }]
 requires-python = ">=3.9"
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: BSD License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
@@ -36,6 +35,8 @@ dev = [
     "mypy>=1.10",
     "pre-commit>=3",
     "tox>=4",
+    "build>=1",
+    "twine>=6",
 ]
 
 [tool.setuptools.packages.find]
